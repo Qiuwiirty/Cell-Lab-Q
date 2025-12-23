@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=3 uid="uid://d3otf0i44bpmq"]
+
+[ext_resource type="PackedScene" uid="uid://cymj82ljpiu70" path="res://cell.tscn" id="1_s5yhh"]
+
+[node name="plate" type="Node2D"]
+
+[node name="Cell" parent="." instance=ExtResource("1_s5yhh")]
+position = Vector2(-3, -9)
+
+[node name="Cell2" parent="." instance=ExtResource("1_s5yhh")]
+position = Vector2(11, -2)
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(11, -2)
+zoom = Vector2(3, 3)
