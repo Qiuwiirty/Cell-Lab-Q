@@ -1,6 +1,14 @@
-[gd_scene load_steps=2 format=3 uid="uid://d3otf0i44bpmq"]
+[gd_scene load_steps=5 format=3 uid="uid://d3otf0i44bpmq"]
 
 [ext_resource type="PackedScene" uid="uid://cymj82ljpiu70" path="res://cell.tscn" id="1_s5yhh"]
+[ext_resource type="Shader" uid="uid://gk6uy671hlec" path="res://voronoi.gdshader" id="2_uw33f"]
+[ext_resource type="Script" uid="uid://c8pe0nrawq8d5" path="res://voronoi_rect_manager.gd" id="3_g4jty"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_jcf13"]
+shader = ExtResource("2_uw33f")
+shader_parameter/u_cells = PackedVector2Array(0, 0, 0, 0, 0, 0, 0, 0)
+shader_parameter/u_colors = PackedVector3Array(1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+shader_parameter/u_radii = PackedFloat32Array(43.265, 0, 0, 0)
 
 [node name="plate" type="Node2D"]
 
@@ -8,8 +16,19 @@
 position = Vector2(-3, -9)
 
 [node name="Cell2" parent="." instance=ExtResource("1_s5yhh")]
-position = Vector2(11, -2)
+position = Vector2(4, -1)
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(11, -2)
 zoom = Vector2(3, 3)
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="voronoi_rect" type="ColorRect" parent="CanvasLayer"]
+material = SubResource("ShaderMaterial_jcf13")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("3_g4jty")

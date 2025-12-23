@@ -1,20 +1,9 @@
 shader_type canvas_item;
-uniform sampler2D SCREEN_TEXTURE : hint_screen_texture, filter_linear_mipmap;
-//void vertex() {
-	// Called for every vertex the material is visible on.
-//}
 
-//void fragment() {
-	//COLOR = texture(SCREEN_TEXTURE, SCREEN_UV);
-//}
-
-//void light() {
-//	// Called for every pixel for every light affecting the CanvasItem.
-//	// Uncomment to replace the default light processing function with this one.
-//}
 const int cellCount = 4;
 
 uniform vec2 u_cells[cellCount];
+uniform vec3 u_colors[cellCount];
 uniform float u_radii[cellCount];
 
 float circleSDF( in vec2 fragCoord, in vec2 center, in float radius )
@@ -26,7 +15,8 @@ float circleSDF( in vec2 fragCoord, in vec2 center, in float radius )
 // This runs for every pixel
 void fragment()
 {
-    
+    // Initialise cells
+    // In the actual program, you should have a buffer containing the cell info    
 
     // First we determine the closest cell to the pixel
     float closestDistSq = 1e10;
@@ -77,12 +67,16 @@ void fragment()
     float radius = u_radii[closest];
     float cellSDF = circleSDF(FRAGCOORD.xy, u_cells[closest], radius) / radius;
     float squishSDF = max(cellSDF, highestRatio);
-    float inside_mask = step(squishSDF, 0.0);
-
-    vec4 bg = texture(SCREEN_TEXTURE, SCREEN_UV);
-    vec4 group = texture(TEXTURE, UV);
-
-    // Inside → show CanvasGroup
-    // Outside → passthrough
-    COLOR = mix(bg, group, inside_mask);
+    // Make it pretty
+    float inside = smoothstep(0., 1., 0.2 - squishSDF * 20.);
+    float membrane = smoothstep(0., 1.1, 1. + squishSDF * 3.);
+    float cytoplasm = pow(smoothstep(0., 2.5, 1. - cellSDF * 0.5), 2.);
+    float nucleus = smoothstep(0., 1., (-cellSDF - 0.8) * 20.);
+    vec3 color = u_colors[closest];
+    //vec3 color = vec3(1, 1, 1);
+    //vec3 test = (0.2 + step(highestRatio, -cellSDF)) * color;
+    
+    // Output to screen
+    COLOR = (nucleus + (cytoplasm + membrane) * inside) * vec4(color, 1.);
+    //fragColor = vec4(-squishSDF) * vec4(color, 1.);
 }
