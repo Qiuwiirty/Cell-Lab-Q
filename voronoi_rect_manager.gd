@@ -16,4 +16,4 @@ func get_screen_positions_from_cells(list: Array[CharacterBody2D]) -> PackedVect
 func _physics_process(_delta: float) -> void:
 	material.set_shader_parameter("u_cells", get_screen_positions_from_cells(get_all_cells()))
 	material.set_shader_parameter("u_colors", PackedColorArray([Color.WHITE, Color.RED, Color.GREEN, Color.AQUA]))
-	material.set_shader_parameter("u_radii",PackedFloat32Array([15.0, 15.0, 30.0, 30.0]))
+	material.set_shader_parameter("u_radii",PackedFloat32Array([30.0, 30.0, 30.0, 30.0]))
