@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://d3otf0i44bpmq"]
+[gd_scene load_steps=3 format=3 uid="uid://d3otf0i44bpmq"]
 
 [ext_resource type="PackedScene" uid="uid://cymj82ljpiu70" path="res://cell.tscn" id="1_s5yhh"]
+[ext_resource type="Script" uid="uid://n2ksox4sau5m" path="res://camera.gd" id="2_uw33f"]
 
 [node name="plate" type="Node2D"]
 
@@ -14,6 +15,6 @@ m_is_colliding_with = NodePath("../Cell")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(11, -2)
-zoom = Vector2(3, 3)
+script = ExtResource("2_uw33f")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]

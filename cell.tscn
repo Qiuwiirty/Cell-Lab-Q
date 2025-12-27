@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://cymj82ljpiu70"]
+[gd_scene load_steps=9 format=3 uid="uid://cymj82ljpiu70"]
 
 [ext_resource type="Shader" uid="uid://gk6uy671hlec" path="res://voronoi.gdshader" id="1_2yjhv"]
 [ext_resource type="Script" uid="uid://1do3dhg5l33c" path="res://basic_cell.gd" id="1_gwrgs"]
@@ -7,13 +7,21 @@
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_gwrgs"]
 shader = ExtResource("1_2yjhv")
-shader_parameter/cell_count = 1
-shader_parameter/centers = PackedVector2Array(0.33, 0.405, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-shader_parameter/rotations = PackedFloat32Array(14.56, 0, 0, 0, 0, 0, 0, 0)
+shader_parameter/cell_count = 0
+shader_parameter/centers = PackedVector2Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+shader_parameter/rotations = PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0)
+
+[sub_resource type="SphereMesh" id="SphereMesh_gwrgs"]
+radius = 10.0
+height = 20.0
 
 [sub_resource type="SphereMesh" id="SphereMesh_14hpr"]
+radius = 9.0
+height = 18.0
 
 [sub_resource type="SphereMesh" id="SphereMesh_yh0nt"]
+radius = 1.5
+height = 3.0
 
 [sub_resource type="BoxMesh" id="BoxMesh_gwrgs"]
 
@@ -27,21 +35,17 @@ shape = SubResource("CircleShape2D_14hpr")
 material = SubResource("ShaderMaterial_gwrgs")
 
 [node name="outie" type="MeshInstance2D" parent="render"]
-modulate = Color(0, 0, 0.6431373, 1)
-scale = Vector2(20, 20)
-mesh = SubResource("SphereMesh_14hpr")
+modulate = Color(0.64, 0.64, 0.64, 1)
+mesh = SubResource("SphereMesh_gwrgs")
 
 [node name="innie" type="MeshInstance2D" parent="render"]
-modulate = Color(0, 0, 0.88235295, 1)
-scale = Vector2(18, 18)
+modulate = Color(0.88, 0.88, 0.88, 1)
 mesh = SubResource("SphereMesh_14hpr")
 
 [node name="nucleus" type="MeshInstance2D" parent="render"]
-modulate = Color(0, 0, 0.6431373, 1)
-scale = Vector2(3, 3)
+modulate = Color(0.64, 0.64, 0.64, 1)
 mesh = SubResource("SphereMesh_yh0nt")
 
 [node name="MeshInstance2D" type="MeshInstance2D" parent="."]
-visible = false
 scale = Vector2(2, 2)
 mesh = SubResource("BoxMesh_gwrgs")
