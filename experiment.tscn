@@ -1,0 +1,22 @@
+[gd_scene load_steps=2 format=3 uid="uid://moxe0r3xcsq"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_67ltc"]
+
+[node name="Experiment" type="Node2D"]
+
+[node name="yi" type="RigidBody2D" parent="."]
+gravity_scale = 0.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="yi"]
+shape = SubResource("CircleShape2D_67ltc")
+
+[node name="er" type="RigidBody2D" parent="."]
+gravity_scale = 0.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="er"]
+position = Vector2(10, 0)
+shape = SubResource("CircleShape2D_67ltc")
+debug_color = Color(0.9584257, 3.080368e-06, 0.5298511, 0.41960785)
+
+[node name="Camera2D" type="Camera2D" parent="."]
+zoom = Vector2(4, 4)

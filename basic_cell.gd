@@ -10,7 +10,6 @@ func _ready() -> void:
 func world_to_screen(world_pos: Vector2) -> Vector2:
 	var canvas_xform := get_viewport().get_canvas_transform()
 	return canvas_xform * world_pos
-
 func world_to_screen_uv(world_pos: Vector2) -> Vector2:
 	var screen_pos := world_to_screen(world_pos)
 	var viewport_size := get_viewport().get_visible_rect().size
