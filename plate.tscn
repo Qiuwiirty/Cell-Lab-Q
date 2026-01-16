@@ -1,20 +1,41 @@
-[gd_scene load_steps=3 format=3 uid="uid://d3otf0i44bpmq"]
+[gd_scene load_steps=6 format=3 uid="uid://d3otf0i44bpmq"]
 
-[ext_resource type="PackedScene" uid="uid://cymj82ljpiu70" path="res://cell.tscn" id="1_s5yhh"]
+[ext_resource type="Script" uid="uid://d3mwn0wxaesnf" path="res://plate.gd" id="1_g4jty"]
+[ext_resource type="PackedScene" uid="uid://cymj82ljpiu70" path="res://base_cell.tscn" id="1_s5yhh"]
+[ext_resource type="Texture2D" uid="uid://dt4qdlwv3kaxq" path="res://platecolor.png" id="2_ffgcv"]
 [ext_resource type="Script" uid="uid://n2ksox4sau5m" path="res://camera.gd" id="2_uw33f"]
+[ext_resource type="PackedScene" uid="uid://gdetrklijjgh" path="res://photocyte.tscn" id="4_jcf13"]
 
 [node name="plate" type="Node2D"]
+script = ExtResource("1_g4jty")
+
+[node name="Platecolor" type="Sprite2D" parent="."]
+texture_filter = 1
+texture = ExtResource("2_ffgcv")
 
 [node name="Cell" parent="." instance=ExtResource("1_s5yhh")]
 modulate = Color(1, 0, 0, 1)
-position = Vector2(-3, -9)
+position = Vector2(-3, -1)
 
 [node name="Cell2" parent="." instance=ExtResource("1_s5yhh")]
 modulate = Color(0, 1, 0.6333332, 1)
-position = Vector2(1, -20)
+position = Vector2(14, 1)
+radius = 10
+
+[node name="Cell3" parent="." instance=ExtResource("1_s5yhh")]
+modulate = Color(0, 0.23333359, 1, 1)
+position = Vector2(-15, 14)
+radius = 10
+
+[node name="Cell4" parent="." instance=ExtResource("1_s5yhh")]
+modulate = Color(0, 1, 0.01666665, 1)
+position = Vector2(-34, -18)
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(11, -2)
 script = ExtResource("2_uw33f")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Photocyte" parent="." instance=ExtResource("4_jcf13")]
+position = Vector2(-11, -380)
