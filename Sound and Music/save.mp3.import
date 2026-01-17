@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://ckndd1u45r17l"
+path="res://.godot/imported/save.mp3-b6854eec1d49f6c3aa5d4fbde34eed61.mp3str"
+
+[deps]
+
+source_file="res://Sound and Music/save.mp3"
+dest_files=["res://.godot/imported/save.mp3-b6854eec1d49f6c3aa5d4fbde34eed61.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

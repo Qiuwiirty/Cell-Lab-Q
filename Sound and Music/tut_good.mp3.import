@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://dxkd1hvxm85rv"
+path="res://.godot/imported/tut_good.mp3-a42cc8fe8ca3fd306e626c2f20b788fc.mp3str"
+
+[deps]
+
+source_file="res://Sound and Music/tut_good.mp3"
+dest_files=["res://.godot/imported/tut_good.mp3-a42cc8fe8ca3fd306e626c2f20b788fc.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

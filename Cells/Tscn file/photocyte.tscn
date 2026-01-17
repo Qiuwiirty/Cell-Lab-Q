@@ -1,7 +1,8 @@
-[gd_scene load_steps=9 format=3 uid="uid://cymj82ljpiu70"]
+[gd_scene load_steps=10 format=3 uid="uid://gdetrklijjgh"]
 
-[ext_resource type="Shader" uid="uid://gk6uy671hlec" path="res://voronoi.gdshader" id="1_2yjhv"]
-[ext_resource type="Script" uid="uid://epvg3ni2qm8p" path="res://base_cell.gd" id="1_gwrgs"]
+[ext_resource type="Script" uid="uid://1dpl0rdhb00j" path="res://Cells/Cell script/photocyte.gd" id="1_02e2r"]
+[ext_resource type="Shader" uid="uid://gk6uy671hlec" path="res://Shaders/voronoi.gdshader" id="2_7q7h6"]
+[ext_resource type="Texture2D" uid="uid://dpuiru35vknq5" path="res://green floaters.png" id="3_02e2r"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_14hpr"]
 radius = 15.0
@@ -10,26 +11,26 @@ radius = 15.0
 radius = 15.0
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_gwrgs"]
-shader = ExtResource("1_2yjhv")
+shader = ExtResource("2_7q7h6")
 shader_parameter/cell_count = 0
 shader_parameter/centers = PackedVector2Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 shader_parameter/rotations = PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0)
 shader_parameter/screen_size = Vector2(0, 0)
 
-[sub_resource type="SphereMesh" id="SphereMesh_gwrgs"]
+[sub_resource type="SphereMesh" id="SphereMesh_02e2r"]
 radius = 15.0
 height = 30.0
 
-[sub_resource type="SphereMesh" id="SphereMesh_2yjhv"]
-radius = 13.5
-height = 27.0
+[sub_resource type="SphereMesh" id="SphereMesh_7q7h6"]
+radius = 15.0
+height = 30.0
 
-[sub_resource type="SphereMesh" id="SphereMesh_7c3yk"]
+[sub_resource type="SphereMesh" id="SphereMesh_j2y2o"]
 radius = 2.25
 height = 4.5
 
-[node name="Cell" type="CharacterBody2D" groups=["Cells"]]
-script = ExtResource("1_gwrgs")
+[node name="Photocyte" type="CharacterBody2D" groups=["Cells"]]
+script = ExtResource("1_02e2r")
 
 [node name="collision" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_14hpr")
@@ -44,15 +45,20 @@ material = SubResource("ShaderMaterial_gwrgs")
 
 [node name="outie" type="MeshInstance2D" parent="render"]
 modulate = Color(0.64, 0.64, 0.64, 1)
-mesh = SubResource("SphereMesh_gwrgs")
+mesh = SubResource("SphereMesh_02e2r")
 
 [node name="innie" type="MeshInstance2D" parent="render"]
 modulate = Color(0.88, 0.88, 0.88, 1)
-mesh = SubResource("SphereMesh_2yjhv")
+scale = Vector2(0.9, 0.9)
+mesh = SubResource("SphereMesh_7q7h6")
+
+[node name="green_floaters" type="Sprite2D" parent="render"]
+scale = Vector2(0.029, 0.029)
+texture = ExtResource("3_02e2r")
 
 [node name="nucleus" type="MeshInstance2D" parent="render"]
 modulate = Color(0.64, 0.64, 0.64, 1)
-mesh = SubResource("SphereMesh_7c3yk")
+mesh = SubResource("SphereMesh_j2y2o")
 
 [connection signal="area_entered" from="collision_detector" to="." method="_cell_entered"]
 [connection signal="area_exited" from="collision_detector" to="." method="_cell_exited"]

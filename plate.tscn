@@ -1,35 +1,26 @@
-[gd_scene load_steps=6 format=3 uid="uid://d3otf0i44bpmq"]
+[gd_scene load_steps=11 format=3 uid="uid://d3otf0i44bpmq"]
 
 [ext_resource type="Script" uid="uid://d3mwn0wxaesnf" path="res://plate.gd" id="1_g4jty"]
-[ext_resource type="PackedScene" uid="uid://cymj82ljpiu70" path="res://base_cell.tscn" id="1_s5yhh"]
+[ext_resource type="PackedScene" uid="uid://cymj82ljpiu70" path="res://Cells/Tscn file/base_cell.tscn" id="1_s5yhh"]
 [ext_resource type="Texture2D" uid="uid://dt4qdlwv3kaxq" path="res://platecolor.png" id="2_ffgcv"]
+[ext_resource type="Shader" uid="uid://b1kem5k1nhs1q" path="res://Shaders/brightener_plate.gdshader" id="2_nq5sa"]
 [ext_resource type="Script" uid="uid://n2ksox4sau5m" path="res://camera.gd" id="2_uw33f"]
-[ext_resource type="PackedScene" uid="uid://gdetrklijjgh" path="res://photocyte.tscn" id="4_jcf13"]
+[ext_resource type="PackedScene" uid="uid://gdetrklijjgh" path="res://Cells/Tscn file/photocyte.tscn" id="5_ffgcv"]
+[ext_resource type="AudioStream" uid="uid://2uj55rl6jmkp" path="res://Sound and Music/experiment_song.mp3" id="6_072o2"]
+[ext_resource type="AudioStream" uid="uid://c41r6k1d8o0qw" path="res://Sound and Music/place_cell.mp3" id="8_3bkoa"]
+[ext_resource type="PackedScene" uid="uid://t8q6yh1vds1" path="res://ui.tscn" id="9_6v47p"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_3bkoa"]
+shader = ExtResource("2_nq5sa")
+shader_parameter/brightness = 1.0000000475
 
 [node name="plate" type="Node2D"]
 script = ExtResource("1_g4jty")
 
 [node name="Platecolor" type="Sprite2D" parent="."]
 texture_filter = 1
+material = SubResource("ShaderMaterial_3bkoa")
 texture = ExtResource("2_ffgcv")
-
-[node name="Cell" parent="." instance=ExtResource("1_s5yhh")]
-modulate = Color(1, 0, 0, 1)
-position = Vector2(-3, -1)
-
-[node name="Cell2" parent="." instance=ExtResource("1_s5yhh")]
-modulate = Color(0, 1, 0.6333332, 1)
-position = Vector2(14, 1)
-radius = 10
-
-[node name="Cell3" parent="." instance=ExtResource("1_s5yhh")]
-modulate = Color(0, 0.23333359, 1, 1)
-position = Vector2(-15, 14)
-radius = 10
-
-[node name="Cell4" parent="." instance=ExtResource("1_s5yhh")]
-modulate = Color(0, 1, 0.01666665, 1)
-position = Vector2(-34, -18)
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(11, -2)
@@ -37,5 +28,18 @@ script = ExtResource("2_uw33f")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
-[node name="Photocyte" parent="." instance=ExtResource("4_jcf13")]
-position = Vector2(-11, -380)
+[node name="Cell" parent="." instance=ExtResource("1_s5yhh")]
+position = Vector2(22, -79)
+
+[node name="Photocyte" parent="." instance=ExtResource("5_ffgcv")]
+position = Vector2(-306, -351)
+
+[node name="ExperimentMusic" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("6_072o2")
+autoplay = true
+parameters/looping = true
+
+[node name="PlaceCell" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("8_3bkoa")
+
+[node name="UI" parent="." instance=ExtResource("9_6v47p")]

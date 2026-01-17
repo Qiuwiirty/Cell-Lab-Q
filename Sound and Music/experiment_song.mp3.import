@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://2uj55rl6jmkp"
+path="res://.godot/imported/experiment_song.mp3-1a9c748aa8fcf7ff988737d6fa96d3d4.mp3str"
+
+[deps]
+
+source_file="res://Sound and Music/experiment_song.mp3"
+dest_files=["res://.godot/imported/experiment_song.mp3-1a9c748aa8fcf7ff988737d6fa96d3d4.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://c41r6k1d8o0qw"
+path="res://.godot/imported/place_cell.mp3-0da845e5f5f84d13f1cb45f322fa6ea2.mp3str"
+
+[deps]
+
+source_file="res://Sound and Music/place_cell.mp3"
+dest_files=["res://.godot/imported/place_cell.mp3-0da845e5f5f84d13f1cb45f322fa6ea2.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

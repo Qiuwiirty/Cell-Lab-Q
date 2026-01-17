@@ -1,0 +1,21 @@
+#NOTE: This is old inefficient correct size. Should not be used for performance purposes.
+#This *could* be more accurate, but performance is priority
+#func correct_size() -> void:
+	#radius = mass * 4.166666667
+	
+	#var multi = radius / 15.0
+	#$collision.shape.radius = radius
+	#$collision_detector/collison.shape.radius = radius
+	#ORDER: NUCLEUS (first to render), INNIE, OUTIE
+	#$render/outie.mesh.radius = 15.0 * multi
+	#$render/outie.mesh.height = 30.0 * multi
+	
+	#Why reuse the outie's size then modify it?:
+	#Because we want to make an outline effect, and the width size of the outline must stay the same, hence this. Mutiplier will make it different size outline which isn't good
+	#Innie rendered ontop of outie so that's why the outline effect exist
+	#$render/innie.mesh.radius = (15.0 * multi) - 1.5
+	#$render/innie.mesh.height = (30.0 * multi) - 3.0
+	
+	#Nucleus don't change size..
+	#$render/nucleus.mesh.radius = 2.25
+	#$render/nucleus.mesh.height = 4.5
