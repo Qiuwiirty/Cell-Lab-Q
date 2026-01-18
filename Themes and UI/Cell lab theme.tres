@@ -1,0 +1,20 @@
+[gd_resource type="Theme" load_steps=7 format=3 uid="uid://fvn4uh6phepd"]
+
+[ext_resource type="StyleBox" uid="uid://bqyh4ojc783ei" path="res://Themes and UI/CL-green_borders.tres" id="1_rw3ku"]
+[ext_resource type="StyleBox" uid="uid://dcmqsn8dbwr47" path="res://Themes and UI/CL-green_border_down.tres" id="2_mb137"]
+[ext_resource type="StyleBox" uid="uid://d4hl7ibxnxx32" path="res://Themes and UI/CL-green_borders_pressed.tres" id="2_o3jxk"]
+[ext_resource type="StyleBox" uid="uid://5l2oakdcgose" path="res://Themes and UI/CL-popup_menu_panel.tres" id="4_qa05m"]
+[ext_resource type="StyleBox" uid="uid://duing3vl184y5" path="res://Themes and UI/CL-popup_window.tres" id="5_0isgy"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hpcc7"]
+
+[resource]
+Button/styles/hover = ExtResource("1_rw3ku")
+Button/styles/normal = ExtResource("1_rw3ku")
+Button/styles/pressed = ExtResource("2_o3jxk")
+PanelContainer/styles/panel = ExtResource("2_mb137")
+PopupMenu/constants/v_separation = 10
+PopupMenu/styles/hover = SubResource("StyleBoxFlat_hpcc7")
+PopupMenu/styles/panel = ExtResource("4_qa05m")
+Window/colors/title_color = Color(0.9882353, 0.6627451, 0.047058824, 1)
+Window/styles/embedded_border = ExtResource("5_0isgy")

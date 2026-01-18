@@ -9,30 +9,33 @@ uniform sampler2D SCREEN_TEXTURE : hint_screen_texture, filter_linear_mipmap;
 uniform vec2 screen_size;
 
 void fragment() {
-	vec2 uv = SCREEN_UV;
+	if(cell_count != 0)
+	{
+		vec2 uv = SCREEN_UV;
 
-	// aspect correction
-	float aspect = screen_size.x / screen_size.y;
-	uv.x *= aspect;
+		// aspect correction
+		float aspect = screen_size.x / screen_size.y;
+		uv.x *= aspect;
 
-	for (int i = 0; i < MAX_CELL_COUNT; i++) {
-		if (i >= cell_count) break;
+		for (int i = 0; i < MAX_CELL_COUNT; i++) {
+			if (i >= cell_count) break;
 
-		vec2 c = centers[i];
-		c.x *= aspect;
+			vec2 c = centers[i];
+			c.x *= aspect;
 
-		vec2 pos = uv - c;
+			vec2 pos = uv - c;
 
-		float cos_a = cos(-rotations[i]);
-		float sin_a = sin(-rotations[i]);
+			float cos_a = cos(-rotations[i]);
+			float sin_a = sin(-rotations[i]);
 
-		vec2 rotated = vec2(
-			pos.x * cos_a - pos.y * sin_a,
-			pos.x * sin_a + pos.y * cos_a
-		);
+			vec2 rotated = vec2(
+				pos.x * cos_a - pos.y * sin_a,
+				pos.x * sin_a + pos.y * cos_a
+			);
 
-		if (rotated.x > 0.0) {
-			discard;
+			if (rotated.x > 0.0) {
+				discard;
+			}
 		}
 	}
 

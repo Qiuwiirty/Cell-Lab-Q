@@ -4,11 +4,11 @@
 [ext_resource type="PackedScene" uid="uid://cymj82ljpiu70" path="res://Cells/Tscn file/base_cell.tscn" id="1_s5yhh"]
 [ext_resource type="Texture2D" uid="uid://dt4qdlwv3kaxq" path="res://platecolor.png" id="2_ffgcv"]
 [ext_resource type="Shader" uid="uid://b1kem5k1nhs1q" path="res://Shaders/brightener_plate.gdshader" id="2_nq5sa"]
-[ext_resource type="Script" uid="uid://n2ksox4sau5m" path="res://camera.gd" id="2_uw33f"]
-[ext_resource type="PackedScene" uid="uid://gdetrklijjgh" path="res://Cells/Tscn file/photocyte.tscn" id="5_ffgcv"]
+[ext_resource type="Script" uid="uid://n2ksox4sau5m" path="res://Misc/camera.gd" id="2_uw33f"]
+[ext_resource type="PackedScene" uid="uid://sy8jnyx6hyux" path="res://Cells/Tscn file/photocyte.tscn" id="5_ffgcv"]
 [ext_resource type="AudioStream" uid="uid://2uj55rl6jmkp" path="res://Sound and Music/experiment_song.mp3" id="6_072o2"]
 [ext_resource type="AudioStream" uid="uid://c41r6k1d8o0qw" path="res://Sound and Music/place_cell.mp3" id="8_3bkoa"]
-[ext_resource type="PackedScene" uid="uid://t8q6yh1vds1" path="res://ui.tscn" id="9_6v47p"]
+[ext_resource type="PackedScene" uid="uid://t8q6yh1vds1" path="res://Themes and UI/ui.tscn" id="9_6v47p"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_3bkoa"]
 shader = ExtResource("2_nq5sa")
@@ -30,9 +30,12 @@ script = ExtResource("2_uw33f")
 
 [node name="Cell" parent="." instance=ExtResource("1_s5yhh")]
 position = Vector2(22, -79)
+color = Color(1, 0.050000012, 0.050000012, 1)
 
 [node name="Photocyte" parent="." instance=ExtResource("5_ffgcv")]
-position = Vector2(-306, -351)
+position = Vector2(-66, -280)
+input_pickable = false
+color = Color(0.52, 1, 0.89599997, 1)
 
 [node name="ExperimentMusic" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("6_072o2")

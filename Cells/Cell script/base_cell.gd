@@ -1,15 +1,30 @@
 extends CharacterBody2D
 class_name BaseCell
+const split_audio = preload("uid://c2ncgpkfynhkk")
 #These variables contain current collision with cells' position, and angle
 var colliding_cells: Array[Node2D]
 @export var radius = 15
-@export var mass = 3.6
+@export var mass = 2.88
+@export var color = Color(1.0,1.0,1.0)
 @export var energy_loss_coefficient = 1
 
+var is_colliding = false
+var is_visible_on_screen = false
 const MASS_EPSILON := 0.01
 var last_mass = mass
 
+#This is for performance purposes to decrease processes of cell that are not in screen (by 50%)
+var OFFSCREEN_STEP := 1.0 / (Engine.get_frames_per_second() / 2)  # Half of FPS
+var offscreen_accum := 0.0
+
+const drag_speed := 25.0
+
+var mouse_over := false
+var dragging := false
+var drag_offset := Vector2.ZERO
 func _ready() -> void:
+	$render.modulate = color
+	correct_size()
 	$render.material = $render.material.duplicate()
 	$render/outie.mesh = $render/outie.mesh.duplicate()
 	$render/innie.mesh = $render/innie.mesh.duplicate()
@@ -17,18 +32,57 @@ func _ready() -> void:
 	$collision.shape = $collision.shape.duplicate()
 	$collision_detector/collison.shape = $collision_detector/collison.shape.duplicate()
 func _physics_process(delta: float) -> void:
+	# Always accumulate time
+	offscreen_accum += delta
+	if $render.modulate != color:
+		$render.modulate = lerp($render.modulate, color, 0.1)
+	if dragging:
+		var target := get_global_mouse_position() + drag_offset
+		velocity = (target - global_position) * drag_speed
+		
+	# Decide update frequency
+	var do_full_update := is_visible_on_screen or offscreen_accum >= OFFSCREEN_STEP
+	if !do_full_update:
+		return
+
+	if !is_visible_on_screen:
+		offscreen_accum = 0.0
 	metabolism(delta)
 	if abs(mass - last_mass) > MASS_EPSILON:
 		correct_size()
 		last_mass = mass
 	#global_position += velocity * delta #Move the cell
 	var collision = move_and_collide(velocity, true) #Second argument is true for 'test_only' to prevent move_and_collide make its own movement
-	create_voronoi_effect()
+	if is_colliding and is_visible_on_screen:
+		if !colliding_cells.is_empty():
+			create_voronoi_effect()
+		else:
+			#Disable shader if no collision
+			$render.material.set_shader_parameter("cell_count", 0)
+			is_colliding = false
 	if collision:
 		#Apply basic collision
 		velocity += collision.get_normal() * collision.get_depth() * 10
 	velocity *= pow(0.9, delta * 60.0) #Apply simple damping
 	global_position += velocity * delta
+func _input(event):
+	match get_parent().mode:
+		Game.ToolSelector.OPTICAL_TWEEZERS:
+			if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
+				if event.pressed and mouse_over:
+					dragging = true
+					drag_offset = global_position - get_global_mouse_position()
+				elif not event.pressed:
+					dragging = false
+		Game.ToolSelector.CELL_BOOST:
+			if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and mouse_over and event.is_pressed():
+				$render.modulate = Color(1, 0, 1)
+				mass = 3.6
+				play_split_sound()
+		Game.ToolSelector.CELL_REMOVAL:
+			if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and mouse_over and event.is_pressed():
+				play_split_sound()
+				die()
 #region To get the position for the shader
 func get_midpoint_intersection(c2: Vector2, r2: float) -> Vector2:
 	var d := global_position.distance_to(c2)
@@ -61,9 +115,10 @@ func world_to_screen_uv(world_pos: Vector2) -> Vector2:
 func create_voronoi_effect() -> void:
 	var positions := PackedVector2Array()
 	var angles := PackedFloat32Array()
-
 	for cell in colliding_cells:
 		var midpoint = get_midpoint_intersection(cell.global_position, cell.get_parent().radius)
+		if midpoint == Vector2.ZERO:
+			return
 		positions.append(world_to_screen_uv(midpoint))
 		angles.append(get_angle_to(cell.global_position))
 
@@ -79,7 +134,6 @@ func create_voronoi_effect() -> void:
 func metabolism(delta):
 	var alpha = 0.021614
 	var beta = 0.161532
-
 	var metabolic = -energy_loss_coefficient \
 		* (1.0778 - Game.salinity) \
 		* (alpha * sqrt(mass) + beta)
@@ -113,10 +167,33 @@ func correct_size():
 	#Nucleus don't change size..
 func die():
 	queue_free()
+
+func play_split_sound():
+	var sfx := AudioStreamPlayer2D.new()
+	sfx.stream = split_audio
+	get_parent().add_child(sfx)
+	sfx.play()
+	sfx.finished.connect(sfx.queue_free)
+
 #endregion
 #region Node signal
 func _cell_entered(area: Area2D) -> void:
+	is_colliding = true
 	colliding_cells.append(area)
 func _cell_exited(area: Area2D) -> void:
+	if colliding_cells.size() == 1:
+		$render.material.set_shader_parameter("cell_count", 0)
 	colliding_cells.erase(area)
+#Optimization method to perform less when not on screen
+func _screen_entered_notifier() -> void:
+	is_visible_on_screen = true
+	$render.show()
+func _screen_exited_notifier() -> void:
+	is_visible_on_screen = false
+	$render.hide()
+func _on_mouse_entered() -> void:
+	mouse_over = true
+
+func _on_mouse_exited() -> void:
+	mouse_over = false
 #endregion

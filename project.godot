@@ -17,7 +17,7 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-Game="*res://Misc/GAME.gd"
+Game="*res://Misc/Game.gd"
 
 [file_customization]
 
@@ -27,7 +27,8 @@ folder_colors={
 "res://Cells/Tscn file/": "yellow",
 "res://Images/": "purple",
 "res://Shaders/": "green",
-"res://Sound and Music/": "pink"
+"res://Sound and Music/": "pink",
+"res://Themes and UI/": "blue"
 }
 
 [global_group]

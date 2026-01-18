@@ -1,0 +1,137 @@
+[gd_scene load_steps=17 format=3 uid="uid://t8q6yh1vds1"]
+
+[ext_resource type="Script" uid="uid://drc6d5377hh6s" path="res://top_panel.gd" id="1_27fn8"]
+[ext_resource type="Texture2D" uid="uid://bpcq56t1hw2oo" path="res://Images/Medium Resolution/plate_clear.png" id="1_fyqef"]
+[ext_resource type="Theme" uid="uid://fvn4uh6phepd" path="res://Themes and UI/Cell lab theme.tres" id="1_kgo6r"]
+[ext_resource type="Texture2D" uid="uid://byr8slrftdr2n" path="res://Images/Medium Resolution/tool_cell.png" id="3_io14d"]
+[ext_resource type="AudioStream" uid="uid://bghu28q6hm0ps" path="res://Sound and Music/sterilize.mp3" id="3_nltto"]
+[ext_resource type="AudioStream" uid="uid://by13o1owlvyen" path="res://Sound and Music/button.mp3" id="6_744nn"]
+[ext_resource type="Texture2D" uid="uid://6md56mn5ckjp" path="res://Images/Medium Resolution/temp_medium.png" id="6_vdokl"]
+[ext_resource type="Texture2D" uid="uid://bs57ivkpqnsjj" path="res://Images/Medium Resolution/tool_move.png" id="7_wdy31"]
+[ext_resource type="Texture2D" uid="uid://b7eex3xh62xi7" path="res://Images/Medium Resolution/tool_add.png" id="8_uqsdy"]
+[ext_resource type="Texture2D" uid="uid://cw11ewl5y6str" path="res://Images/Medium Resolution/tool_remove.png" id="9_vdokl"]
+[ext_resource type="Texture2D" uid="uid://cxf7ocmrdrqxk" path="res://Images/Medium Resolution/tool_info.png" id="10_thxy1"]
+[ext_resource type="Texture2D" uid="uid://4f2i66tbqreo" path="res://Images/Medium Resolution/temp_low.png" id="11_7jnlg"]
+[ext_resource type="AudioStream" uid="uid://cmaqwx5ybye08" path="res://Sound and Music/button2.mp3" id="12_uqsdy"]
+[ext_resource type="Texture2D" uid="uid://p5fmju3af5d7" path="res://Images/Medium Resolution/temp_slow.png" id="12_whbqe"]
+[ext_resource type="Texture2D" uid="uid://b6ufgmpe3a6a0" path="res://Images/cellabimage.webp" id="13_thxy1"]
+[ext_resource type="Texture2D" uid="uid://dg2wqbvy11mos" path="res://Images/Medium Resolution/temp_high.png" id="13_ux5x0"]
+
+[node name="UI" type="CanvasLayer"]
+
+[node name="SterilizeRectEffect" type="ColorRect" parent="."]
+visible = false
+modulate = Color(1, 1, 1, 0.5137255)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TopPanel" type="PanelContainer" parent="."]
+anchors_preset = 10
+anchor_right = 1.0
+theme = ExtResource("1_kgo6r")
+script = ExtResource("1_27fn8")
+
+[node name="Margin" type="MarginContainer" parent="TopPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 6
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="Hbox" type="HBoxContainer" parent="TopPanel/Margin"]
+layout_mode = 2
+alignment = 2
+
+[node name="SterilizeButton" type="Button" parent="TopPanel/Margin/Hbox"]
+layout_mode = 2
+icon = ExtResource("1_fyqef")
+
+[node name="Sterilize" type="AudioStreamPlayer" parent="TopPanel/Margin/Hbox/SterilizeButton"]
+stream = ExtResource("3_nltto")
+
+[node name="ToolSelector" type="Button" parent="TopPanel/Margin/Hbox"]
+layout_mode = 2
+icon = ExtResource("3_io14d")
+
+[node name="TemperatureButton" type="Button" parent="TopPanel/Margin/Hbox"]
+layout_mode = 2
+icon = ExtResource("6_vdokl")
+
+[node name="SelectTool" type="PopupMenu" parent="."]
+oversampling_override = 1.0
+title = "Select Tool"
+initial_position = 1
+size = Vector2i(198, 226)
+borderless = false
+theme = ExtResource("1_kgo6r")
+item_count = 9
+item_0/text = "Cell synthesizer"
+item_0/icon = ExtResource("3_io14d")
+item_0/id = 0
+item_1/id = 5
+item_1/separator = true
+item_2/text = "Optical tweezers"
+item_2/icon = ExtResource("7_wdy31")
+item_2/id = 1
+item_3/id = 7
+item_3/separator = true
+item_4/text = "Cell boost"
+item_4/icon = ExtResource("8_uqsdy")
+item_4/id = 2
+item_5/id = 6
+item_5/separator = true
+item_6/text = "Cell removal"
+item_6/icon = ExtResource("9_vdokl")
+item_6/id = 3
+item_7/id = 8
+item_7/separator = true
+item_8/text = "Cell diagnostics"
+item_8/icon = ExtResource("10_thxy1")
+item_8/id = 4
+
+[node name="SubstrateTemperature" type="PopupMenu" parent="."]
+oversampling_override = 1.0
+title = "Substrate Temperature"
+initial_position = 1
+size = Vector2i(235, 190)
+borderless = false
+theme = ExtResource("1_kgo6r")
+item_count = 7
+item_0/text = "Freeze"
+item_0/icon = ExtResource("11_7jnlg")
+item_0/id = 0
+item_1/id = 5
+item_1/separator = true
+item_2/text = "Slow observe"
+item_2/icon = ExtResource("12_whbqe")
+item_2/id = 1
+item_3/id = 7
+item_3/separator = true
+item_4/text = "Observe"
+item_4/icon = ExtResource("6_vdokl")
+item_4/id = 2
+item_5/id = 6
+item_5/separator = true
+item_6/text = "Incubate"
+item_6/icon = ExtResource("13_ux5x0")
+item_6/id = 3
+
+[node name="ButtonClick" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("6_744nn")
+
+[node name="ButtonClick2" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("12_uqsdy")
+
+[node name="Cellabimage" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(981, 554)
+texture = ExtResource("13_thxy1")
+
+[connection signal="button_up" from="TopPanel/Margin/Hbox/SterilizeButton" to="TopPanel" method="_on_sterilize_button_up"]
+[connection signal="button_up" from="TopPanel/Margin/Hbox/ToolSelector" to="TopPanel" method="_on_tool_selector_button_up"]
+[connection signal="button_up" from="TopPanel/Margin/Hbox/TemperatureButton" to="TopPanel" method="_on_temperature_button_up"]
+[connection signal="id_pressed" from="SelectTool" to="TopPanel" method="_on_select_tool_pressed"]
+[connection signal="id_pressed" from="SubstrateTemperature" to="TopPanel" method="_on_substrate_temperature_id_pressed"]
