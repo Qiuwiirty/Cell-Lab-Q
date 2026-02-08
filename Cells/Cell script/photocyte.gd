@@ -19,7 +19,9 @@ func _ready():
 func _physics_process(delta: float) -> void:
 	super(delta)
 	#Photosynthesis
-	mass += get_brightness() * Game.brightness_mult * delta
+	#Delta must be mutlipied with timescale_modifier because the super(delta) does not carry any modification to delta and need to perform again to be consistent
+	#Else, photocyte may rapidly dying or immortal if not using time scale modifier
+	mass += get_brightness() * Game.brightness_mult * (delta / timescale_modifier())
 func get_brightness() -> float:
 	var local_pos: Vector2 = $"../Platecolor".to_local(global_position)
 
@@ -28,8 +30,8 @@ func get_brightness() -> float:
 	#check if pixel are out of bounds
 	if (pixel_x >= width or pixel_x < 0) or (pixel_y >= height or pixel_y < 0):
 		return 0.0
-	var color := get_pixel_rgb8(pixel_x, pixel_y)
-	return color.a
+	var colorpx := get_pixel_rgb8(pixel_x, pixel_y)
+	return colorpx.a
 
 func get_pixel_rgb8(
 		x: int,

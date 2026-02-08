@@ -1,5 +1,6 @@
 shader_type canvas_item;
-//MAKE VORONOI EFFECT CELLS! (Cell are just simple circle with radius of 20x20)
+//MAKE VORONOI EFFECT CELLS! (Cell are just simple circle with radius of 15)
+//For each cell assign this shader
 const int MAX_CELL_COUNT = 8; //Maximum the voronoi this cell can handle (Usually 8)
 
 uniform int cell_count = 0; //Current count collision with cells for the loops
@@ -38,6 +39,6 @@ void fragment() {
 			}
 		}
 	}
-
+	//Literally just copy the background and then render it. Inefficient and NEED TO BE CHANGED
 	COLOR = texture(SCREEN_TEXTURE, SCREEN_UV);
 }

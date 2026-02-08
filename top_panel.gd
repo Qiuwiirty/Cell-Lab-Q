@@ -62,6 +62,7 @@ func _on_substrate_temperature_id_pressed(id: int) -> void:
 	if plate is not Plate:
 		print("The plate is incorrect and unable to change temperature. ", "The plate simply did not exist" if !plate else "The name of the incorrect object is: " + plate.name)
 		return
+	plate.change_substrate_temperature(id)
 	match id:
 		Game.SubstrateTemperature.FREEZE:
 			$Margin/Hbox/TemperatureButton.icon = FREEZE

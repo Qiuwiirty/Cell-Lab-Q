@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://t8q6yh1vds1"]
+[gd_scene load_steps=16 format=3 uid="uid://t8q6yh1vds1"]
 
 [ext_resource type="Script" uid="uid://drc6d5377hh6s" path="res://top_panel.gd" id="1_27fn8"]
 [ext_resource type="Texture2D" uid="uid://bpcq56t1hw2oo" path="res://Images/Medium Resolution/plate_clear.png" id="1_fyqef"]
@@ -14,7 +14,6 @@
 [ext_resource type="Texture2D" uid="uid://4f2i66tbqreo" path="res://Images/Medium Resolution/temp_low.png" id="11_7jnlg"]
 [ext_resource type="AudioStream" uid="uid://cmaqwx5ybye08" path="res://Sound and Music/button2.mp3" id="12_uqsdy"]
 [ext_resource type="Texture2D" uid="uid://p5fmju3af5d7" path="res://Images/Medium Resolution/temp_slow.png" id="12_whbqe"]
-[ext_resource type="Texture2D" uid="uid://b6ufgmpe3a6a0" path="res://Images/cellabimage.webp" id="13_thxy1"]
 [ext_resource type="Texture2D" uid="uid://dg2wqbvy11mos" path="res://Images/Medium Resolution/temp_high.png" id="13_ux5x0"]
 
 [node name="UI" type="CanvasLayer"]
@@ -124,11 +123,6 @@ stream = ExtResource("6_744nn")
 
 [node name="ButtonClick2" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("12_uqsdy")
-
-[node name="Cellabimage" type="Sprite2D" parent="."]
-visible = false
-position = Vector2(981, 554)
-texture = ExtResource("13_thxy1")
 
 [connection signal="button_up" from="TopPanel/Margin/Hbox/SterilizeButton" to="TopPanel" method="_on_sterilize_button_up"]
 [connection signal="button_up" from="TopPanel/Margin/Hbox/ToolSelector" to="TopPanel" method="_on_tool_selector_button_up"]

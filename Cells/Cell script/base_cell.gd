@@ -9,13 +9,9 @@ var colliding_cells: Array[Node2D]
 @export var energy_loss_coefficient = 1
 
 var is_colliding = false
-var is_visible_on_screen = false
+var visible_on_screen = false
 const MASS_EPSILON := 0.01
 var last_mass = mass
-
-#This is for performance purposes to decrease processes of cell that are not in screen (by 50%)
-var OFFSCREEN_STEP := 1.0 / (Engine.get_frames_per_second() / 2)  # Half of FPS
-var offscreen_accum := 0.0
 
 const drag_speed := 25.0
 
@@ -23,6 +19,8 @@ var mouse_over := false
 var dragging := false
 var drag_offset := Vector2.ZERO
 func _ready() -> void:
+	
+	set_physics_process(false if Game.temperature == Game.SubstrateTemperature.FREEZE else true)
 	$render.modulate = color
 	correct_size()
 	$render.material = $render.material.duplicate()
@@ -32,28 +30,27 @@ func _ready() -> void:
 	$collision.shape = $collision.shape.duplicate()
 	$collision_detector/collison.shape = $collision_detector/collison.shape.duplicate()
 func _physics_process(delta: float) -> void:
-	# Always accumulate time
-	offscreen_accum += delta
+	#If substrate is freezing prevent cell from doing anything
+	if Game.temperature == Game.SubstrateTemperature.FREEZE:
+		return
+	#This will adjust according to temperature to speed/slow down the game
+	delta /= timescale_modifier()
+	#Change the modified color into its currect color
 	if $render.modulate != color:
-		$render.modulate = lerp($render.modulate, color, 0.1)
+		$render.modulate = lerp($render.modulate, color, 3.5 * delta)
+	
 	if dragging:
 		var target := get_global_mouse_position() + drag_offset
 		velocity = (target - global_position) * drag_speed
-		
-	# Decide update frequency
-	var do_full_update := is_visible_on_screen or offscreen_accum >= OFFSCREEN_STEP
-	if !do_full_update:
-		return
 
-	if !is_visible_on_screen:
-		offscreen_accum = 0.0
 	metabolism(delta)
+	#The epsilon here basically function to update when the difference is noticeable
 	if abs(mass - last_mass) > MASS_EPSILON:
 		correct_size()
 		last_mass = mass
 	#global_position += velocity * delta #Move the cell
 	var collision = move_and_collide(velocity, true) #Second argument is true for 'test_only' to prevent move_and_collide make its own movement
-	if is_colliding and is_visible_on_screen:
+	if is_colliding and visible_on_screen and Game.use_voronoi:
 		if !colliding_cells.is_empty():
 			create_voronoi_effect()
 		else:
@@ -177,6 +174,7 @@ func play_split_sound():
 
 #endregion
 #region Node signal
+#This is for voronoi purposes
 func _cell_entered(area: Area2D) -> void:
 	is_colliding = true
 	colliding_cells.append(area)
@@ -186,14 +184,28 @@ func _cell_exited(area: Area2D) -> void:
 	colliding_cells.erase(area)
 #Optimization method to perform less when not on screen
 func _screen_entered_notifier() -> void:
-	is_visible_on_screen = true
+	visible_on_screen = true
 	$render.show()
 func _screen_exited_notifier() -> void:
-	is_visible_on_screen = false
+	visible_on_screen = false
 	$render.hide()
+	
+#This is for dragging purposes
 func _on_mouse_entered() -> void:
 	mouse_over = true
 
 func _on_mouse_exited() -> void:
 	mouse_over = false
 #endregion
+
+func timescale_modifier() -> float:
+	match Game.temperature:
+		Game.SubstrateTemperature.SLOW_OBSERVE:
+			return 1000
+		Game.SubstrateTemperature.OBSERVE:
+			return 1
+		Game.SubstrateTemperature.INCUBATE:
+			return 0.01
+		_:
+			print('No valid game.temperature')
+			return 1

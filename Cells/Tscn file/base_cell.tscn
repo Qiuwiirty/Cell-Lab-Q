@@ -20,23 +20,31 @@ shader_parameter/screen_size = Vector2(0, 0)
 [sub_resource type="SphereMesh" id="SphereMesh_gwrgs"]
 radius = 15.0
 height = 30.0
+radial_segments = 4
+rings = 24
 
 [sub_resource type="SphereMesh" id="SphereMesh_2yjhv"]
 radius = 15.0
 height = 30.0
+radial_segments = 4
+rings = 24
 
 [sub_resource type="SphereMesh" id="SphereMesh_7c3yk"]
 radius = 2.25
 height = 4.5
+radial_segments = 4
+rings = 24
 
 [node name="Cell" type="CharacterBody2D" groups=["Cells"]]
 input_pickable = true
 script = ExtResource("1_gwrgs")
 
 [node name="collision" type="CollisionShape2D" parent="."]
+visible = false
 shape = SubResource("CircleShape2D_14hpr")
 
 [node name="collision_detector" type="Area2D" parent="."]
+visible = false
 
 [node name="collison" type="CollisionShape2D" parent="collision_detector"]
 shape = SubResource("CircleShape2D_c72ge")

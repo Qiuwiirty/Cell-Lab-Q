@@ -22,3 +22,9 @@ func _unhandled_input(event: InputEvent) -> void:
 		var delta = event.position - last_mouse_pos
 		global_position -= (delta / zoom)
 		last_mouse_pos = event.position
+		
+func _process(delta: float) -> void:
+	#Do basic movement. Usually can drag-to-move but if that's not viable WASD is an option
+	var direction = Input.get_vector("a", "d", "w", "s")
+	#zoom.x = zoom.y. I just picked one because it won't accept vec2
+	global_position += (direction * 500 * delta) / zoom.x

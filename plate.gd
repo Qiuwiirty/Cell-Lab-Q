@@ -30,3 +30,14 @@ func sterilize():
 			object.queue_free()
 func change_tool(into: Game.ToolSelector):
 	mode = into
+func change_substrate_temperature(into: Game.SubstrateTemperature):
+	Game.temperature = into
+	match into:
+		Game.SubstrateTemperature.FREEZE:
+			pass
+		Game.SubstrateTemperature.SLOW_OBSERVE:
+			pass
+		Game.SubstrateTemperature.OBSERVE:
+			pass
+		Game.SubstrateTemperature.INCUBATE:
+			pass
