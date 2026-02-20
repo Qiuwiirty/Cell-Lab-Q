@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dpuiru35vknq5"
-path="res://.godot/imported/green floaters.png-9abb5e3532b485dcff1d8cf4241990d6.ctex"
+uid="uid://p02py6a2e6d"
+path="res://.godot/imported/basic_polygon2d.svg-b6792c11045b9532db9bc4c159f67a6e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://green floaters.png"
-dest_files=["res://.godot/imported/green floaters.png-9abb5e3532b485dcff1d8cf4241990d6.ctex"]
+source_file="res://addons/basic_shape_creation/basic_polygon2d/basic_polygon2d.svg"
+dest_files=["res://.godot/imported/basic_polygon2d.svg-b6792c11045b9532db9bc4c159f67a6e.ctex"]
 
 [params]
 
@@ -38,3 +38,6 @@ process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
 detect_3d/compress_to=1
+svg/scale=1.0
+editor/scale_with_editor_scale=false
+editor/convert_colors_with_editor_theme=false

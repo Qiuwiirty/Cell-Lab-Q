@@ -16,7 +16,7 @@ func _ready():
 	data = img.get_data()
 	super()
 	energy_loss_coefficient = 2
-func _physics_process(delta: float) -> void:
+func _process(delta: float) -> void:
 	super(delta)
 	#Photosynthesis
 	#Delta must be mutlipied with timescale_modifier because the super(delta) does not carry any modification to delta and need to perform again to be consistent
@@ -44,7 +44,3 @@ func get_pixel_rgb8(
 		data[idx + 2] / 255.0,
 		data[idx + 3] / 255.0
 	)
-
-func correct_size() -> void:
-	super()
-	$render/green_floaters.scale = Vector2(0.029 * (radius / 15), 0.029 * (radius / 15))

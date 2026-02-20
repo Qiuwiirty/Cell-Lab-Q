@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=4 uid="uid://d3otf0i44bpmq"]
+[gd_scene format=3 uid="uid://d3otf0i44bpmq"]
 
 [ext_resource type="Script" uid="uid://d3mwn0wxaesnf" path="res://plate.gd" id="1_g4jty"]
 [ext_resource type="Texture2D" uid="uid://dt4qdlwv3kaxq" path="res://platecolor.png" id="2_ffgcv"]
@@ -7,55 +7,50 @@
 [ext_resource type="PackedScene" uid="uid://sy8jnyx6hyux" path="res://Cells/Tscn file/photocyte.tscn" id="5_ffgcv"]
 [ext_resource type="AudioStream" uid="uid://2uj55rl6jmkp" path="res://Sound and Music/experiment_song.mp3" id="6_072o2"]
 [ext_resource type="AudioStream" uid="uid://c41r6k1d8o0qw" path="res://Sound and Music/place_cell.mp3" id="8_3bkoa"]
+[ext_resource type="AudioStream" uid="uid://bksrijmu5s6d7" path="res://Sound and Music/invalid.mp3" id="8_dhtvl"]
 [ext_resource type="PackedScene" uid="uid://t8q6yh1vds1" path="res://Themes and UI/ui.tscn" id="9_6v47p"]
-[ext_resource type="Shader" uid="uid://cqi0c851h2qyp" path="res://Themes and UI/plate_render.gdshader" id="9_dhtvl"]
-[ext_resource type="Texture2D" uid="uid://dpuiru35vknq5" path="res://green floaters.png" id="10_dhtvl"]
+[ext_resource type="PackedScene" uid="uid://bcp4xdxc828fp" path="res://Misc/food.tscn" id="9_dhtvl"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_3bkoa"]
 shader = ExtResource("2_nq5sa")
 shader_parameter/brightness = 1.0000000475
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_6v47p"]
-shader = ExtResource("9_dhtvl")
-shader_parameter/u_green_floaters = ExtResource("10_dhtvl")
-shader_parameter/u_cells = PackedVector2Array(-76.245, -38.52, 45.14, 0, 0, 0, 0, 0)
-shader_parameter/u_colors = PackedVector3Array(0.96, 0.685, 0.955, 1.455, 0, 0, 0, 0, 0, 0, 0, 0)
-shader_parameter/u_radii = PackedFloat32Array(15.745, 15.475, 0, 0)
-shader_parameter/u_deco_rects = PackedVector4Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-
-[sub_resource type="QuadMesh" id="QuadMesh_dhtvl"]
-size = Vector2(1000, 1000)
-
-[node name="plate" type="Node2D"]
+[node name="plate" type="Node2D" unique_id=1644472444]
 script = ExtResource("1_g4jty")
 
-[node name="Platecolor" type="Sprite2D" parent="."]
+[node name="Platecolor" type="Sprite2D" parent="." unique_id=538529407]
 texture_filter = 1
 material = SubResource("ShaderMaterial_3bkoa")
 texture = ExtResource("2_ffgcv")
 
-[node name="Camera2D" type="Camera2D" parent="."]
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1753112691]
 position = Vector2(11, -2)
 script = ExtResource("2_uw33f")
 
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1854900875]
 
-[node name="Photocyte" parent="." instance=ExtResource("5_ffgcv")]
+[node name="Photocyte" parent="." unique_id=48401722 instance=ExtResource("5_ffgcv")]
+z_index = 0
 position = Vector2(-116, -184)
 input_pickable = false
+mass = 2.89
 color = Color(0.52, 1, 0.89599997, 1)
 
-[node name="ExperimentMusic" type="AudioStreamPlayer" parent="."]
+[node name="ExperimentMusic" type="AudioStreamPlayer" parent="." unique_id=954310468]
 stream = ExtResource("6_072o2")
 autoplay = true
 parameters/looping = true
 
-[node name="PlaceCell" type="AudioStreamPlayer" parent="."]
+[node name="PlaceCell" type="AudioStreamPlayer" parent="." unique_id=1685860252]
 stream = ExtResource("8_3bkoa")
 
-[node name="UI" parent="." instance=ExtResource("9_6v47p")]
+[node name="Invalid" type="AudioStreamPlayer" parent="." unique_id=1839779609]
+stream = ExtResource("8_dhtvl")
 
-[node name="render" type="MeshInstance2D" parent="."]
-texture_filter = 1
-material = SubResource("ShaderMaterial_6v47p")
-mesh = SubResource("QuadMesh_dhtvl")
+[node name="UI" parent="." unique_id=1839804217 instance=ExtResource("9_6v47p")]
+
+[node name="food" parent="." unique_id=511852752 instance=ExtResource("9_dhtvl")]
+position = Vector2(-94, -187)
+
+[node name="food2" parent="." unique_id=1055725112 instance=ExtResource("9_dhtvl")]
+position = Vector2(-93, -185)

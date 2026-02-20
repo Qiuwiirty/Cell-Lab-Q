@@ -28,7 +28,7 @@ func _on_sterilize_button_up() -> void:
 
 func _on_tool_selector_button_up() -> void:
 	$"../ButtonClick".play()
-	$"../SelectTool".popup_centered()
+	$"../select_tool_custom".open()
 
 func _on_select_tool_pressed(id: int) -> void:
 	$"../ButtonClick2".play()
@@ -55,7 +55,7 @@ func _on_select_tool_pressed(id: int) -> void:
 
 func _on_temperature_button_up() -> void:
 	$"../ButtonClick".play()
-	$"../SubstrateTemperature".popup_centered()
+	$"../substrate_temperature".open()
 
 func _on_substrate_temperature_id_pressed(id: int) -> void:
 	$"../ButtonClick2".play()

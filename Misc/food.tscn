@@ -1,0 +1,24 @@
+[gd_scene format=3 uid="uid://bcp4xdxc828fp"]
+
+[ext_resource type="Script" uid="uid://osm18164bn14" path="res://Misc/food.gd" id="1_w5fg3"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_w5fg3"]
+radius = 2.0
+
+[sub_resource type="SphereMesh" id="SphereMesh_wfg33"]
+radius = 2.0
+height = 4.0
+radial_segments = 4
+
+[node name="food" type="RigidBody2D" unique_id=511852752 groups=["food"]]
+gravity_scale = 0.0
+freeze = true
+script = ExtResource("1_w5fg3")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=651854270]
+visible = false
+shape = SubResource("CircleShape2D_w5fg3")
+
+[node name="MeshInstance2D" type="MeshInstance2D" parent="." unique_id=782409542]
+modulate = Color(1, 0.67058825, 0.54509807, 0.3647059)
+mesh = SubResource("SphereMesh_wfg33")

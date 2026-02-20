@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dpuiru35vknq5"
-path="res://.godot/imported/green floaters.png-9abb5e3532b485dcff1d8cf4241990d6.ctex"
+uid="uid://d0sa6f3acvv5s"
+path="res://.godot/imported/foodscellabscreenshot.webp-469702ef475108eaf9b1a9ebc3bfc649.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://green floaters.png"
-dest_files=["res://.godot/imported/green floaters.png-9abb5e3532b485dcff1d8cf4241990d6.ctex"]
+source_file="res://Images/foodscellabscreenshot.webp"
+dest_files=["res://.godot/imported/foodscellabscreenshot.webp-469702ef475108eaf9b1a9ebc3bfc649.ctex"]
 
 [params]
 

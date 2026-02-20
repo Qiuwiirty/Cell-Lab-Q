@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://t8q6yh1vds1"]
+[gd_scene format=3 uid="uid://t8q6yh1vds1"]
 
 [ext_resource type="Script" uid="uid://drc6d5377hh6s" path="res://top_panel.gd" id="1_27fn8"]
 [ext_resource type="Texture2D" uid="uid://bpcq56t1hw2oo" path="res://Images/Medium Resolution/plate_clear.png" id="1_fyqef"]
@@ -15,10 +15,13 @@
 [ext_resource type="AudioStream" uid="uid://cmaqwx5ybye08" path="res://Sound and Music/button2.mp3" id="12_uqsdy"]
 [ext_resource type="Texture2D" uid="uid://p5fmju3af5d7" path="res://Images/Medium Resolution/temp_slow.png" id="12_whbqe"]
 [ext_resource type="Texture2D" uid="uid://dg2wqbvy11mos" path="res://Images/Medium Resolution/temp_high.png" id="13_ux5x0"]
+[ext_resource type="PackedScene" uid="uid://dik8va5bopm7k" path="res://substrate_temperature_custom.tscn" id="16_7jnlg"]
+[ext_resource type="PackedScene" uid="uid://6pbpc7ipi8lr" path="res://Themes and UI/select_tool_custom.tscn" id="17_whbqe"]
 
-[node name="UI" type="CanvasLayer"]
+[node name="UI" type="CanvasLayer" unique_id=103741496]
+editor_description = "This node intended to placed inside plate. Otherwise it might not worked.."
 
-[node name="SterilizeRectEffect" type="ColorRect" parent="."]
+[node name="SterilizeRectEffect" type="ColorRect" parent="." unique_id=254949671]
 visible = false
 modulate = Color(1, 1, 1, 0.5137255)
 anchors_preset = 15
@@ -27,39 +30,39 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="TopPanel" type="PanelContainer" parent="."]
+[node name="TopPanel" type="PanelContainer" parent="." unique_id=1965734401]
 anchors_preset = 10
 anchor_right = 1.0
 theme = ExtResource("1_kgo6r")
 script = ExtResource("1_27fn8")
 
-[node name="Margin" type="MarginContainer" parent="TopPanel"]
+[node name="Margin" type="MarginContainer" parent="TopPanel" unique_id=1960655779]
 layout_mode = 2
 theme_override_constants/margin_left = 6
 theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="Hbox" type="HBoxContainer" parent="TopPanel/Margin"]
+[node name="Hbox" type="HBoxContainer" parent="TopPanel/Margin" unique_id=201567568]
 layout_mode = 2
 alignment = 2
 
-[node name="SterilizeButton" type="Button" parent="TopPanel/Margin/Hbox"]
+[node name="SterilizeButton" type="Button" parent="TopPanel/Margin/Hbox" unique_id=1244950504]
 layout_mode = 2
 icon = ExtResource("1_fyqef")
 
-[node name="Sterilize" type="AudioStreamPlayer" parent="TopPanel/Margin/Hbox/SterilizeButton"]
+[node name="Sterilize" type="AudioStreamPlayer" parent="TopPanel/Margin/Hbox/SterilizeButton" unique_id=1745851861]
 stream = ExtResource("3_nltto")
 
-[node name="ToolSelector" type="Button" parent="TopPanel/Margin/Hbox"]
+[node name="ToolSelector" type="Button" parent="TopPanel/Margin/Hbox" unique_id=1704013642]
 layout_mode = 2
 icon = ExtResource("3_io14d")
 
-[node name="TemperatureButton" type="Button" parent="TopPanel/Margin/Hbox"]
+[node name="TemperatureButton" type="Button" parent="TopPanel/Margin/Hbox" unique_id=1580544731]
 layout_mode = 2
 icon = ExtResource("6_vdokl")
 
-[node name="SelectTool" type="PopupMenu" parent="."]
+[node name="SelectTool" type="PopupMenu" parent="." unique_id=1227341478]
 oversampling_override = 1.0
 title = "Select Tool"
 initial_position = 1
@@ -91,7 +94,7 @@ item_8/text = "Cell diagnostics"
 item_8/icon = ExtResource("10_thxy1")
 item_8/id = 4
 
-[node name="SubstrateTemperature" type="PopupMenu" parent="."]
+[node name="SubstrateTemperature" type="PopupMenu" parent="." unique_id=513793168]
 oversampling_override = 1.0
 title = "Substrate Temperature"
 initial_position = 1
@@ -118,11 +121,39 @@ item_6/text = "Incubate"
 item_6/icon = ExtResource("13_ux5x0")
 item_6/id = 3
 
-[node name="ButtonClick" type="AudioStreamPlayer" parent="."]
+[node name="ButtonClick" type="AudioStreamPlayer" parent="." unique_id=1751584107]
 stream = ExtResource("6_744nn")
 
-[node name="ButtonClick2" type="AudioStreamPlayer" parent="."]
+[node name="ButtonClick2" type="AudioStreamPlayer" parent="." unique_id=386478548]
 stream = ExtResource("12_uqsdy")
+
+[node name="substrate_temperature" parent="." unique_id=965499745 instance=ExtResource("16_7jnlg")]
+visible = false
+
+[node name="select_tool_custom" parent="." unique_id=905790018 instance=ExtResource("17_whbqe")]
+visible = false
+
+[node name="cell_diagnostics_panel" type="PanelContainer" parent="." unique_id=81254119]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -40.0
+offset_right = 40.0
+grow_vertical = 0
+
+[node name="HBox" type="HBoxContainer" parent="cell_diagnostics_panel" unique_id=36347275]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="cell_diagnostics_panel/HBox" unique_id=55472149]
+layout_mode = 2
+text = "Age: 0.10h
+Mass: 1
+Diameter: 1"
+
+[node name="Label2" type="Label" parent="cell_diagnostics_panel/HBox" unique_id=704877464]
+layout_mode = 2
+text = "AAAAAA
+AAAAAAAA"
 
 [connection signal="button_up" from="TopPanel/Margin/Hbox/SterilizeButton" to="TopPanel" method="_on_sterilize_button_up"]
 [connection signal="button_up" from="TopPanel/Margin/Hbox/ToolSelector" to="TopPanel" method="_on_tool_selector_button_up"]

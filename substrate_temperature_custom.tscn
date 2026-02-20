@@ -1,0 +1,117 @@
+[gd_scene format=3 uid="uid://dik8va5bopm7k"]
+
+[ext_resource type="Script" uid="uid://cp84ymx04so30" path="res://Themes and UI/substrat_temperature_custom.gd" id="1_36fuc"]
+[ext_resource type="StyleBox" uid="uid://bfn67d56fhwu1" path="res://Themes and UI/CellLab-hoverpressed-custompopup-button.tres" id="1_a67hb"]
+[ext_resource type="Texture2D" uid="uid://4f2i66tbqreo" path="res://Images/Medium Resolution/temp_low.png" id="2_a67hb"]
+[ext_resource type="StyleBox" uid="uid://bkrhc42x7sga1" path="res://Themes and UI/CellLab-green_hseperator.tres" id="3_0cw44"]
+[ext_resource type="Texture2D" uid="uid://p5fmju3af5d7" path="res://Images/Medium Resolution/temp_slow.png" id="4_n5rxr"]
+[ext_resource type="Texture2D" uid="uid://6md56mn5ckjp" path="res://Images/Medium Resolution/temp_medium.png" id="5_hjvmk"]
+[ext_resource type="Texture2D" uid="uid://dg2wqbvy11mos" path="res://Images/Medium Resolution/temp_high.png" id="6_dixy8"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_a67hb"]
+
+[sub_resource type="Theme" id="Theme_0cw44"]
+Button/styles/hover = ExtResource("1_a67hb")
+Button/styles/normal = SubResource("StyleBoxEmpty_a67hb")
+Button/styles/pressed = ExtResource("1_a67hb")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hwqhx"]
+bg_color = Color(0.12156863, 0.12156863, 0.12156863, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+shadow_size = 10
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_ssf00"]
+color = Color(0.25, 0.25, 0.25, 1)
+grow_begin = 0.0
+grow_end = 0.0
+
+[node name="substrate_temperature" type="PanelContainer" unique_id=965499745]
+anchors_preset = -1
+anchor_left = 0.4
+anchor_top = 0.5
+anchor_right = 0.6
+anchor_bottom = 0.5
+offset_left = -66.0
+offset_top = -20.0
+offset_right = 59.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme = SubResource("Theme_0cw44")
+theme_override_styles/panel = SubResource("StyleBoxFlat_hwqhx")
+script = ExtResource("1_36fuc")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=115110109]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer" unique_id=288404908]
+layout_mode = 2
+theme_override_constants/margin_left = 7
+theme_override_constants/margin_top = 7
+theme_override_constants/margin_right = 7
+theme_override_constants/margin_bottom = 7
+
+[node name="heading" type="HBoxContainer" parent="VBoxContainer/MarginContainer" unique_id=1179430340]
+layout_mode = 2
+
+[node name="icon" type="TextureRect" parent="VBoxContainer/MarginContainer/heading" unique_id=347277042]
+layout_mode = 2
+texture = ExtResource("2_a67hb")
+
+[node name="title" type="Label" parent="VBoxContainer/MarginContainer/heading" unique_id=84012085]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9372549, 0.6666667, 0.08627451, 1)
+text = "Substrate Temperature"
+
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer" unique_id=1299572424]
+layout_mode = 2
+theme_override_styles/separator = ExtResource("3_0cw44")
+
+[node name="Freeze" type="Button" parent="VBoxContainer" unique_id=835854304]
+layout_mode = 2
+text = "Freeze"
+icon = ExtResource("2_a67hb")
+alignment = 0
+
+[node name="HSeparator2" type="HSeparator" parent="VBoxContainer" unique_id=1935579344]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_ssf00")
+
+[node name="Slow Observe" type="Button" parent="VBoxContainer" unique_id=1869548940]
+layout_mode = 2
+text = "Slow Observe"
+icon = ExtResource("4_n5rxr")
+alignment = 0
+
+[node name="HSeparator3" type="HSeparator" parent="VBoxContainer" unique_id=1745268362]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_ssf00")
+
+[node name="Observe" type="Button" parent="VBoxContainer" unique_id=1578516363]
+layout_mode = 2
+text = "Observe"
+icon = ExtResource("5_hjvmk")
+alignment = 0
+
+[node name="HSeparator4" type="HSeparator" parent="VBoxContainer" unique_id=1459737852]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_ssf00")
+
+[node name="Incubate" type="Button" parent="VBoxContainer" unique_id=432311498]
+layout_mode = 2
+text = "Incubate"
+icon = ExtResource("6_dixy8")
+alignment = 0
+
+[node name="Control" type="Control" parent="VBoxContainer" unique_id=923736609]
+layout_mode = 2
+
+[connection signal="button_up" from="VBoxContainer/Freeze" to="." method="_on_freeze_button_up"]
+[connection signal="button_up" from="VBoxContainer/Slow Observe" to="." method="_on_slow_observe_button_up"]
+[connection signal="button_up" from="VBoxContainer/Observe" to="." method="_on_observe_button_up"]
+[connection signal="button_up" from="VBoxContainer/Incubate" to="." method="_on_incubate_button_up"]
