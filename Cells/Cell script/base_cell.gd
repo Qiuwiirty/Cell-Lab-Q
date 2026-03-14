@@ -6,7 +6,7 @@ var colliding_cells: Array[Node2D]
 @export var radius = 15
 @export var mass = 2.88
 @export var color = Color(1.0,1.0,1.0)
-@export var energy_loss_coefficient = 1
+@export var energy_loss_coefficient = 1 #Related to metabolism
 var is_colliding = false
 var visible_on_screen = false
 const MASS_EPSILON := 0.01
@@ -31,35 +31,19 @@ func _ready() -> void:
 	$collision_detector/collison.shape = $collision_detector/collison.shape.duplicate()
 func _process(delta: float) -> void:
 	age += delta
-	#If substrate is freezing prevent cell from doing anything
+
 	if Game.temperature == Game.SubstrateTemperature.FREEZE:
+		correct_appearance(delta, false)
+		create_voronoi_effect()
 		return
-	#This will adjust according to temperature to speed/slow down the game
+
 	delta /= timescale_modifier()
-	#Change the modified color into its currect color
-	
-	if dragging:
-		var target := get_global_mouse_position() + drag_offset
-		velocity = (target - global_position) * drag_speed
-	correct_appearance(delta)
-	metabolism(delta)
-	#The epsilon here basically function to update when the difference is noticeable
-	if abs(mass - last_mass) > MASS_EPSILON:
-		last_mass = mass
-	#global_position += velocity * delta #Move the cell
-	var collision = move_and_collide(velocity, true) #Second argument is true for 'test_only' to prevent move_and_collide make its own movement
-	if is_colliding and visible_on_screen and Game.use_voronoi:
-		if !colliding_cells.is_empty():
-			create_voronoi_effect()
-		else:
-			#Disable shader if no collision
-			$render_quad.material.set_shader_parameter("cell_count", 0)
-			is_colliding = false
-	#if collision:
-		##Apply basic collision
-		#velocity += collision.get_normal() * collision.get_depth() * 10
-	velocity *= pow(0.9, delta * 60.0) #Apply simple damping
-	global_position += velocity * delta
+
+	handle_drag()
+	update_cell_state(delta)
+	apply_collision_forces()
+	apply_motion(delta)
+	update_voronoi_effect()
 func _unhandled_input(event):
 	match get_parent().mode:
 		Game.ToolSelector.OPTICAL_TWEEZERS:
@@ -80,9 +64,11 @@ func _unhandled_input(event):
 			if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and mouse_over and event.is_pressed():
 				play_split_sound()
 				die()
+				get_viewport().set_input_as_handled()
 		Game.ToolSelector.CELL_DIAGNOSTICS:
 			if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and mouse_over and event.is_pressed():
 				if get_parent() is Plate:
+					get_parent().discard_old_selected_cell()
 					get_parent().selected_cell = self
 					to_select(true)
 					get_parent().tween_to_selected_cell_position()
@@ -132,10 +118,11 @@ func create_voronoi_effect() -> void:
 	$render_quad.material.set_shader_parameter("screen_size", get_viewport_rect().size)
 #region Cell stuff
 #Manage cell mass and clamp the mass. This also essential to decide whether cell should die
-func correct_appearance(delta):
+func correct_appearance(delta, modify_color = true):
 	radius = mass * 4.166666
 	$collision.shape.radius = radius
-	if current_color != color:
+	$collision_detector/collison.shape.radius = radius
+	if current_color != color and modify_color:
 		current_color = lerp(current_color, color, 3.5 * delta)
 	$render_quad.material.set_shader_parameter("u_color", current_color)
 	$render_quad.material.set_shader_parameter("u_size_mult", radius / 15.0)
@@ -172,8 +159,6 @@ func _cell_entered(area: Area2D) -> void:
 	is_colliding = true
 	colliding_cells.append(area)
 func _cell_exited(area: Area2D) -> void:
-	if colliding_cells.size() == 1:
-		$render_quad.material.set_shader_parameter("cell_count", 0)
 	colliding_cells.erase(area)
 #Optimization method to perform less when not on screen
 func _screen_entered_notifier() -> void:
@@ -190,7 +175,7 @@ func _on_mouse_entered() -> void:
 func _on_mouse_exited() -> void:
 	mouse_over = false
 #endregion
-
+#region Process thing
 func timescale_modifier() -> float:
 	match Game.temperature:
 		Game.SubstrateTemperature.SLOW_OBSERVE:
@@ -202,18 +187,56 @@ func timescale_modifier() -> float:
 		_:
 			print('No valid game.temperature')
 			return 1
+func apply_motion(delta):
+	velocity *= pow(0.9, delta * 60.0)
+	global_position += velocity * delta
+func apply_collision_forces():
+	for other in colliding_cells:
+		var dir = global_position - other.global_position
+		var dist = dir.length()
 
-func to_select(b: bool) -> void:
-	if b:
+		if dist == 0:
+			continue
+
+		var overlap = radius * 2 - dist
+		if overlap <= 0:
+			continue
+
+		var normal = dir / dist
+		velocity += normal * overlap
+func update_cell_state(delta):
+	correct_appearance(delta)
+	metabolism(delta)
+
+	if abs(mass - last_mass) > MASS_EPSILON:
+		last_mass = mass
+func handle_drag():
+	if not dragging:
+		return
+
+	var target := get_global_mouse_position() + drag_offset
+	velocity = (target - global_position) * drag_speed
+func update_voronoi_effect():
+	if not (is_colliding and visible_on_screen and Game.use_voronoi):
+		return
+	if colliding_cells.is_empty():
+		$render_quad.material.set_shader_parameter("cell_count", 0)
+		is_colliding = false
+	else:
+		create_voronoi_effect()
+#endregion
+func to_select(mode: bool, play_sound := true) -> void:
+	if mode:
 		$selected_circle.show()
-		$select_cell.play()
+		if play_sound:
+			$select_cell.play()
 	else:
 		$selected_circle.hide()
-		$deselect_cell.play()
+		if play_sound:
+			$deselect_cell.play()
 func diagnostics() -> StringName:
 	return """\
 	Age: %s
 	Mass: %s
 	Diameter: %s
-	Type: %s
-	""" % [snappedf(age, 0.001), snappedf(mass, 0.001), snappedf(radius * 2, 0.001), get_script().get_global_name()]
+	Type: %s""" % [snappedf(age, 0.001), snappedf(mass, 0.001), snappedf(radius * 2, 0.001), get_script().get_global_name()]

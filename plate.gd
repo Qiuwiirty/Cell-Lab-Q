@@ -5,7 +5,7 @@ var mode = Game.ToolSelector.CELL_SYNTHESIZER
 const photocyte = preload("uid://sy8jnyx6hyux")
 const food = preload("uid://bcp4xdxc828fp")
 
-var selected_cell = null
+var selected_cell: BaseCell = null
 var locked_to_selected = false
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
@@ -25,7 +25,7 @@ func _unhandled_input(event: InputEvent) -> void:
 					add_child(new_food)
 					$PlaceCell.play()
 				Game.ToolSelector.CELL_REMOVAL:
-					pass
+					$Invalid.play()
 				Game.ToolSelector.CELL_DIAGNOSTICS:
 					if selected_cell:
 						selected_cell.to_select(false)
@@ -34,8 +34,17 @@ func _unhandled_input(event: InputEvent) -> void:
 					else:
 						$Invalid.play()
 func _process(delta: float) -> void:
-	if selected_cell and locked_to_selected:
-		$Camera2D.global_position = selected_cell.global_position
+	if selected_cell:
+		if Game.UI:
+			Game.UI.set_diagnostics(selected_cell.diagnostics())
+		if locked_to_selected:
+			$Camera2D.global_position = selected_cell.global_position
+	else:
+		if Game.UI:
+			#false make it not show any diagnostics
+			Game.UI.set_diagnostics("false")
+	if Game.use_math_lightning:
+		$quad.material.set_shader_parameter("dir", Game.math_lighting)
 func _ready() -> void:
 	correct_brightness_plate()
 func correct_brightness_plate():
@@ -56,10 +65,17 @@ func change_substrate_temperature(into: Game.SubstrateTemperature):
 			pass
 		Game.SubstrateTemperature.INCUBATE:
 			pass
+#Move toward selected cell smoothly
 func tween_to_selected_cell_position() -> void:
 	var tween = create_tween()
 	tween.set_ease(Tween.EASE_OUT)\
 	.set_trans(Tween.TRANS_CUBIC)
 	tween.tween_property($Camera2D, "global_position", selected_cell.global_position, 0.5)
 	tween.tween_callback(func(): locked_to_selected = true)
-	
+#Remove selected cell
+func discard_old_selected_cell() -> void:
+	if selected_cell:
+		#Second argument (play sound) is false because this function is often used when switching diagnostics. And switching diagnostics does not have the deselect so it is removed
+		selected_cell.to_select(false, false)
+		locked_to_selected = false
+		selected_cell = null

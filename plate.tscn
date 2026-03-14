@@ -4,6 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://dt4qdlwv3kaxq" path="res://platecolor.png" id="2_ffgcv"]
 [ext_resource type="Shader" uid="uid://b1kem5k1nhs1q" path="res://Shaders/brightener_plate.gdshader" id="2_nq5sa"]
 [ext_resource type="Script" uid="uid://n2ksox4sau5m" path="res://Misc/camera.gd" id="2_uw33f"]
+[ext_resource type="Shader" uid="uid://b1j0ja1ayhca" path="res://shader_plate.gdshader" id="4_vlcpl"]
 [ext_resource type="PackedScene" uid="uid://sy8jnyx6hyux" path="res://Cells/Tscn file/photocyte.tscn" id="5_ffgcv"]
 [ext_resource type="AudioStream" uid="uid://2uj55rl6jmkp" path="res://Sound and Music/experiment_song.mp3" id="6_072o2"]
 [ext_resource type="AudioStream" uid="uid://c41r6k1d8o0qw" path="res://Sound and Music/place_cell.mp3" id="8_3bkoa"]
@@ -13,7 +14,14 @@
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_3bkoa"]
 shader = ExtResource("2_nq5sa")
-shader_parameter/brightness = 1.0000000475
+shader_parameter/brightness = 1.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_el51w"]
+shader = ExtResource("4_vlcpl")
+shader_parameter/dir = Vector4(4.955, 1.025, 2.375, 0.145)
+
+[sub_resource type="QuadMesh" id="QuadMesh_xw67q"]
+size = Vector2(1000, 1000)
 
 [node name="plate" type="Node2D" unique_id=1644472444]
 script = ExtResource("1_g4jty")
@@ -22,6 +30,10 @@ script = ExtResource("1_g4jty")
 texture_filter = 1
 material = SubResource("ShaderMaterial_3bkoa")
 texture = ExtResource("2_ffgcv")
+
+[node name="quad" type="MeshInstance2D" parent="." unique_id=1746172825]
+material = SubResource("ShaderMaterial_el51w")
+mesh = SubResource("QuadMesh_xw67q")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1753112691]
 position = Vector2(11, -2)
@@ -33,7 +45,7 @@ script = ExtResource("2_uw33f")
 z_index = 0
 position = Vector2(-116, -184)
 input_pickable = false
-mass = 2.89
+mass = 2.7
 color = Color(0.52, 1, 0.89599997, 1)
 
 [node name="ExperimentMusic" type="AudioStreamPlayer" parent="." unique_id=954310468]

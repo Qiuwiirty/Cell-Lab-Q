@@ -3,8 +3,10 @@
 [ext_resource type="Script" uid="uid://drc6d5377hh6s" path="res://top_panel.gd" id="1_27fn8"]
 [ext_resource type="Texture2D" uid="uid://bpcq56t1hw2oo" path="res://Images/Medium Resolution/plate_clear.png" id="1_fyqef"]
 [ext_resource type="Theme" uid="uid://fvn4uh6phepd" path="res://Themes and UI/Cell lab theme.tres" id="1_kgo6r"]
+[ext_resource type="Script" uid="uid://dj8v8hlmm32xq" path="res://Themes and UI/ui.gd" id="1_ux5x0"]
 [ext_resource type="Texture2D" uid="uid://byr8slrftdr2n" path="res://Images/Medium Resolution/tool_cell.png" id="3_io14d"]
 [ext_resource type="AudioStream" uid="uid://bghu28q6hm0ps" path="res://Sound and Music/sterilize.mp3" id="3_nltto"]
+[ext_resource type="Texture2D" uid="uid://d31b271pymt5q" path="res://Images/Medium Resolution/plate.png" id="4_nhikm"]
 [ext_resource type="AudioStream" uid="uid://by13o1owlvyen" path="res://Sound and Music/button.mp3" id="6_744nn"]
 [ext_resource type="Texture2D" uid="uid://6md56mn5ckjp" path="res://Images/Medium Resolution/temp_medium.png" id="6_vdokl"]
 [ext_resource type="Texture2D" uid="uid://bs57ivkpqnsjj" path="res://Images/Medium Resolution/tool_move.png" id="7_wdy31"]
@@ -17,9 +19,15 @@
 [ext_resource type="Texture2D" uid="uid://dg2wqbvy11mos" path="res://Images/Medium Resolution/temp_high.png" id="13_ux5x0"]
 [ext_resource type="PackedScene" uid="uid://dik8va5bopm7k" path="res://substrate_temperature_custom.tscn" id="16_7jnlg"]
 [ext_resource type="PackedScene" uid="uid://6pbpc7ipi8lr" path="res://Themes and UI/select_tool_custom.tscn" id="17_whbqe"]
+[ext_resource type="Script" uid="uid://dqjlesg4sdqq5" path="res://Themes and UI/configuration_panel.gd" id="20_7yarc"]
+[ext_resource type="Script" uid="uid://beq6c6hctgx4u" path="res://Themes and UI/math_lighting_ui.gd" id="20_a5680"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ux5x0"]
+bg_color = Color(0, 0, 0, 0.4862745)
 
 [node name="UI" type="CanvasLayer" unique_id=103741496]
 editor_description = "This node intended to placed inside plate. Otherwise it might not worked.."
+script = ExtResource("1_ux5x0")
 
 [node name="SterilizeRectEffect" type="ColorRect" parent="." unique_id=254949671]
 visible = false
@@ -46,6 +54,11 @@ theme_override_constants/margin_bottom = 5
 [node name="Hbox" type="HBoxContainer" parent="TopPanel/Margin" unique_id=201567568]
 layout_mode = 2
 alignment = 2
+
+[node name="Plate" type="Button" parent="TopPanel/Margin/Hbox" unique_id=1298334827]
+layout_mode = 2
+text = "Plate"
+icon = ExtResource("4_nhikm")
 
 [node name="SterilizeButton" type="Button" parent="TopPanel/Margin/Hbox" unique_id=1244950504]
 layout_mode = 2
@@ -134,29 +147,95 @@ visible = false
 visible = false
 
 [node name="cell_diagnostics_panel" type="PanelContainer" parent="." unique_id=81254119]
+visible = false
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
 offset_top = -40.0
 offset_right = 40.0
 grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_ux5x0")
 
-[node name="HBox" type="HBoxContainer" parent="cell_diagnostics_panel" unique_id=36347275]
+[node name="label" type="Label" parent="cell_diagnostics_panel" unique_id=727046136]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="cell_diagnostics_panel/HBox" unique_id=55472149]
-layout_mode = 2
-text = "Age: 0.10h
-Mass: 1
-Diameter: 1"
+[node name="configuration_panel" type="PanelContainer" parent="." unique_id=1636530376]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 43.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+script = ExtResource("20_7yarc")
 
-[node name="Label2" type="Label" parent="cell_diagnostics_panel/HBox" unique_id=704877464]
+[node name="vbox" type="VBoxContainer" parent="configuration_panel" unique_id=1518256763]
 layout_mode = 2
-text = "AAAAAA
-AAAAAAAA"
 
+[node name="RichTextLabel" type="RichTextLabel" parent="configuration_panel/vbox" unique_id=586056322]
+layout_mode = 2
+bbcode_enabled = true
+text = "[color=PALE_GREEN] [b]-=⚙️Configuration⚙️=-[/b] [/color]
+[color=WHEAT]Version 0.1 [font_size=10] (1st version of this game btw!) [/font_size] [/color]
+Here, you can configure the game/plate ^_^"
+fit_content = true
+
+[node name="CheckBox" type="CheckBox" parent="configuration_panel/vbox" unique_id=563286363]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Use mathematical lighting?"
+
+[node name="RichTextLabel2" type="RichTextLabel" parent="configuration_panel/vbox" unique_id=230589660]
+layout_mode = 2
+bbcode_enabled = true
+text = "[font_size=10] [color=gold]Note![/color] [color=thistle]If use mathematical lighting, then it would use shader instead and math to compute brightness
+If don't, then plate would use image instead and then calculate the brightness with the corresponding pixel.
+(↓↓↓) Tweak the mathematical lighting below!"
+fit_content = true
+
+[node name="math_lighting" type="HBoxContainer" parent="configuration_panel/vbox" unique_id=806195829]
+layout_mode = 2
+script = ExtResource("20_a5680")
+
+[node name="label" type="Label" parent="configuration_panel/vbox/math_lighting" unique_id=1053610030]
+layout_mode = 2
+text = "Math Lighting"
+
+[node name="x" type="SpinBox" parent="configuration_panel/vbox/math_lighting" unique_id=757670067]
+layout_mode = 2
+size_flags_horizontal = 3
+step = 0.001
+suffix = "X"
+custom_arrow_step = 0.1
+
+[node name="y" type="SpinBox" parent="configuration_panel/vbox/math_lighting" unique_id=707094662]
+layout_mode = 2
+size_flags_horizontal = 3
+step = 0.001
+suffix = "Y"
+custom_arrow_step = 0.1
+
+[node name="z" type="SpinBox" parent="configuration_panel/vbox/math_lighting" unique_id=1860800528]
+layout_mode = 2
+size_flags_horizontal = 3
+step = 0.001
+suffix = "Z"
+custom_arrow_step = 0.1
+
+[node name="w" type="SpinBox" parent="configuration_panel/vbox/math_lighting" unique_id=1554444382]
+layout_mode = 2
+size_flags_horizontal = 3
+step = 0.001
+suffix = "W"
+custom_arrow_step = 0.1
+
+[connection signal="button_up" from="TopPanel/Margin/Hbox/Plate" to="configuration_panel" method="_on_plate_button_up"]
 [connection signal="button_up" from="TopPanel/Margin/Hbox/SterilizeButton" to="TopPanel" method="_on_sterilize_button_up"]
 [connection signal="button_up" from="TopPanel/Margin/Hbox/ToolSelector" to="TopPanel" method="_on_tool_selector_button_up"]
 [connection signal="button_up" from="TopPanel/Margin/Hbox/TemperatureButton" to="TopPanel" method="_on_temperature_button_up"]
 [connection signal="id_pressed" from="SelectTool" to="TopPanel" method="_on_select_tool_pressed"]
 [connection signal="id_pressed" from="SubstrateTemperature" to="TopPanel" method="_on_substrate_temperature_id_pressed"]
+[connection signal="value_changed" from="configuration_panel/vbox/math_lighting/x" to="configuration_panel/vbox/math_lighting" method="_on_x_value_changed"]
+[connection signal="value_changed" from="configuration_panel/vbox/math_lighting/y" to="configuration_panel/vbox/math_lighting" method="_on_y_value_changed"]
+[connection signal="value_changed" from="configuration_panel/vbox/math_lighting/z" to="configuration_panel/vbox/math_lighting" method="_on_z_value_changed"]
+[connection signal="value_changed" from="configuration_panel/vbox/math_lighting/w" to="configuration_panel/vbox/math_lighting" method="_on_w_value_changed"]
