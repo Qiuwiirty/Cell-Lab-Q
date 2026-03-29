@@ -20,15 +20,52 @@
 [ext_resource type="PackedScene" uid="uid://dik8va5bopm7k" path="res://substrate_temperature_custom.tscn" id="16_7jnlg"]
 [ext_resource type="PackedScene" uid="uid://6pbpc7ipi8lr" path="res://Themes and UI/select_tool_custom.tscn" id="17_whbqe"]
 [ext_resource type="Script" uid="uid://dqjlesg4sdqq5" path="res://Themes and UI/configuration_panel.gd" id="20_7yarc"]
-[ext_resource type="Script" uid="uid://beq6c6hctgx4u" path="res://Themes and UI/math_lighting_ui.gd" id="20_a5680"]
-[ext_resource type="Script" uid="uid://dyxyb4acmji23" path="res://Themes and UI/check_box.gd" id="21_i6rmi"]
-[ext_resource type="Script" uid="uid://cf1fdwb35i72d" path="res://Themes and UI/brightness_mult.gd" id="22_s1gou"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ux5x0"]
 bg_color = Color(0, 0, 0, 0.4862745)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_i6rmi"]
 bg_color = Color(0.19, 0.19, 0.19, 0.76862746)
+
+[sub_resource type="GDScript" id="GDScript_a5680"]
+resource_name = "use_math_lighting"
+script/source = "extends CheckBox
+
+func _ready() -> void:
+	button_pressed = Game.use_math_lightning
+func _on_toggled(toggled_on: bool) -> void:
+	Game.use_math_lightning = toggled_on
+"
+
+[sub_resource type="GDScript" id="GDScript_7yarc"]
+resource_name = "math_lighting"
+script/source = "extends HBoxContainer
+func _ready() -> void:
+	$x.value = Game.math_lighting.x
+	$y.value = Game.math_lighting.y
+	$z.value = Game.math_lighting.z
+	$w.value = Game.math_lighting.w
+func _on_x_value_changed(value: float) -> void:
+	Game.math_lighting.x = value
+
+func _on_y_value_changed(value: float) -> void:
+	Game.math_lighting.y = value
+
+func _on_z_value_changed(value: float) -> void:
+	Game.math_lighting.z = value
+
+func _on_w_value_changed(value: float) -> void:
+	Game.math_lighting.w = value
+"
+
+[sub_resource type="GDScript" id="GDScript_s1gou"]
+resource_name = "brightness_mult"
+script/source = "extends HBoxContainer
+func _ready() -> void:
+	$b.value = Game.brightness_mult
+func _on_b_value_changed(value: float) -> void:
+	Game.brightness_mult = value
+"
 
 [sub_resource type="GDScript" id="GDScript_i6rmi"]
 resource_name = "use_voronoi"
@@ -208,7 +245,7 @@ fit_content = true
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "Use mathematical lighting?"
-script = ExtResource("21_i6rmi")
+script = SubResource("GDScript_a5680")
 
 [node name="RichTextLabel2" type="RichTextLabel" parent="configuration_panel/vbox" unique_id=230589660]
 layout_mode = 2
@@ -220,7 +257,7 @@ fit_content = true
 
 [node name="math_lighting" type="HBoxContainer" parent="configuration_panel/vbox" unique_id=806195829]
 layout_mode = 2
-script = ExtResource("20_a5680")
+script = SubResource("GDScript_7yarc")
 
 [node name="label" type="Label" parent="configuration_panel/vbox/math_lighting" unique_id=1053610030]
 layout_mode = 2
@@ -256,7 +293,7 @@ custom_arrow_step = 0.1
 
 [node name="brightness_mult" type="HBoxContainer" parent="configuration_panel/vbox" unique_id=700489363]
 layout_mode = 2
-script = ExtResource("22_s1gou")
+script = SubResource("GDScript_s1gou")
 
 [node name="Label" type="Label" parent="configuration_panel/vbox/brightness_mult" unique_id=1999158459]
 layout_mode = 2

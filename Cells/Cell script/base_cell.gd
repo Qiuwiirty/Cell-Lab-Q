@@ -1,12 +1,14 @@
 extends CharacterBody2D
 class_name BaseCell
 const split_audio = preload("uid://c2ncgpkfynhkk")
-#These variables contain current collision with cells' position, and angle
+
 var colliding_cells: Array[Node2D]
 @export var radius = 15
 @export var mass = 2.88
 @export var color = Color(1.0,1.0,1.0)
 @export var energy_loss_coefficient = 1 #Related to metabolism
+@export var nutrient_priority = 1.0
+@export var adhesion: Array[BaseCell]
 var is_colliding = false
 var visible_on_screen = false
 const MASS_EPSILON := 0.01
@@ -19,6 +21,12 @@ var dragging := false
 var drag_offset := Vector2.ZERO
 
 var age = 0.0
+##--Adhesion stuff--
+#see this: https://cell-lab.fandom.com/wiki/User:CxrLol1/Formulas/Cellular
+var delta_mass = 0.0
+#how fast nutrients can flow through a connection
+#you could make k different for each cell, but it is best to make same for all cells rn
+@export var k = 0.1
 #Current color is the color the cell is actually in. For example if cell get injected cell booster, it might turn pink but it only is current color. Quickly it will reverted to its original color
 var current_color = color
 func _ready() -> void:
@@ -240,3 +248,26 @@ func diagnostics() -> StringName:
 	Mass: %s
 	Diameter: %s
 	Type: %s""" % [snappedf(age, 0.001), snappedf(mass, 0.001), snappedf(radius * 2, 0.001), get_script().get_global_name()]
+#region Adhesion
+
+func compute_flows():
+	for neighbor in adhesion:
+		# avoid double calculation
+		if get_instance_id() < neighbor.get_instance_id():
+			
+			var pressure_self = mass / nutrient_priority
+			var pressure_neighbor = neighbor.mass / neighbor.nutrient_priority
+
+			var flow = k * (pressure_neighbor - pressure_self)
+
+			# clamp (VERY IMPORTANT)
+			flow = clamp(flow, -neighbor.mass, mass)
+
+			# store instead of applying immediately
+			delta_mass += flow
+			neighbor.delta_mass -= flow
+
+
+func apply_flows():
+	mass += delta_mass
+	delta_mass = 0.0

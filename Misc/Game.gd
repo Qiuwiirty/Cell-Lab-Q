@@ -22,11 +22,13 @@ var temperature = Game.SubstrateTemperature.OBSERVE
 var use_voronoi = true
 var math_lighting = Vector4(5.58, 1.025, 2.375, 0.14)
 var use_math_lightning = true
+
 ##There are two options:
 #True: this means the game use math and shader to calculate and create light which could be faster and can quickly change
 #False: use image instead, which can create many unique stuff and probably more interesting plate
 func _process(_delta: float) -> void:
-	await get_tree().create_timer(1).timeout
-	if Engine.get_frames_drawn() < 1:
-		print("FPS is dangerously low. Quitting the game")
-		get_tree().quit()
+	var cells = get_tree().get_nodes_in_group("cells")
+	for cell in cells:
+			cell.compute_flows()
+	for cell in cells:
+			cell.apply_flows()
