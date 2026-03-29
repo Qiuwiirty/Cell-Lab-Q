@@ -2,7 +2,7 @@ extends Node2D
 class_name Plate
 
 var mode = Game.ToolSelector.CELL_SYNTHESIZER
-const photocyte = preload("uid://sy8jnyx6hyux")
+const photocyte = preload("uid://sy8jnyx6hyux") #I do not get why using preload and const cause an error in testplate if there basecell. 
 const food = preload("uid://bcp4xdxc828fp")
 
 var selected_cell: BaseCell = null

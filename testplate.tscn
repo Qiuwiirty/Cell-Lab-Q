@@ -22,12 +22,6 @@ shader_parameter/speed = 0.01
 [sub_resource type="QuadMesh" id="QuadMesh_71jnn"]
 size = Vector2(30, 30)
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_koaqw"]
-
-[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_koaqw"]
-
-[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_uldfs"]
-
 [node name="testplate" type="Node2D" unique_id=1708953587]
 
 [node name="MeshInstance2D" type="MeshInstance2D" parent="." unique_id=132656964]
@@ -38,21 +32,3 @@ mesh = SubResource("QuadMesh_71jnn")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=751550979]
 zoom = Vector2(5.37, 5.37)
-
-[node name="RigidBody2D" type="RigidBody2D" parent="." unique_id=16168298]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="RigidBody2D" unique_id=186640631]
-shape = SubResource("CircleShape2D_koaqw")
-
-[node name="RigidBody2D2" type="RigidBody2D" parent="." unique_id=384135669]
-position = Vector2(6, -14)
-physics_material_override = SubResource("PhysicsMaterial_koaqw")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="RigidBody2D2" unique_id=1738523625]
-shape = SubResource("CircleShape2D_koaqw")
-
-[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=830773476]
-position = Vector2(0, 21)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=406970907]
-shape = SubResource("WorldBoundaryShape2D_uldfs")

@@ -10,7 +10,6 @@ uniform int cell_count = 0; //Current count collision with cells for the loops
 uniform vec2 centers[MAX_CELL_COUNT]; //The midpoint intersections between this cells and the other cells, and use it for position of the slice
 uniform vec2 rot_dirs[MAX_CELL_COUNT];
 uniform float u_size_mult: hint_range(0.0, 1.0);
-uniform sampler2D SCREEN_TEXTURE : hint_screen_texture, filter_linear_mipmap;
 uniform vec2 screen_size;
 
 void fragment() {

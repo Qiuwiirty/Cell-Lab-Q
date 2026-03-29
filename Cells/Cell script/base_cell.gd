@@ -24,8 +24,8 @@ var current_color = color
 func _ready() -> void:
 	$render_quad.material = $render_quad.material.duplicate()
 	$render_quad.mesh = $render_quad.mesh.duplicate()
-	$render_quad.material.set_shader_parameter("u_use_decoration", 1.0)
-	$render_quad.material.set_shader_parameter("decoration", load("uid://dpuiru35vknq5"))
+	#$render_quad.material.set_shader_parameter("u_use_decoration", 0.0)
+	#$render_quad.material.set_shader_parameter("decoration", load("uid://dpuiru35vknq5"))
 	set_physics_process(false if Game.temperature == Game.SubstrateTemperature.FREEZE else true)
 	$collision.shape = $collision.shape.duplicate()
 	$collision_detector/collison.shape = $collision_detector/collison.shape.duplicate()

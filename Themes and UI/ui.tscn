@@ -21,9 +21,32 @@
 [ext_resource type="PackedScene" uid="uid://6pbpc7ipi8lr" path="res://Themes and UI/select_tool_custom.tscn" id="17_whbqe"]
 [ext_resource type="Script" uid="uid://dqjlesg4sdqq5" path="res://Themes and UI/configuration_panel.gd" id="20_7yarc"]
 [ext_resource type="Script" uid="uid://beq6c6hctgx4u" path="res://Themes and UI/math_lighting_ui.gd" id="20_a5680"]
+[ext_resource type="Script" uid="uid://dyxyb4acmji23" path="res://Themes and UI/check_box.gd" id="21_i6rmi"]
+[ext_resource type="Script" uid="uid://cf1fdwb35i72d" path="res://Themes and UI/brightness_mult.gd" id="22_s1gou"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ux5x0"]
 bg_color = Color(0, 0, 0, 0.4862745)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_i6rmi"]
+bg_color = Color(0.19, 0.19, 0.19, 0.76862746)
+
+[sub_resource type="GDScript" id="GDScript_i6rmi"]
+resource_name = "use_voronoi"
+script/source = "extends CheckBox
+func _ready():
+	button_pressed = Game.use_voronoi
+func _on_toggled(toggled_on: bool) -> void:
+	Game.use_voronoi = toggled_on
+"
+
+[sub_resource type="GDScript" id="GDScript_mk4ph"]
+resource_name = "salinity"
+script/source = "extends HBoxContainer
+func _ready() -> void:
+	$SpinBox.value = Game.salinity
+func _on_spin_box_value_changed(value: float) -> void:
+	Game.salinity = value
+"
 
 [node name="UI" type="CanvasLayer" unique_id=103741496]
 editor_description = "This node intended to placed inside plate. Otherwise it might not worked.."
@@ -167,6 +190,7 @@ offset_top = 43.0
 grow_horizontal = 2
 grow_vertical = 2
 pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_styles/panel = SubResource("StyleBoxFlat_i6rmi")
 script = ExtResource("20_7yarc")
 
 [node name="vbox" type="VBoxContainer" parent="configuration_panel" unique_id=1518256763]
@@ -180,10 +204,11 @@ text = "[color=PALE_GREEN] [b]-=⚙️Configuration⚙️=-[/b] [/color]
 Here, you can configure the game/plate ^_^"
 fit_content = true
 
-[node name="CheckBox" type="CheckBox" parent="configuration_panel/vbox" unique_id=563286363]
+[node name="use_math_lighting" type="CheckBox" parent="configuration_panel/vbox" unique_id=563286363]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "Use mathematical lighting?"
+script = ExtResource("21_i6rmi")
 
 [node name="RichTextLabel2" type="RichTextLabel" parent="configuration_panel/vbox" unique_id=230589660]
 layout_mode = 2
@@ -229,13 +254,61 @@ step = 0.001
 suffix = "W"
 custom_arrow_step = 0.1
 
+[node name="brightness_mult" type="HBoxContainer" parent="configuration_panel/vbox" unique_id=700489363]
+layout_mode = 2
+script = ExtResource("22_s1gou")
+
+[node name="Label" type="Label" parent="configuration_panel/vbox/brightness_mult" unique_id=1999158459]
+layout_mode = 2
+text = "Brightness Multiplier"
+
+[node name="b" type="SpinBox" parent="configuration_panel/vbox/brightness_mult" unique_id=1900133426]
+layout_mode = 2
+step = 0.001
+value = 1.0
+custom_arrow_step = 0.1
+
+[node name="RichTextLabel3" type="RichTextLabel" parent="configuration_panel/vbox" unique_id=1659241493]
+layout_mode = 2
+bbcode_enabled = true
+text = "[font_size=10] [color=thistle]Brightness multiplier only work with non-mathematical lighting."
+fit_content = true
+
+[node name="use_voronoi" type="CheckBox" parent="configuration_panel/vbox" unique_id=1724931314]
+layout_mode = 2
+text = "Use voronoi"
+script = SubResource("GDScript_i6rmi")
+
+[node name="RichTextLabel4" type="RichTextLabel" parent="configuration_panel/vbox" unique_id=424295469]
+layout_mode = 2
+bbcode_enabled = true
+text = "[font_size=10] [color=thistle]Disabling voronoi effect may improve perfomance a little bit"
+fit_content = true
+
+[node name="salinity" type="HBoxContainer" parent="configuration_panel/vbox" unique_id=1043677546]
+layout_mode = 2
+script = SubResource("GDScript_mk4ph")
+
+[node name="Label" type="Label" parent="configuration_panel/vbox/salinity" unique_id=463168006]
+layout_mode = 2
+text = "Salinity"
+
+[node name="SpinBox" type="SpinBox" parent="configuration_panel/vbox/salinity" unique_id=1877644740]
+layout_mode = 2
+step = 0.001
+custom_arrow_step = 0.05
+
 [connection signal="button_up" from="TopPanel/Margin/Hbox/Plate" to="configuration_panel" method="_on_plate_button_up"]
 [connection signal="button_up" from="TopPanel/Margin/Hbox/SterilizeButton" to="TopPanel" method="_on_sterilize_button_up"]
 [connection signal="button_up" from="TopPanel/Margin/Hbox/ToolSelector" to="TopPanel" method="_on_tool_selector_button_up"]
 [connection signal="button_up" from="TopPanel/Margin/Hbox/TemperatureButton" to="TopPanel" method="_on_temperature_button_up"]
 [connection signal="id_pressed" from="SelectTool" to="TopPanel" method="_on_select_tool_pressed"]
 [connection signal="id_pressed" from="SubstrateTemperature" to="TopPanel" method="_on_substrate_temperature_id_pressed"]
+[connection signal="toggled" from="configuration_panel/vbox/use_math_lighting" to="configuration_panel/vbox/use_math_lighting" method="_on_toggled"]
 [connection signal="value_changed" from="configuration_panel/vbox/math_lighting/x" to="configuration_panel/vbox/math_lighting" method="_on_x_value_changed"]
 [connection signal="value_changed" from="configuration_panel/vbox/math_lighting/y" to="configuration_panel/vbox/math_lighting" method="_on_y_value_changed"]
 [connection signal="value_changed" from="configuration_panel/vbox/math_lighting/z" to="configuration_panel/vbox/math_lighting" method="_on_z_value_changed"]
 [connection signal="value_changed" from="configuration_panel/vbox/math_lighting/w" to="configuration_panel/vbox/math_lighting" method="_on_w_value_changed"]
+[connection signal="value_changed" from="configuration_panel/vbox/brightness_mult/b" to="configuration_panel/vbox/brightness_mult" method="_on_b_value_changed"]
+[connection signal="toggled" from="configuration_panel/vbox/use_voronoi" to="configuration_panel/vbox/use_voronoi" method="_on_toggled"]
+[connection signal="value_changed" from="configuration_panel/vbox/salinity/SpinBox" to="configuration_panel/vbox/salinity" method="_on_spin_box_value_changed"]
