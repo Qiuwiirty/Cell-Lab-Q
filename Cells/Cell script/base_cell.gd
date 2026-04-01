@@ -9,6 +9,7 @@ var colliding_cells: Array[Node2D]
 @export var energy_loss_coefficient = 1 #Related to metabolism
 @export var nutrient_priority = 1.0
 @export var adhesion: Array[BaseCell]
+@export var adhesion_stiffness = 0.5
 var is_colliding = false
 var visible_on_screen = false
 const MASS_EPSILON := 0.01
@@ -37,6 +38,7 @@ func _ready() -> void:
 	set_physics_process(false if Game.temperature == Game.SubstrateTemperature.FREEZE else true)
 	$collision.shape = $collision.shape.duplicate()
 	$collision_detector/collison.shape = $collision_detector/collison.shape.duplicate()
+	make_adhesion_mutual()
 func _process(delta: float) -> void:
 	age += delta
 
@@ -52,6 +54,7 @@ func _process(delta: float) -> void:
 	apply_collision_forces()
 	apply_motion(delta)
 	update_voronoi_effect()
+	
 func _unhandled_input(event):
 	match get_parent().mode:
 		Game.ToolSelector.OPTICAL_TWEEZERS:
@@ -252,7 +255,7 @@ func diagnostics() -> StringName:
 
 func compute_flows():
 	for neighbor in adhesion:
-		# avoid double calculation
+		#avoid double calculation: only lower ID cell do the calculations, higher ID skips it
 		if get_instance_id() < neighbor.get_instance_id():
 			
 			var pressure_self = mass / nutrient_priority
@@ -260,7 +263,7 @@ func compute_flows():
 
 			var flow = k * (pressure_neighbor - pressure_self)
 
-			# clamp (VERY IMPORTANT)
+			#clamp
 			flow = clamp(flow, -neighbor.mass, mass)
 
 			# store instead of applying immediately
@@ -271,3 +274,34 @@ func compute_flows():
 func apply_flows():
 	mass += delta_mass
 	delta_mass = 0.0
+
+
+func apply_adhesion_force(rest_length: float = 5, damping: float = 0.3):
+	###Credit to Genomeia (I borrowed the physics linking between cells from Genomeia) ^_^
+	for neighbor in adhesion:
+		if get_instance_id() < neighbor.get_instance_id():
+			var r = position - neighbor.position
+			var distance = r.length()
+			if distance == 0:
+				return
+			
+			var dir = r / distance  # unit vector along the link
+
+			#hookes law
+			var stiffness = (adhesion_stiffness + neighbor.adhesion_stiffness) / 2
+			var spring_force = stiffness * (distance - rest_length)
+
+			#damp
+			var relative_velocity = velocity - neighbor.velocity
+			var damp_force = damping * relative_velocity.dot(dir)
+
+			var force = (spring_force + damp_force) * dir
+
+			velocity -= force
+			neighbor.velocity += force
+			
+#Make adhesion mutual or symmetric so there's no weirdness
+func make_adhesion_mutual():
+	for neighbor in adhesion:
+		if !neighbor.adhesion.has(self):
+			neighbor.adhesion.append(self)

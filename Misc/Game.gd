@@ -22,7 +22,7 @@ var temperature = Game.SubstrateTemperature.OBSERVE
 var use_voronoi = true
 var math_lighting = Vector4(5.58, 1.025, 2.375, 0.14)
 var use_math_lightning = true
-
+var adhesion_links
 ##There are two options:
 #True: this means the game use math and shader to calculate and create light which could be faster and can quickly change
 #False: use image instead, which can create many unique stuff and probably more interesting plate
@@ -32,3 +32,5 @@ func _process(_delta: float) -> void:
 			cell.compute_flows()
 	for cell in cells:
 			cell.apply_flows()
+	for cell in cells:
+		cell.apply_adhesion_force()
