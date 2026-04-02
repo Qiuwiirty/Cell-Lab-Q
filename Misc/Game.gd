@@ -12,7 +12,8 @@ enum SubstrateTemperature
 	FREEZE,
 	SLOW_OBSERVE,
 	OBSERVE,
-	INCUBATE
+	INCUBATE,
+	CUSTOM
 }
 var UI = null #This must be immediately set so system can quickly access UI
 ###Containing current plate configuration and managing stuff
@@ -22,6 +23,7 @@ var temperature = Game.SubstrateTemperature.OBSERVE
 var use_voronoi = true
 var math_lighting = Vector4(5.58, 1.025, 2.375, 0.14)
 var use_math_lightning = true
+var custom_temperature = 1.0
 var adhesion_links
 ##There are two options:
 #True: this means the game use math and shader to calculate and create light which could be faster and can quickly change

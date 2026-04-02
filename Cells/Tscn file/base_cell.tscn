@@ -30,6 +30,13 @@ size = Vector2(30, 30)
 z_index = 1
 input_pickable = true
 script = ExtResource("1_gwrgs")
+radius = null
+mass = null
+color = null
+energy_loss_coefficient = null
+nutrient_priority = null
+adhesion_stiffness = null
+k = null
 
 [node name="collision" type="CollisionShape2D" parent="." unique_id=922520947]
 visible = false

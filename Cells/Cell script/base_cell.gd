@@ -41,19 +41,29 @@ func _ready() -> void:
 	$collision_detector/collison.shape = $collision_detector/collison.shape.duplicate()
 	make_adhesion_mutual() #Fix adhesion that isn't symmterical 
 	#current_color = color
+var accumulator := 0.0
+const FIXED_STEP := 1.0 / 60.0
+
 func _process(delta: float) -> void:
 	handle_drag()
+	
 	if Game.temperature == Game.SubstrateTemperature.FREEZE:
 		correct_appearance(delta, false)
 		create_voronoi_effect()
 		return
-	delta *= timescale_modifier()
+		
+	accumulator += delta * timescale_modifier()
+	
+	while accumulator >= FIXED_STEP:
+		simulate_step(FIXED_STEP)
+		accumulator -= FIXED_STEP
+
+	update_voronoi_effect()
+func simulate_step(delta: float) -> void:
 	age += delta
 	update_cell_state(delta)
 	apply_collision_forces(delta)
 	apply_motion(delta)
-	update_voronoi_effect()
-	
 func _unhandled_input(event):
 	match get_parent().mode:
 		Game.ToolSelector.OPTICAL_TWEEZERS:
@@ -202,6 +212,8 @@ func timescale_modifier() -> float:
 			return 1
 		Game.SubstrateTemperature.INCUBATE:
 			return 3
+		Game.SubstrateTemperature.CUSTOM:
+			return Game.custom_temperature
 		_:
 			print('No valid game.temperature')
 			return 1
@@ -226,13 +238,13 @@ func apply_collision_forces(delta):
 func update_cell_state(delta):
 	correct_appearance(delta)
 	metabolism(delta)
-
+	
 	if abs(mass - last_mass) > MASS_EPSILON:
 		last_mass = mass
 func handle_drag():
 	if not dragging:
 		return
-
+		
 	var target := get_global_mouse_position() + drag_offset
 	if Game.temperature != Game.SubstrateTemperature.FREEZE:
 		velocity = ((target - global_position) * drag_speed) * timescale_modifier()
@@ -276,12 +288,12 @@ func compute_flows():
 			
 			var pressure_self = mass / nutrient_priority
 			var pressure_neighbor = neighbor.mass / neighbor.nutrient_priority
-
+			
 			var flow = k * (pressure_neighbor - pressure_self)
-
+			
 			#clamp
 			flow = clamp(flow, -neighbor.mass, mass)
-
+			
 			# store instead of applying immediately
 			delta_mass += flow
 			neighbor.delta_mass -= flow

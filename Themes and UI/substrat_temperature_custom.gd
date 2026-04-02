@@ -6,8 +6,12 @@ const FREEZE = preload("uid://4f2i66tbqreo")
 const SLOW_OBSERVE = preload("uid://p5fmju3af5d7")
 const OBSERVE = preload("uid://6md56mn5ckjp")
 const INCUBATE = preload("uid://dg2wqbvy11mos")
+const CUSTOM = preload("uid://dslg8yitragtg") #AKA custom
 ###Animation used is easing scale ( I think that's the name? :P )
 const ANIM_DURATION = 0.1
+func _ready() -> void:
+	$VBoxContainer/HSlider.value = 1.0
+	
 func open():
 	show()
 	scale = Vector2(0.8, 0.8)
@@ -35,36 +39,42 @@ func close():
 func _on_freeze_button_up() -> void:
 	$VBoxContainer/MarginContainer/heading/icon.texture = FREEZE
 	$"../TopPanel/Margin/Hbox/TemperatureButton".icon = FREEZE
-	if plate is Plate:
-		plate.change_substrate_temperature(Game.SubstrateTemperature.FREEZE)
-	else:
-		print("Plate is invalid and therefore unable to set substrate temperature")
+	Game.temperature = Game.SubstrateTemperature.FREEZE
+	$VBoxContainer/current_temperature.text = "Current temperature: Freeze"
 	close()
 	$"../ButtonClick2".play()
 func _on_slow_observe_button_up() -> void:
 	$VBoxContainer/MarginContainer/heading/icon.texture = SLOW_OBSERVE
 	$"../TopPanel/Margin/Hbox/TemperatureButton".icon = SLOW_OBSERVE
-	if plate is Plate:
-		plate.change_substrate_temperature(Game.SubstrateTemperature.SLOW_OBSERVE)
-	else:
-		print("Plate is invalid and therefore unable to set substrate temperature")
+	Game.temperature = Game.SubstrateTemperature.SLOW_OBSERVE
+	$VBoxContainer/current_temperature.text = "Current temperature: Slow observe"
 	close()
 	$"../ButtonClick2".play()
 func _on_observe_button_up() -> void:
 	$VBoxContainer/MarginContainer/heading/icon.texture = OBSERVE
 	$"../TopPanel/Margin/Hbox/TemperatureButton".icon = OBSERVE
-	if plate is Plate:
-		plate.change_substrate_temperature(Game.SubstrateTemperature.OBSERVE)
-	else:
-		print("Plate is invalid and therefore unable to set substrate temperature")
+	Game.temperature = Game.SubstrateTemperature.OBSERVE
+	$VBoxContainer/current_temperature.text = "Current temperature: Observe"
 	close()
 	$"../ButtonClick2".play()
 func _on_incubate_button_up() -> void:
 	$VBoxContainer/MarginContainer/heading/icon.texture = INCUBATE
 	$"../TopPanel/Margin/Hbox/TemperatureButton".icon = INCUBATE
-	if plate is Plate:
-		plate.change_substrate_temperature(Game.SubstrateTemperature.INCUBATE)
-	else:
-		print("Plate is invalid and therefore unable to set substrate temperature")
+	Game.temperature = Game.SubstrateTemperature.INCUBATE
+	$VBoxContainer/current_temperature.text = "Current temperature: Incubate"
 	close()
 	$"../ButtonClick2".play()
+
+func _on_custom_button_up() -> void:
+	$VBoxContainer/MarginContainer/heading/icon.texture = CUSTOM
+	$"../TopPanel/Margin/Hbox/TemperatureButton".icon = CUSTOM
+	Game.temperature = Game.SubstrateTemperature.CUSTOM
+	$VBoxContainer/current_temperature.text = "Current temperature: Custom"
+
+func _on_hslider_value_changed(value: float) -> void:
+	Game.custom_temperature = value
+	$VBoxContainer/custom_temperature_label.text = "Temperature Value: " + str(value)
+
+
+func _on_close_button_up() -> void:
+	close()

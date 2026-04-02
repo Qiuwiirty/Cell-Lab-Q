@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://p5fmju3af5d7" path="res://Images/Medium Resolution/temp_slow.png" id="4_n5rxr"]
 [ext_resource type="Texture2D" uid="uid://6md56mn5ckjp" path="res://Images/Medium Resolution/temp_medium.png" id="5_hjvmk"]
 [ext_resource type="Texture2D" uid="uid://dg2wqbvy11mos" path="res://Images/Medium Resolution/temp_high.png" id="6_dixy8"]
+[ext_resource type="Texture2D" uid="uid://dslg8yitragtg" path="res://Images/Medium Resolution/custom.png" id="8_0cw44"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_a67hb"]
 
@@ -22,6 +23,14 @@ corner_radius_top_right = 3
 corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 shadow_size = 10
+
+[sub_resource type="DPITexture" id="DPITexture_0cw44"]
+_source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#fff\" fill-opacity=\".75\" d=\"m1 3 2-2 5 5 5-5 2 2-5 5 5 5-2 2-5-5-5 5-2-2 5-5z\"/></svg>
+"
+
+[sub_resource type="DPITexture" id="DPITexture_n5rxr"]
+_source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#fff\" d=\"m1 3 2-2 5 5 5-5 2 2-5 5 5 5-2 2-5-5-5 5-2-2 5-5z\"/></svg>
+"
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_ssf00"]
 color = Color(0.25, 0.25, 0.25, 1)
@@ -65,8 +74,14 @@ texture = ExtResource("2_a67hb")
 
 [node name="title" type="Label" parent="VBoxContainer/MarginContainer/heading" unique_id=84012085]
 layout_mode = 2
+size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.9372549, 0.6666667, 0.08627451, 1)
 text = "Substrate Temperature"
+
+[node name="close" type="TextureButton" parent="VBoxContainer/MarginContainer/heading" unique_id=628150707]
+layout_mode = 2
+texture_normal = SubResource("DPITexture_0cw44")
+texture_pressed = SubResource("DPITexture_n5rxr")
 
 [node name="HSeparator" type="HSeparator" parent="VBoxContainer" unique_id=1299572424]
 layout_mode = 2
@@ -108,10 +123,44 @@ text = "Incubate"
 icon = ExtResource("6_dixy8")
 alignment = 0
 
+[node name="HSeparator5" type="HSeparator" parent="VBoxContainer" unique_id=2033046939]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_ssf00")
+
+[node name="Custom" type="Button" parent="VBoxContainer" unique_id=1358211147]
+layout_mode = 2
+text = " Custom "
+icon = ExtResource("8_0cw44")
+alignment = 0
+
+[node name="HSlider" type="HSlider" parent="VBoxContainer" unique_id=415804052]
+layout_mode = 2
+min_value = 0.1
+max_value = 10.0
+step = 0.001
+value = 1.0
+
+[node name="custom_temperature_label" type="Label" parent="VBoxContainer" unique_id=1404854944]
+layout_mode = 2
+theme_override_font_sizes/font_size = 10
+text = "Temperature value: 1.0"
+
+[node name="HSeparator6" type="HSeparator" parent="VBoxContainer" unique_id=515365991]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_ssf00")
+
+[node name="current_temperature" type="Label" parent="VBoxContainer" unique_id=1922325482]
+layout_mode = 2
+theme_override_font_sizes/font_size = 10
+text = "Current temperature: Observe"
+
 [node name="Control" type="Control" parent="VBoxContainer" unique_id=923736609]
 layout_mode = 2
 
+[connection signal="button_up" from="VBoxContainer/MarginContainer/heading/close" to="." method="_on_close_button_up"]
 [connection signal="button_up" from="VBoxContainer/Freeze" to="." method="_on_freeze_button_up"]
 [connection signal="button_up" from="VBoxContainer/Slow Observe" to="." method="_on_slow_observe_button_up"]
 [connection signal="button_up" from="VBoxContainer/Observe" to="." method="_on_observe_button_up"]
 [connection signal="button_up" from="VBoxContainer/Incubate" to="." method="_on_incubate_button_up"]
+[connection signal="button_up" from="VBoxContainer/Custom" to="." method="_on_custom_button_up"]
+[connection signal="value_changed" from="VBoxContainer/HSlider" to="." method="_on_hslider_value_changed"]

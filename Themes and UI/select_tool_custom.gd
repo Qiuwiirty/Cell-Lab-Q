@@ -79,3 +79,6 @@ func _on_cell_diagnostics_button_up() -> void:
 		print("Plate is invalid and therefore unable to set the tools")
 	$"../ButtonClick2".play()
 	close()
+
+func _on_close_button_up() -> void:
+	close()

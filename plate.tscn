@@ -45,8 +45,9 @@ script = ExtResource("2_uw33f")
 z_index = 0
 position = Vector2(-168, -149)
 input_pickable = false
-mass = 2.7
+mass = 2.6
 color = Color(0.52, 1, 0.89599997, 1)
+k = 0.1
 
 [node name="ExperimentMusic" type="AudioStreamPlayer" parent="." unique_id=954310468]
 stream = ExtResource("6_072o2")

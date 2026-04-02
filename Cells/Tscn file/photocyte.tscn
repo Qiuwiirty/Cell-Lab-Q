@@ -5,3 +5,10 @@
 
 [node name="Photocyte" unique_id=1844930053 instance=ExtResource("1_7q7h6")]
 script = ExtResource("1_02e2r")
+radius = 15
+mass = 2.88
+color = Color(1, 1, 1, 1)
+energy_loss_coefficient = 1
+nutrient_priority = 1.0
+adhesion_stiffness = 5
+k = 1.0
