@@ -34,3 +34,5 @@ func _process(_delta: float) -> void:
 			cell.apply_flows()
 	for cell in cells:
 		cell.apply_adhesion_force()
+func _ready() -> void:
+	Engine.time_scale = 1

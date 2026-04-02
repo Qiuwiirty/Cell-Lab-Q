@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://d01g8vhrcgor7"]
 
-[ext_resource type="Shader" uid="uid://cf7qe01ckvr4s" path="res://Shaders/test_only.gdshader" id="1_koaqw"]
+[ext_resource type="Shader" uid="uid://cf7qe01ckvr4s" path="res://Shaders/frost_glass_blur.gdshader" id="1_koaqw"]
 
 [sub_resource type="Gradient" id="Gradient_uldfs"]
 offsets = PackedFloat32Array(0.62343097, 1)

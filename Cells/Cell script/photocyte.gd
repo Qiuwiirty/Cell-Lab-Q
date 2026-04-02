@@ -26,7 +26,7 @@ func _process(delta: float) -> void:
 	#Photosynthesis
 	#Delta must be mutlipied with timescale_modifier because the super(delta) does not carry any modification to delta and need to perform again to be consistent
 	#Else, photocyte may rapidly dying or immortal if not using time scale modifier
-	mass += get_brightness() * (delta / timescale_modifier()) * (1.0 if Game.use_math_lightning else Game.brightness_mult)
+	mass = min(mass + (get_brightness() * (delta * timescale_modifier()) * (1.0 if Game.use_math_lightning else Game.brightness_mult)), 3.6)
 func get_brightness() -> float:
 	if not Game.use_math_lightning:
 		var local_pos: Vector2 = $"../Platecolor".to_local(global_position)

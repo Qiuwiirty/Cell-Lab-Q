@@ -11,7 +11,6 @@
 [ext_resource type="AudioStream" uid="uid://bksrijmu5s6d7" path="res://Sound and Music/invalid.mp3" id="8_dhtvl"]
 [ext_resource type="PackedScene" uid="uid://t8q6yh1vds1" path="res://Themes and UI/ui.tscn" id="9_6v47p"]
 [ext_resource type="PackedScene" uid="uid://bcp4xdxc828fp" path="res://Misc/food.tscn" id="9_dhtvl"]
-[ext_resource type="PackedScene" uid="uid://cymj82ljpiu70" path="res://Cells/Tscn file/base_cell.tscn" id="12_el51w"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_3bkoa"]
 shader = ExtResource("2_nq5sa")
@@ -42,13 +41,12 @@ script = ExtResource("2_uw33f")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1854900875]
 
-[node name="Photocyte" parent="." unique_id=48401722 node_paths=PackedStringArray("adhesion") instance=ExtResource("5_ffgcv")]
+[node name="Photocyte" parent="." unique_id=48401722 instance=ExtResource("5_ffgcv")]
 z_index = 0
 position = Vector2(-168, -149)
 input_pickable = false
 mass = 2.7
 color = Color(0.52, 1, 0.89599997, 1)
-adhesion = [NodePath("../Cell")]
 
 [node name="ExperimentMusic" type="AudioStreamPlayer" parent="." unique_id=954310468]
 stream = ExtResource("6_072o2")
@@ -68,7 +66,3 @@ position = Vector2(-94, -187)
 
 [node name="food2" parent="." unique_id=1055725112 instance=ExtResource("9_dhtvl")]
 position = Vector2(-93, -185)
-
-[node name="Cell" parent="." unique_id=1462000660 node_paths=PackedStringArray("adhesion") instance=ExtResource("12_el51w")]
-position = Vector2(-235, -134)
-adhesion = [NodePath("../Photocyte")]

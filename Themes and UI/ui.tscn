@@ -20,12 +20,34 @@
 [ext_resource type="PackedScene" uid="uid://dik8va5bopm7k" path="res://substrate_temperature_custom.tscn" id="16_7jnlg"]
 [ext_resource type="PackedScene" uid="uid://6pbpc7ipi8lr" path="res://Themes and UI/select_tool_custom.tscn" id="17_whbqe"]
 [ext_resource type="Script" uid="uid://dqjlesg4sdqq5" path="res://Themes and UI/configuration_panel.gd" id="20_7yarc"]
+[ext_resource type="Shader" uid="uid://cf7qe01ckvr4s" path="res://Shaders/frost_glass_blur.gdshader" id="20_s1gou"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ux5x0"]
 bg_color = Color(0, 0, 0, 0.4862745)
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_i6rmi"]
+shader = ExtResource("20_s1gou")
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_i6rmi"]
 bg_color = Color(0.19, 0.19, 0.19, 0.76862746)
+
+[sub_resource type="GDScript" id="GDScript_yxjur"]
+resource_name = "frost_glass_blur"
+script/source = "extends CheckBox
+const frost_glass_shader = preload(\"uid://cf7qe01ckvr4s\")
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	if $\"../..\".material:
+		button_pressed = true
+	else:
+		button_pressed = false
+
+func _on_toggled(toggled_on: bool) -> void:
+	if toggled_on:
+		$\"../..\".material.shader = frost_glass_shader
+	else:
+		$\"../..\".material.shader = null
+"
 
 [sub_resource type="GDScript" id="GDScript_a5680"]
 resource_name = "use_math_lighting"
@@ -220,6 +242,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_ux5x0")
 layout_mode = 2
 
 [node name="configuration_panel" type="PanelContainer" parent="." unique_id=1636530376]
+material = SubResource("ShaderMaterial_i6rmi")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -239,6 +262,18 @@ bbcode_enabled = true
 text = "[color=PALE_GREEN] [b]-=⚙️Configuration⚙️=-[/b] [/color]
 [color=WHEAT]Version 0.1 [font_size=10] (1st version of this game btw!) [/font_size] [/color]
 Here, you can configure the game/plate ^_^"
+fit_content = true
+
+[node name="frost_glass_blur" type="CheckBox" parent="configuration_panel/vbox" unique_id=1843281289]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Frost glass for plate setting "
+script = SubResource("GDScript_yxjur")
+
+[node name="RichTextLabel5" type="RichTextLabel" parent="configuration_panel/vbox" unique_id=142629505]
+layout_mode = 2
+bbcode_enabled = true
+text = "[font_size=10] [color=thistle]So it will look cool ^_^ You can disable it for perfomance"
 fit_content = true
 
 [node name="use_math_lighting" type="CheckBox" parent="configuration_panel/vbox" unique_id=563286363]
@@ -313,6 +348,7 @@ fit_content = true
 
 [node name="use_voronoi" type="CheckBox" parent="configuration_panel/vbox" unique_id=1724931314]
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "Use voronoi"
 script = SubResource("GDScript_i6rmi")
 
@@ -341,6 +377,7 @@ custom_arrow_step = 0.05
 [connection signal="button_up" from="TopPanel/Margin/Hbox/TemperatureButton" to="TopPanel" method="_on_temperature_button_up"]
 [connection signal="id_pressed" from="SelectTool" to="TopPanel" method="_on_select_tool_pressed"]
 [connection signal="id_pressed" from="SubstrateTemperature" to="TopPanel" method="_on_substrate_temperature_id_pressed"]
+[connection signal="toggled" from="configuration_panel/vbox/frost_glass_blur" to="configuration_panel/vbox/frost_glass_blur" method="_on_toggled"]
 [connection signal="toggled" from="configuration_panel/vbox/use_math_lighting" to="configuration_panel/vbox/use_math_lighting" method="_on_toggled"]
 [connection signal="value_changed" from="configuration_panel/vbox/math_lighting/x" to="configuration_panel/vbox/math_lighting" method="_on_x_value_changed"]
 [connection signal="value_changed" from="configuration_panel/vbox/math_lighting/y" to="configuration_panel/vbox/math_lighting" method="_on_y_value_changed"]
