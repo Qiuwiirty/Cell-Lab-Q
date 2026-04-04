@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://cp84ymx04so30" path="res://Themes and UI/substrat_temperature_custom.gd" id="1_36fuc"]
 [ext_resource type="StyleBox" uid="uid://bfn67d56fhwu1" path="res://Themes and UI/CellLab-hoverpressed-custompopup-button.tres" id="1_a67hb"]
 [ext_resource type="Texture2D" uid="uid://4f2i66tbqreo" path="res://Images/Medium Resolution/temp_low.png" id="2_a67hb"]
+[ext_resource type="Texture2D" uid="uid://co03234e6sch" path="res://Images/yellowcircle.svg" id="2_n5rxr"]
 [ext_resource type="StyleBox" uid="uid://bkrhc42x7sga1" path="res://Themes and UI/CellLab-green_hseperator.tres" id="3_0cw44"]
 [ext_resource type="Texture2D" uid="uid://p5fmju3af5d7" path="res://Images/Medium Resolution/temp_slow.png" id="4_n5rxr"]
 [ext_resource type="Texture2D" uid="uid://6md56mn5ckjp" path="res://Images/Medium Resolution/temp_medium.png" id="5_hjvmk"]
@@ -11,10 +12,19 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_a67hb"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0cw44"]
+bg_color = Color(0.21960784, 0.5058824, 0.043137256, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
 [sub_resource type="Theme" id="Theme_0cw44"]
 Button/styles/hover = ExtResource("1_a67hb")
 Button/styles/normal = SubResource("StyleBoxEmpty_a67hb")
 Button/styles/pressed = ExtResource("1_a67hb")
+HSlider/icons/grabber = ExtResource("2_n5rxr")
+HSlider/styles/grabber_area = SubResource("StyleBoxFlat_0cw44")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hwqhx"]
 bg_color = Color(0.12156863, 0.12156863, 0.12156863, 1)

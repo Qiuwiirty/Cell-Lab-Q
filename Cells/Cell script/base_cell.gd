@@ -4,7 +4,8 @@ class_name BaseCell
 const split_audio = preload("uid://c2ncgpkfynhkk")
 
 var colliding_cells: Array[Node2D]
-@export var radius = 15
+
+var radius = 15
 @export var mass = 2.88
 @export var color = Color(1.0,1.0,1.0)
 @export var energy_loss_coefficient = 1 #Related to metabolism
@@ -31,6 +32,11 @@ var delta_mass = 0.0
 @export var k = 0.1
 #Current color is the color the cell is actually in. For example if cell get injected cell booster, it might turn pink but it only is current color. Quickly it will reverted to its original color
 var current_color = color
+
+var accumulator := 0.0
+const FIXED_STEP := 1.0 / 60.0
+# TODO: actually implementing DNA
+var dna: DNA 
 func _ready() -> void:
 	$render_quad.material = $render_quad.material.duplicate()
 	$render_quad.mesh = $render_quad.mesh.duplicate()
@@ -41,8 +47,6 @@ func _ready() -> void:
 	$collision_detector/collison.shape = $collision_detector/collison.shape.duplicate()
 	make_adhesion_mutual() #Fix adhesion that isn't symmterical 
 	#current_color = color
-var accumulator := 0.0
-const FIXED_STEP := 1.0 / 60.0
 
 func _process(delta: float) -> void:
 	handle_drag()
@@ -93,6 +97,20 @@ func _unhandled_input(event):
 					to_select(true)
 					get_parent().tween_to_selected_cell_position()
 					get_viewport().set_input_as_handled()
+		Game.ToolSelector.BIND_ADHESION:
+			if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and mouse_over and event.is_pressed():
+				if get_parent() is Plate:
+					if get_parent().bind_adhesion_cell1 == null:
+						get_parent().bind_adhesion_cell1 = self
+						$selected_circle.color = Color.WEB_GREEN
+						$selected_circle.show()
+					elif get_parent().bind_adhesion_cell2 == null:
+						get_parent().bind_adhesion_cell2 = self
+						$selected_circle.color = Color.CYAN
+						$selected_circle.show()
+						Game.infonotice.show()
+						# [i] is BBcode
+						Game.infonotice.text = "[i] Press enter to bind/unbind adhesion"
 #region To get the position for the shader
 func get_midpoint_intersection(c2: Vector2, r2: float) -> Vector2:
 	var d := global_position.distance_to(c2)
@@ -102,8 +120,7 @@ func get_midpoint_intersection(c2: Vector2, r2: float) -> Vector2:
 
 	var a = (radius * radius - r2 * r2 + d * d) / (2.0 * d)
 	var direction := (c2 - global_position).normalized()
-
-	return global_position + direction * a
+	return to_local(global_position + direction * a)
 
 func world_to_screen(world_pos: Vector2) -> Vector2:
 	var canvas_xform := get_viewport().get_canvas_transform()
@@ -129,9 +146,12 @@ func create_voronoi_effect() -> void:
 		var midpoint = get_midpoint_intersection(cell.global_position, cell.get_parent().radius)
 		if midpoint == Vector2.ZERO:
 			return
-		positions.append(world_to_screen_uv(midpoint))
-		var angle_to = get_angle_to(cell.global_position)
-		rot_dirs.append(Vector2(cos(angle_to), sin(angle_to)))
+		var uv = (midpoint + $render_quad.mesh.size * 0.5) / $render_quad.mesh.size
+		uv.y = 1.0 - uv.y 
+		positions.append(uv)
+		var angle_to = get_angle_to(cell.global_position) 
+		rot_dirs.append(Vector2(cos(angle_to), -sin(angle_to)))
+
 	$render_quad.material.set_shader_parameter("centers", positions)
 	$render_quad.material.set_shader_parameter("cell_count", colliding_cells.size())
 	$render_quad.material.set_shader_parameter("rot_dirs", rot_dirs)
@@ -244,12 +264,11 @@ func update_cell_state(delta):
 func handle_drag():
 	if not dragging:
 		return
-		
 	var target := get_global_mouse_position() + drag_offset
 	if Game.temperature != Game.SubstrateTemperature.FREEZE:
 		velocity = ((target - global_position) * drag_speed) * timescale_modifier()
 	else:
-		global_position = get_global_mouse_position()
+		global_position = get_global_mouse_position() + drag_offset
 func update_voronoi_effect():
 	if not (is_colliding and visible_on_screen and Game.use_voronoi):
 		return
@@ -260,6 +279,7 @@ func update_voronoi_effect():
 		create_voronoi_effect()
 #endregion
 func to_select(mode: bool, play_sound := true) -> void:
+	$selected_circle.color = Color("ffa600")
 	if mode:
 		$selected_circle.show()
 		if play_sound:
@@ -268,6 +288,8 @@ func to_select(mode: bool, play_sound := true) -> void:
 		$selected_circle.hide()
 		if play_sound:
 			$deselect_cell.play()
+func discard_bind_selection():
+	$selected_circle.hide()
 func diagnostics() -> StringName:
 	return """\
 	Age: %s
@@ -315,7 +337,7 @@ func apply_adhesion_force(rest_length: float = 20, damping: float = 0.3):
 			var distance = r.length()
 			if distance == 0:
 				return
-			if distance > 40: #if too long then break it
+			if distance > Game.max_adhesion_length: #if too long then break it
 				adhesion.erase(neighbor)
 				neighbor.adhesion.erase(self)
 				return

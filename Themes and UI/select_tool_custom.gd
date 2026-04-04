@@ -7,6 +7,7 @@ const OPTICAL_TWEEZERS = preload("uid://bs57ivkpqnsjj")
 const CELL_BOOST = preload("uid://b7eex3xh62xi7")
 const CELL_REMOVAL = preload("uid://cw11ewl5y6str")
 const CELL_DIAGNOSTICS = preload("uid://cxf7ocmrdrqxk")
+const BIND_ADHESION = preload("uid://djx32y86pxg8q")
 ###Animation used is easing scale ( I think that's the name? :P )
 const ANIM_DURATION = 0.1
 func open():
@@ -79,6 +80,14 @@ func _on_cell_diagnostics_button_up() -> void:
 		print("Plate is invalid and therefore unable to set the tools")
 	$"../ButtonClick2".play()
 	close()
-
+func _on_bind_adhesion_button_up() -> void:
+	$VBoxContainer/MarginContainer/heading/icon.texture = BIND_ADHESION
+	$"../TopPanel/Margin/Hbox/ToolSelector".icon = BIND_ADHESION
+	if plate is Plate:
+		plate.change_tool(Game.ToolSelector.BIND_ADHESION)
+	else:
+		print("Plate is invalid and therefore unable to set the tools")
+	$"../ButtonClick2".play()
+	close()
 func _on_close_button_up() -> void:
 	close()

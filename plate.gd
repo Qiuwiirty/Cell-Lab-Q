@@ -7,7 +7,17 @@ const food = preload("uid://bcp4xdxc828fp")
 
 var selected_cell: BaseCell = null
 var locked_to_selected = false
+
+var bind_adhesion_cell1: BaseCell = null
+var bind_adhesion_cell2: BaseCell = null
 func _unhandled_input(event: InputEvent) -> void:
+	#ui_cancel is esc
+	if event.is_action_pressed("ui_cancel"):
+		discard_any_selection()
+		Game.infonotice.hide()
+	if event.is_action_pressed("ui_accept"):
+		if bind_adhesion_cell1 and bind_adhesion_cell2:
+			handle_adhesion_bind()
 	if event is InputEventMouseButton:
 		if event.button_index == MouseButton.MOUSE_BUTTON_LEFT and event.pressed:
 			match mode:
@@ -49,11 +59,18 @@ func _ready() -> void:
 	correct_brightness_plate()
 func correct_brightness_plate():
 	$Platecolor.material.set_shader_parameter("brightness", Game.brightness_mult)
-func sterilize():
-	get_tree().call_group("cells", "queue_free")
-	get_tree().call_group("food", "queue_free")
 func change_tool(into: Game.ToolSelector):
 	mode = into
+	if mode != Game.ToolSelector.CELL_DIAGNOSTICS or mode != Game.ToolSelector.BIND_ADHESION:
+		discard_any_selection()
+func discard_any_selection():
+	discard_old_selected_cell()
+	if bind_adhesion_cell1:
+		bind_adhesion_cell1.discard_bind_selection()
+		bind_adhesion_cell1 = null
+		if bind_adhesion_cell2:
+			bind_adhesion_cell2.discard_bind_selection()
+			bind_adhesion_cell2 = null
 #Move toward selected cell smoothly
 func tween_to_selected_cell_position() -> void:
 	var tween = create_tween()
@@ -68,3 +85,17 @@ func discard_old_selected_cell() -> void:
 		selected_cell.to_select(false, false)
 		locked_to_selected = false
 		selected_cell = null
+func handle_adhesion_bind():
+	#This assume if the cell's adhesion are symmetrical/mutual (IF NOT CAN CAUSE ISSUE)
+	if not bind_adhesion_cell1.adhesion.has(bind_adhesion_cell2):
+		if bind_adhesion_cell1.global_position.distance_to(bind_adhesion_cell2.global_position) < Game.max_adhesion_length:
+			bind_adhesion_cell1.adhesion.append(bind_adhesion_cell2)
+			bind_adhesion_cell2.adhesion.append(bind_adhesion_cell1)
+			Game.infonotice.hide()
+		else:
+			Game.show_info_notice_timed("[color=red] [i] The distance between cells is too far for adhesion", 3)
+	else:
+		bind_adhesion_cell1.adhesion.erase(bind_adhesion_cell2)
+		bind_adhesion_cell2.adhesion.erase(bind_adhesion_cell1)
+		Game.infonotice.hide()
+	discard_any_selection()

@@ -16,10 +16,7 @@ const INCUBATE = preload("uid://dg2wqbvy11mos")
 
 func _on_sterilize_button_up() -> void:
 	$Margin/Hbox/SterilizeButton/Sterilize.play()
-	if plate is Plate:
-		plate.sterilize()
-	else:
-		print("The plate is incorrect and unable to sterilize. ", "The plate simply did not exist" if !plate else "The name of the incorrect object is: " + plate.name)
+	Game.sterilize()
 	$"../SterilizeRectEffect".modulate = Color(1.0, 1.0, 1.0, 0.5)
 	$"../SterilizeRectEffect".show()
 	var tween = create_tween()

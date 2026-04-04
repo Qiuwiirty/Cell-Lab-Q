@@ -10,35 +10,18 @@ uniform int cell_count = 0; //Current count collision with cells for the loops
 uniform vec2 centers[MAX_CELL_COUNT]; //The midpoint intersections between this cells and the other cells, and use it for position of the slice
 uniform vec2 rot_dirs[MAX_CELL_COUNT];
 uniform float u_size_mult: hint_range(0.0, 1.0);
-uniform vec2 screen_size;
 
 void fragment() {
 	if(cell_count != 0)
 	{
-		vec2 uv = SCREEN_UV;
-
-		// aspect correction
-		float aspect = screen_size.x / screen_size.y;
-		uv.x *= aspect;
-
+		vec2 uv = UV;
 		for (int i = 0; i < MAX_CELL_COUNT; i++) {
 			if (i >= cell_count) break;
-
 			vec2 c = centers[i];
-			c.x *= aspect;
-
 			vec2 pos = uv - c;
-
 			vec2 dir = rot_dirs[i];
-
-			vec2 rotated = vec2(
-			    pos.x * dir.x + pos.y * dir.y,
-			   -pos.x * dir.y + pos.y * dir.x
-			);
-
-
-			if (rotated.x > 0.0) {
-				discard;
+			if (dot(pos, dir) > 0.0) {
+			    discard;
 			}
 		}
 	}
@@ -49,7 +32,7 @@ void fragment() {
 	//n on top i, i on top o. 'o' and 'n' have darker color while 'i' have white color
 	vec2 diff = UV - vec2(0.5);
 	float dist = dot(diff, diff);
-
+	
 	float o_radius = 0.5 * u_size_mult;
 	//I decrease o_radius - 0.05, because in cell lab, the thickness of the darker, outline thingy is actually same all the same.
 	//Affecting i_radius with u_size_mult directly (e.g. 0.45 * u_size_mult) can make the thickness of the outline incosistent.
@@ -66,7 +49,7 @@ void fragment() {
 	float outer_ring = o_circle - i_circle;
 	float inner_ring = i_circle - n_circle;
 	float nucleus    = n_circle;
-
+	
 	vec3 color =
 		outer_ring * darker_color +
 		inner_ring * u_color +
@@ -83,14 +66,13 @@ void fragment() {
 		step(deco_uv.x, 1.0) *
 		step(deco_uv.y, 1.0);
 	vec3 final_color = color;
-
 	if (u_use_decoration > 0.5) {
 		vec4 deco_tex = texture(decoration, deco_uv) * inside;
 		final_color = mix(color, deco_tex.rgb, deco_tex.a);
 	}
-
+	
 	COLOR = vec4(final_color, o_circle);
-
+	
 	//Literally just copy the background and then render it (INEFFICIENT). Unused.
 	//This used when you don't render the object
 	//COLOR = texture(SCREEN_TEXTURE, SCREEN_UV);
