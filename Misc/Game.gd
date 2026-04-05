@@ -19,9 +19,10 @@ enum SubstrateTemperature
 enum CellType
 {
 	BASE_CELL, #The most basic cell
-	PHAGOCYTE
+	PHOTOCYTE
 }
 signal UI_ready
+const max_modes_count = 40
 var UI = null #This must be immediately set so system can quickly access UI
 ###Containing current plate configuration and managing stuff
 var brightness_mult = 1.0 #ONLY USE ON NON-MATH LIGHTNING BTW!!
@@ -37,13 +38,7 @@ var infonotice
 #True: this means the game use math and shader to calculate and create light which could be faster and can quickly change
 #False: use image instead, which can create many unique stuff and probably more interesting plate
 func _process(_delta: float) -> void:
-	var cells = get_tree().get_nodes_in_group("cells")
-	for cell in cells:
-			cell.compute_flows()
-	for cell in cells:
-			cell.apply_flows()
-	for cell in cells:
-		cell.apply_adhesion_force()
+	pass
 func sterilize():
 	get_tree().call_group("cells", "queue_free")
 	get_tree().call_group("food", "queue_free")
@@ -57,3 +52,17 @@ func _ready() -> void:
 	Engine.time_scale = 1
 	await UI_ready
 	infonotice = UI.get_node("infonotice")
+func get_script_for_type(type: CellType) -> GDScript:
+	match type:
+		CellType.BASE_CELL: return BaseCell
+		CellType.PHOTOCYTE: return Photocyte
+		_: return BaseCell
+func get_instance_cell(cell_type: CellType):
+	match cell_type:
+		Game.CellType.BASE_CELL:
+			return load("uid://cymj82ljpiu70")
+		Game.CellType.PHOTOCYTE:
+			return load("uid://sy8jnyx6hyux")
+		_:
+			print("Unknown cell type")
+			return load("uid://cymj82ljpiu70") #Load Base cell

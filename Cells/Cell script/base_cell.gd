@@ -2,16 +2,14 @@ extends CharacterBody2D
 class_name BaseCell
 #TODO: IMPROVE THE ADHESION
 const split_audio = preload("uid://c2ncgpkfynhkk")
-
+@onready var mode: CellMode = get_mode(dna) #mode like M0, M1, M2... It store essential thingies like color and etc..
 var colliding_cells: Array[Node2D]
 
 var radius = 15
 @export var mass = 2.88
-@export var color = Color(1.0,1.0,1.0)
 @export var energy_loss_coefficient = 1 #Related to metabolism
-@export var nutrient_priority = 1.0
 @export var adhesion: Array[BaseCell]
-@export var adhesion_stiffness = 5
+@export var disable_metabolism := false
 var is_colliding = false
 var visible_on_screen = false
 const MASS_EPSILON := 0.01
@@ -29,15 +27,24 @@ var age = 0.0
 var delta_mass = 0.0
 #how fast nutrients can flow through a connection
 #you could make k different for each cell, but it is best to make same for all cells rn
-@export var k = 0.1
+@export var k = 0.01
 #Current color is the color the cell is actually in. For example if cell get injected cell booster, it might turn pink but it only is current color. Quickly it will reverted to its original color
-var current_color = color
+var current_color = Color.WHITE #it should immediately set on _ready
 
 var accumulator := 0.0
 const FIXED_STEP := 1.0 / 60.0
 # TODO: actually implementing DNA
-var dna: DNA 
+@export var dna: DNA
+@export var current_mode: int = 0 #start from 0.
+
 func _ready() -> void:
+	if !dna:
+		#No dna, means we set it so there won't be any error
+		#We set it to the M0 
+		dna = DNA.new()
+		mode = get_mode(dna)
+	current_color = mode.color
+	input_pickable = true
 	$render_quad.material = $render_quad.material.duplicate()
 	$render_quad.mesh = $render_quad.mesh.duplicate()
 	#$render_quad.material.set_shader_parameter("u_use_decoration", 0.0)
@@ -46,11 +53,8 @@ func _ready() -> void:
 	$collision.shape = $collision.shape.duplicate()
 	$collision_detector/collison.shape = $collision_detector/collison.shape.duplicate()
 	make_adhesion_mutual() #Fix adhesion that isn't symmterical 
-	#current_color = color
-
 func _process(delta: float) -> void:
 	handle_drag()
-	
 	if Game.temperature == Game.SubstrateTemperature.FREEZE:
 		correct_appearance(delta, false)
 		create_voronoi_effect()
@@ -68,6 +72,12 @@ func simulate_step(delta: float) -> void:
 	update_cell_state(delta)
 	apply_collision_forces(delta)
 	apply_motion(delta)
+	apply_adhesion_force()
+	compute_flows()
+	apply_flows()
+	if mode:
+		if mass > mode.split_mass:
+			split()
 func _unhandled_input(event):
 	match get_parent().mode:
 		Game.ToolSelector.OPTICAL_TWEEZERS:
@@ -104,7 +114,7 @@ func _unhandled_input(event):
 						get_parent().bind_adhesion_cell1 = self
 						$selected_circle.color = Color.WEB_GREEN
 						$selected_circle.show()
-					elif get_parent().bind_adhesion_cell2 == null:
+					elif get_parent().bind_adhesion_cell2 == null and get_parent().bind_adhesion_cell1 != self:
 						get_parent().bind_adhesion_cell2 = self
 						$selected_circle.color = Color.CYAN
 						$selected_circle.show()
@@ -143,15 +153,17 @@ func create_voronoi_effect() -> void:
 	var positions := PackedVector2Array()
 	var rot_dirs := PackedVector2Array()
 	for cell in colliding_cells:
+		if !is_instance_valid(cell):
+			continue
 		var midpoint = get_midpoint_intersection(cell.global_position, cell.get_parent().radius)
 		if midpoint == Vector2.ZERO:
-			return
+			continue
 		var uv = (midpoint + $render_quad.mesh.size * 0.5) / $render_quad.mesh.size
 		uv.y = 1.0 - uv.y 
 		positions.append(uv)
 		var angle_to = get_angle_to(cell.global_position) 
 		rot_dirs.append(Vector2(cos(angle_to), -sin(angle_to)))
-
+		
 	$render_quad.material.set_shader_parameter("centers", positions)
 	$render_quad.material.set_shader_parameter("cell_count", colliding_cells.size())
 	$render_quad.material.set_shader_parameter("rot_dirs", rot_dirs)
@@ -168,13 +180,15 @@ func correct_appearance(delta, modify_color = true):
 	$collision.shape.radius = radius
 	$collision_detector/collison.shape.radius = radius
 	#I am not using current_color != color cuz there will be always digits that are different. Instead I use tolerance (0.001)
-	if !colors_are_close(current_color, color) and modify_color:
-		current_color = lerp(current_color, color, 3.5 * delta)
+	if !colors_are_close(current_color, mode.color) and modify_color:
+		current_color = lerp(current_color, mode.color, 3.5 * delta)
 	else: #Snap it
-		current_color = color
+		current_color = mode.color
 	$render_quad.material.set_shader_parameter("u_color", current_color)
-	$render_quad.material.set_shader_parameter("u_size_mult", radius / 15.0)
-func metabolism(delta):
+	$render_quad.material.set_shader_parameter("u_size_mult", (radius + 4.5) / 19.5)
+func metabolism(delta, modifier := 1.0):
+	if disable_metabolism:
+		return
 	var alpha = 0.021614
 	var beta = 0.161532
 	var metabolic = -energy_loss_coefficient \
@@ -182,7 +196,7 @@ func metabolism(delta):
 		* (alpha * sqrt(mass) + beta)
 
 	#apply metabolism!!
-	mass += metabolic * delta
+	mass += metabolic * delta * modifier
 
 	#clamp so the mass cell won't go over 3.6
 	mass = minf(3.60, mass)
@@ -219,7 +233,6 @@ func _screen_exited_notifier() -> void:
 #This is for dragging purposes
 func _on_mouse_entered() -> void:
 	mouse_over = true
-
 func _on_mouse_exited() -> void:
 	mouse_over = false
 #endregion
@@ -278,9 +291,9 @@ func update_voronoi_effect():
 	else:
 		create_voronoi_effect()
 #endregion
-func to_select(mode: bool, play_sound := true) -> void:
+func to_select(b: bool, play_sound := true) -> void:
 	$selected_circle.color = Color("ffa600")
-	if mode:
+	if b:
 		$selected_circle.show()
 		if play_sound:
 			$select_cell.play()
@@ -308,8 +321,8 @@ func compute_flows():
 		#avoid double calculation: only lower ID cell do the calculations, higher ID skips it
 		if get_instance_id() < neighbor.get_instance_id():
 			
-			var pressure_self = mass / nutrient_priority
-			var pressure_neighbor = neighbor.mass / neighbor.nutrient_priority
+			var pressure_self = mass / mode.nutrient_priority
+			var pressure_neighbor = neighbor.mass / neighbor.mode.nutrient_priority
 			
 			var flow = k * (pressure_neighbor - pressure_self)
 			
@@ -329,7 +342,7 @@ func apply_adhesion_force(rest_length: float = 20, damping: float = 0.3):
 	###Credit to Genomeia (I borrowed the physics linking between cells from Genomeia) ^_^
 	var index = 0
 	for neighbor in adhesion:
-		if !is_instance_valid(neighbor):
+		if !is_instance_valid(neighbor) or neighbor == self:
 			adhesion.remove_at(index)
 			return
 		if get_instance_id() < neighbor.get_instance_id():
@@ -344,7 +357,7 @@ func apply_adhesion_force(rest_length: float = 20, damping: float = 0.3):
 			var dir = r / distance  # unit vector along the link
 
 			#hookes law
-			var stiffness = (adhesion_stiffness + neighbor.adhesion_stiffness) / 2.0
+			var stiffness = (mode.adhesion_stiffness + neighbor.mode.adhesion_stiffness) / 2.0
 			var spring_force = stiffness * (distance - rest_length)
 
 			#damp
@@ -361,3 +374,60 @@ func make_adhesion_mutual():
 	for neighbor in adhesion:
 		if !neighbor.adhesion.has(self):
 			neighbor.adhesion.append(self)
+#region DNA
+#this is supposed use for virocytes
+func get_mode(new_dna) -> CellMode:
+	if new_dna:
+		return new_dna.modes[current_mode]
+	return null
+func set_properties_DNA(new_dna) -> void:
+	var cell_mode := get_mode(new_dna)
+	if !cell_mode:
+		return
+	var correct_script := Game.get_script_for_type(cell_mode.cell_type)
+	
+	if get_script() != correct_script:
+		var new_cell = Game.get_instance_cell(cell_mode.cell_type).instantiate()
+		new_cell.position = position
+		new_cell.velocity = velocity
+		new_cell.dna = new_dna
+		new_cell.split_mass = cell_mode.split_mass
+		new_cell.split_ratio = cell_mode.split_ratio
+		new_cell.color = cell_mode.color
+		new_cell.nutrient_priority = cell_mode.nutrient_priority
+		new_cell.children1 = cell_mode.children1
+		new_cell.children2 = cell_mode.children2
+		new_cell.adhesion_stiffness = cell_mode.adhesion_stiffness
+		get_parent().add_child.call_deferred(new_cell)
+		queue_free()
+		return
+	
+	#Same type, just update properties
+	mode.split_mass = cell_mode.split_mass
+	mode.split_ratio = cell_mode.split_ratio
+	mode.color = cell_mode.color
+	mode.nutrient_priority = cell_mode.nutrient_priority
+	mode.children1 = cell_mode.children1
+	mode.children2 = cell_mode.children2
+	mode.adhesion_stiffness = cell_mode.adhesion_stiffness
+func split() -> void:
+	if !mode:
+		return
+	var split_dir := Vector2.RIGHT.rotated(deg_to_rad(mode.split_angle))
+	# child 1
+	var child1 = Game.get_instance_cell(mode.children1.cell_type).instantiate()
+	child1.position = position
+	child1.velocity = velocity + split_dir
+	child1.dna = dna
+	child1.current_mode = mode.children1.index_mode
+	child1.mass = mass * mode.split_ratio
+	get_parent().add_child.call_deferred(child1)
+	# child 2
+	var child2 = Game.get_instance_cell(mode.children2.cell_type).instantiate()
+	child2.position = position
+	child2.velocity = velocity - split_dir
+	child2.dna = dna
+	child2.current_mode = mode.children2.index_mode
+	child2.mass = mass * (1.0 - mode.split_ratio)
+	get_parent().add_child.call_deferred(child2)
+	queue_free()

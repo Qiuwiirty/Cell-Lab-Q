@@ -21,12 +21,9 @@ func _ready():
 	energy_loss_coefficient = 2
 func _process(delta: float) -> void:
 	super(delta)
-	if Game.temperature == Game.SubstrateTemperature.FREEZE:
-		return
-	#Photosynthesis
-	#Delta must be mutlipied with timescale_modifier because the super(delta) does not carry any modification to delta and need to perform again to be consistent
-	#Else, photocyte may rapidly dying or immortal if not using time scale modifier
-	mass = min(mass + (get_brightness() * (delta * timescale_modifier()) * (1.0 if Game.use_math_lightning else Game.brightness_mult)), 3.6)
+func simulate_step(delta: float) -> void:
+	super(delta)
+	mass = min(mass + (get_brightness() * delta * (1.0 if Game.use_math_lightning else Game.brightness_mult)), 3.6)
 func get_brightness() -> float:
 	if not Game.use_math_lightning:
 		var local_pos: Vector2 = $"../Platecolor".to_local(global_position)

@@ -31,11 +31,9 @@ input_pickable = true
 script = ExtResource("1_gwrgs")
 
 [node name="collision" type="CollisionShape2D" parent="." unique_id=922520947]
-visible = false
 shape = SubResource("CircleShape2D_14hpr")
 
 [node name="collision_detector" type="Area2D" parent="." unique_id=824408307]
-visible = false
 
 [node name="collison" type="CollisionShape2D" parent="collision_detector" unique_id=271180384]
 shape = SubResource("CircleShape2D_i10ga")

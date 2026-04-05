@@ -105,6 +105,17 @@ func _on_spin_box_value_changed(value: float) -> void:
 	Game.salinity = value
 "
 
+[sub_resource type="GDScript" id="GDScript_2cuuw"]
+resource_name = "max_adhesion_length"
+script/source = "extends HBoxContainer
+
+func _ready() -> void:
+	$SpinBox.value = Game.max_adhesion_length
+
+func _on_value_changed(value: float) -> void:
+	Game.max_adhesion_length = value
+"
+
 [node name="UI" type="CanvasLayer" unique_id=103741496]
 editor_description = "This node intended to placed inside plate. Otherwise it might not worked.."
 script = ExtResource("1_ux5x0")
@@ -240,7 +251,6 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_ux5x0")
 layout_mode = 2
 
 [node name="configuration_panel" type="PanelContainer" parent="." unique_id=1636530376]
-visible = false
 material = SubResource("ShaderMaterial_i6rmi")
 anchors_preset = 15
 anchor_right = 1.0
@@ -259,7 +269,7 @@ layout_mode = 2
 layout_mode = 2
 bbcode_enabled = true
 text = "[color=PALE_GREEN] [b]-=⚙️Configuration⚙️=-[/b] [/color]
-[color=WHEAT]Version 0.1 [font_size=10] (1st version of this game btw!) [/font_size] [/color]
+[color=WHEAT]Version 0.0 [font_size=10] (It's still in development) [/font_size] [/color]
 Here, you can configure the game/plate ^_^"
 fit_content = true
 
@@ -300,6 +310,7 @@ text = "Math Lighting"
 [node name="x" type="SpinBox" parent="configuration_panel/vbox/math_lighting" unique_id=757670067]
 layout_mode = 2
 size_flags_horizontal = 3
+min_value = -100.0
 step = 0.001
 suffix = "X"
 custom_arrow_step = 0.1
@@ -307,6 +318,7 @@ custom_arrow_step = 0.1
 [node name="y" type="SpinBox" parent="configuration_panel/vbox/math_lighting" unique_id=707094662]
 layout_mode = 2
 size_flags_horizontal = 3
+min_value = -100.0
 step = 0.001
 suffix = "Y"
 custom_arrow_step = 0.1
@@ -314,6 +326,7 @@ custom_arrow_step = 0.1
 [node name="z" type="SpinBox" parent="configuration_panel/vbox/math_lighting" unique_id=1860800528]
 layout_mode = 2
 size_flags_horizontal = 3
+min_value = -100.0
 step = 0.001
 suffix = "Z"
 custom_arrow_step = 0.1
@@ -321,6 +334,7 @@ custom_arrow_step = 0.1
 [node name="w" type="SpinBox" parent="configuration_panel/vbox/math_lighting" unique_id=1554444382]
 layout_mode = 2
 size_flags_horizontal = 3
+min_value = -100.0
 step = 0.001
 suffix = "W"
 custom_arrow_step = 0.1
@@ -335,6 +349,7 @@ text = "Brightness Multiplier"
 
 [node name="b" type="SpinBox" parent="configuration_panel/vbox/brightness_mult" unique_id=1900133426]
 layout_mode = 2
+min_value = -100.0
 step = 0.001
 value = 1.0
 custom_arrow_step = 0.1
@@ -367,6 +382,22 @@ text = "Salinity"
 
 [node name="SpinBox" type="SpinBox" parent="configuration_panel/vbox/salinity" unique_id=1877644740]
 layout_mode = 2
+min_value = -100.0
+step = 0.001
+custom_arrow_step = 0.05
+
+[node name="max_adhesion_length" type="HBoxContainer" parent="configuration_panel/vbox" unique_id=1712752966]
+layout_mode = 2
+script = SubResource("GDScript_2cuuw")
+
+[node name="Label" type="Label" parent="configuration_panel/vbox/max_adhesion_length" unique_id=1430790262]
+layout_mode = 2
+text = "Max adhesion length"
+
+[node name="SpinBox" type="SpinBox" parent="configuration_panel/vbox/max_adhesion_length" unique_id=55627889]
+layout_mode = 2
+min_value = -100.0
+max_value = 100000.0
 step = 0.001
 custom_arrow_step = 0.05
 
@@ -401,3 +432,4 @@ autowrap_mode = 0
 [connection signal="value_changed" from="configuration_panel/vbox/brightness_mult/b" to="configuration_panel/vbox/brightness_mult" method="_on_b_value_changed"]
 [connection signal="toggled" from="configuration_panel/vbox/use_voronoi" to="configuration_panel/vbox/use_voronoi" method="_on_toggled"]
 [connection signal="value_changed" from="configuration_panel/vbox/salinity/SpinBox" to="configuration_panel/vbox/salinity" method="_on_spin_box_value_changed"]
+[connection signal="value_changed" from="configuration_panel/vbox/max_adhesion_length/SpinBox" to="configuration_panel/vbox/max_adhesion_length" method="_on_value_changed"]

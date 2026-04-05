@@ -5,4 +5,3 @@
 
 [node name="Photocyte" unique_id=1844930053 instance=ExtResource("1_7q7h6")]
 script = ExtResource("1_02e2r")
-k = 1.0

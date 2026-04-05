@@ -1,0 +1,34 @@
+[gd_scene format=3 uid="uid://b7wyhxq3hyig5"]
+
+[ext_resource type="PackedScene" uid="uid://cymj82ljpiu70" path="res://Cells/Tscn file/base_cell.tscn" id="1_mx0vx"]
+[ext_resource type="Script" uid="uid://dqljl8euwgvha" path="res://Cells/Cell script/luminocyte.gd" id="2_nyf3r"]
+[ext_resource type="Shader" uid="uid://wlvyukjnkdbv" path="res://Shaders/light.gdshader" id="3_xo3dj"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_nyf3r"]
+size = Vector2(256, 256)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_cr0gn"]
+shader = ExtResource("3_xo3dj")
+shader_parameter/u_color = Color(1, 0.8980392, 0.7372549, 1)
+shader_parameter/u_intensity = 1.0000000475
+shader_parameter/u_falloff = 1.00000004424012
+
+[sub_resource type="QuadMesh" id="QuadMesh_af6ju"]
+size = Vector2(256, 256)
+
+[node name="Luminocyte" unique_id=1462000660 instance=ExtResource("1_mx0vx")]
+script = ExtResource("2_nyf3r")
+lum_scale = 1.0
+lum_intensity = 1.0
+
+[node name="photocyte_detector" type="Area2D" parent="." index="1" unique_id=1563249957]
+
+[node name="collision" type="CollisionShape2D" parent="photocyte_detector" index="0" unique_id=730705591]
+shape = SubResource("RectangleShape2D_nyf3r")
+
+[node name="light" type="MeshInstance2D" parent="." index="9" unique_id=1467246283]
+material = SubResource("ShaderMaterial_cr0gn")
+mesh = SubResource("QuadMesh_af6ju")
+
+[connection signal="body_entered" from="photocyte_detector" to="." method="_on_photocyte_detector_body_entered"]
+[connection signal="body_exited" from="photocyte_detector" to="." method="_on_photocyte_detector_body_exited"]
