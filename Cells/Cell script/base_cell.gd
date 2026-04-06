@@ -5,11 +5,11 @@ const split_audio = preload("uid://c2ncgpkfynhkk")
 @onready var mode: CellMode = get_mode(dna) #mode like M0, M1, M2... It store essential thingies like color and etc..
 var colliding_cells: Array[Node2D]
 
-var radius = 15
+var radius = 15.0
 @export var mass = 2.88
 @export var energy_loss_coefficient = 1 #Related to metabolism
 @export var adhesion: Array[BaseCell]
-@export var disable_metabolism := false
+@export var nitrogen_reserve := 100.
 var is_colliding = false
 var visible_on_screen = false
 const MASS_EPSILON := 0.01
@@ -33,17 +33,19 @@ var current_color = Color.WHITE #it should immediately set on _ready
 
 var accumulator := 0.0
 const FIXED_STEP := 1.0 / 60.0
-# TODO: actually implementing DNA
+
 @export var dna: DNA
 @export var current_mode: int = 0 #start from 0.
 
 func _ready() -> void:
+	Game.cell_count += 1
 	if !dna:
 		#No dna, means we set it so there won't be any error
 		#We set it to the M0 
 		dna = DNA.new()
 		mode = get_mode(dna)
-	current_color = mode.color
+		mode.cell_type = Game.get_cell_type(self)
+	#current_color = mode.color
 	input_pickable = true
 	$render_quad.material = $render_quad.material.duplicate()
 	$render_quad.mesh = $render_quad.mesh.duplicate()
@@ -53,6 +55,7 @@ func _ready() -> void:
 	$collision.shape = $collision.shape.duplicate()
 	$collision_detector/collison.shape = $collision_detector/collison.shape.duplicate()
 	make_adhesion_mutual() #Fix adhesion that isn't symmterical 
+	correct_appearance(1 / 60.) #Without this, you can see the default state of cell flash for a second when it's spawn. This func solve it
 func _process(delta: float) -> void:
 	handle_drag()
 	if Game.temperature == Game.SubstrateTemperature.FREEZE:
@@ -75,8 +78,9 @@ func simulate_step(delta: float) -> void:
 	apply_adhesion_force()
 	compute_flows()
 	apply_flows()
+	nitrogen_reserve = min(nitrogen_reserve + sqrt(Game.nitrates) * delta, 100)
 	if mode:
-		if mass > mode.split_mass:
+		if mass > mode.split_mass and nitrogen_reserve > 20 and Game.cell_count < Game.maximum_cell_count and age > 0.5:
 			split()
 func _unhandled_input(event):
 	match get_parent().mode:
@@ -121,6 +125,14 @@ func _unhandled_input(event):
 						Game.infonotice.show()
 						# [i] is BBcode
 						Game.infonotice.text = "[i] Press enter to bind/unbind adhesion"
+		Game.ToolSelector.DEBUG_CELL:
+			if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and mouse_over and event.is_pressed():
+				var debug_cell = Game.UI.get_node_or_null("debug_cell")
+				if debug_cell:
+					debug_cell.open()
+					debug_cell.assign_cell(self)
+					$selected_circle.color = Color.CHARTREUSE
+					$selected_circle.show()
 #region To get the position for the shader
 func get_midpoint_intersection(c2: Vector2, r2: float) -> Vector2:
 	var d := global_position.distance_to(c2)
@@ -175,19 +187,20 @@ func colors_are_close(a: Color, b: Color, tolerance := 0.001) -> bool:
 		and abs(a.a - b.a) < tolerance
 #region Cell stuff
 #Manage cell mass and clamp the mass. This also essential to decide whether cell should die
-func correct_appearance(delta, modify_color = true):
-	radius = mass * 4.166666
+func correct_appearance(delta, modify_color_radius = true):
+	if modify_color_radius:
+		radius = lerp(radius, 15. * sqrt(mass / 3.6), 0.1) #Not linear 
 	$collision.shape.radius = radius
 	$collision_detector/collison.shape.radius = radius
 	#I am not using current_color != color cuz there will be always digits that are different. Instead I use tolerance (0.001)
-	if !colors_are_close(current_color, mode.color) and modify_color:
+	if !colors_are_close(current_color, mode.color) and modify_color_radius:
 		current_color = lerp(current_color, mode.color, 3.5 * delta)
 	else: #Snap it
 		current_color = mode.color
 	$render_quad.material.set_shader_parameter("u_color", current_color)
-	$render_quad.material.set_shader_parameter("u_size_mult", (radius + 4.5) / 19.5)
+	$render_quad.material.set_shader_parameter("u_size_mult", radius / 15.0)
 func metabolism(delta, modifier := 1.0):
-	if disable_metabolism:
+	if mode.disable_metabolism:
 		return
 	var alpha = 0.021614
 	var beta = 0.161532
@@ -205,6 +218,7 @@ func metabolism(delta, modifier := 1.0):
 	if mass < 0.90:
 		die()
 func die():
+	Game.cell_count -= 1
 	queue_free()
 
 func play_split_sound():
@@ -311,13 +325,15 @@ func diagnostics() -> StringName:
 	Type: %s""" % [snappedf(age, 0.001), snappedf(mass, 0.001), snappedf(radius * 2, 0.001), get_script().get_global_name()]
 #region Adhesion
 #compute and apply flows are managed by a singleton (Game)
-func compute_flows():
+func compute_flows() -> void:
 	var index = 0
 	for neighbor in adhesion:
 		if !is_instance_valid(neighbor):
 			##For some reason, using erase cause an error. So I use remove_at instead
 			adhesion.remove_at(index)
-			return
+			continue
+		if neighbor.mode == null:
+			continue
 		#avoid double calculation: only lower ID cell do the calculations, higher ID skips it
 		if get_instance_id() < neighbor.get_instance_id():
 			
@@ -334,7 +350,7 @@ func compute_flows():
 			neighbor.delta_mass -= flow
 		index += 1
 
-func apply_flows():
+func apply_flows() -> void:
 	mass += delta_mass
 	delta_mass = 0.0
 
@@ -344,7 +360,9 @@ func apply_adhesion_force(rest_length: float = 20, damping: float = 0.3):
 	for neighbor in adhesion:
 		if !is_instance_valid(neighbor) or neighbor == self:
 			adhesion.remove_at(index)
-			return
+			continue
+		if neighbor.mode == null:
+			continue
 		if get_instance_id() < neighbor.get_instance_id():
 			var r = position - neighbor.position
 			var distance = r.length()
@@ -355,7 +373,6 @@ func apply_adhesion_force(rest_length: float = 20, damping: float = 0.3):
 				neighbor.adhesion.erase(self)
 				return
 			var dir = r / distance  # unit vector along the link
-
 			#hookes law
 			var stiffness = (mode.adhesion_stiffness + neighbor.mode.adhesion_stiffness) / 2.0
 			var spring_force = stiffness * (distance - rest_length)
@@ -380,7 +397,7 @@ func get_mode(new_dna) -> CellMode:
 	if new_dna:
 		return new_dna.modes[current_mode]
 	return null
-func set_properties_DNA(new_dna) -> void:
+func inject_DNA(new_dna) -> void:
 	var cell_mode := get_mode(new_dna)
 	if !cell_mode:
 		return
@@ -395,11 +412,11 @@ func set_properties_DNA(new_dna) -> void:
 		new_cell.split_ratio = cell_mode.split_ratio
 		new_cell.color = cell_mode.color
 		new_cell.nutrient_priority = cell_mode.nutrient_priority
-		new_cell.children1 = cell_mode.children1
-		new_cell.children2 = cell_mode.children2
+		new_cell.child1 = cell_mode.child1
+		new_cell.child2 = cell_mode.child2
 		new_cell.adhesion_stiffness = cell_mode.adhesion_stiffness
 		get_parent().add_child.call_deferred(new_cell)
-		queue_free()
+		die()
 		return
 	
 	#Same type, just update properties
@@ -407,27 +424,71 @@ func set_properties_DNA(new_dna) -> void:
 	mode.split_ratio = cell_mode.split_ratio
 	mode.color = cell_mode.color
 	mode.nutrient_priority = cell_mode.nutrient_priority
-	mode.children1 = cell_mode.children1
-	mode.children2 = cell_mode.children2
+	mode.child1 = cell_mode.child1
+	mode.child2 = cell_mode.child2
 	mode.adhesion_stiffness = cell_mode.adhesion_stiffness
+
+func turn_into_another_cell_type(type: Game.CellType) -> void:
+	var new_cell = Game.get_instance_cell(type).instantiate()
+	new_cell.mass = mass
+	new_cell.position = position
+	new_cell.velocity = velocity
+	new_cell.dna = dna
+	get_parent().add_child.call_deferred(new_cell)
+	die()
+
 func split() -> void:
 	if !mode:
 		return
 	var split_dir := Vector2.RIGHT.rotated(deg_to_rad(mode.split_angle))
 	# child 1
-	var child1 = Game.get_instance_cell(mode.children1.cell_type).instantiate()
+	var child1 = Game.get_instance_cell(mode.child1.cell_type).instantiate()
 	child1.position = position
-	child1.velocity = velocity + split_dir
+	child1.velocity = velocity + split_dir * 2
 	child1.dna = dna
-	child1.current_mode = mode.children1.index_mode
+	child1.current_mode = mode.child1.index_mode
 	child1.mass = mass * mode.split_ratio
-	get_parent().add_child.call_deferred(child1)
+	child1.nitrogen_reserve = nitrogen_reserve / 2.
+	child1.radius = radius
+	child1.current_color = current_color
 	# child 2
-	var child2 = Game.get_instance_cell(mode.children2.cell_type).instantiate()
+	var child2 = Game.get_instance_cell(mode.child2.cell_type).instantiate()
 	child2.position = position
-	child2.velocity = velocity - split_dir
+	child2.velocity = velocity - split_dir * 2
 	child2.dna = dna
-	child2.current_mode = mode.children2.index_mode
+	child2.current_mode = mode.child2.index_mode
 	child2.mass = mass * (1.0 - mode.split_ratio)
+	child2.nitrogen_reserve = nitrogen_reserve / 2.
+	child2.radius = radius
+	child2.current_color = current_color
+	if mode.make_adhesion:
+		child1.adhesion.append(child2)
+		child2.adhesion.append(child1)
+
+	for cell in adhesion:
+		if not is_instance_valid(cell):
+			continue
+		cell.adhesion.erase(self)
+		
+		var to_neighbor = (cell.position - position).normalized()
+		var dot = split_dir.dot(to_neighbor)
+		
+		if mode.child2_kept_adhesion and dot > 0:
+			child2.adhesion.append(cell)
+			cell.adhesion.append(child2)
+		elif mode.child1_kept_adhesion and dot < 0:
+			child1.adhesion.append(cell)
+			cell.adhesion.append(child1)
+	get_parent().add_child.call_deferred(child1)
 	get_parent().add_child.call_deferred(child2)
-	queue_free()
+	die()
+	#for cell in adhesion:
+		#if not is_instance_valid(cell):
+			#continue
+		#cell.adhesion.erase(self)
+		#if mode.child2_kept_adhesion:
+			#child2.adhesion.append(cell)
+			#cell.adhesion.append(child2)
+		#if mode.child1_kept_adhesion:
+			#child1.adhesion.append(cell)
+			#cell.adhesion.append(child1)

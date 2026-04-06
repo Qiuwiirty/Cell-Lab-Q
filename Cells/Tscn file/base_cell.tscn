@@ -7,10 +7,10 @@
 [ext_resource type="AudioStream" uid="uid://b3im5wjuee3c0" path="res://Sound and Music/select_cell.mp3" id="5_i10ga"]
 [ext_resource type="AudioStream" uid="uid://bwi0f5pvon7ja" path="res://Sound and Music/deselect_cell.mp3" id="6_1c3qp"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_14hpr"]
+[sub_resource type="CircleShape2D" id="CircleShape2D_i10ga"]
 radius = 15.0
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_i10ga"]
+[sub_resource type="CircleShape2D" id="CircleShape2D_14hpr"]
 radius = 15.0
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_uvg6q"]
@@ -30,13 +30,13 @@ z_index = 1
 input_pickable = true
 script = ExtResource("1_gwrgs")
 
-[node name="collision" type="CollisionShape2D" parent="." unique_id=922520947]
-shape = SubResource("CircleShape2D_14hpr")
-
 [node name="collision_detector" type="Area2D" parent="." unique_id=824408307]
 
 [node name="collison" type="CollisionShape2D" parent="collision_detector" unique_id=271180384]
 shape = SubResource("CircleShape2D_i10ga")
+
+[node name="collision" type="CollisionShape2D" parent="." unique_id=922520947]
+shape = SubResource("CircleShape2D_14hpr")
 
 [node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="." unique_id=1735079836]
 rect = Rect2(-15, -15, 30, 30)

@@ -8,6 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://cw11ewl5y6str" path="res://Images/Medium Resolution/tool_remove.png" id="6_fwkhp"]
 [ext_resource type="Texture2D" uid="uid://cxf7ocmrdrqxk" path="res://Images/Medium Resolution/tool_info.png" id="7_qs8m7"]
 [ext_resource type="Texture2D" uid="uid://djx32y86pxg8q" path="res://Images/Medium Resolution/bind_ahdesion.png" id="8_qs8m7"]
+[ext_resource type="Texture2D" uid="uid://bntovk0lsluej" path="res://Images/Medium Resolution/debug_cell.png" id="9_lv1og"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_i0k3j"]
 bg_color = Color(0.23392546, 0.23392546, 0.23392543, 1)
@@ -95,7 +96,7 @@ theme_override_styles/separator = ExtResource("3_qs8m7")
 
 [node name="cell_synthesizer" type="Button" parent="VBoxContainer" unique_id=282584238]
 layout_mode = 2
-text = "Cell Synthesizer"
+text = "Cell synthesizer"
 icon = ExtResource("2_v33lj")
 alignment = 0
 
@@ -155,6 +156,16 @@ alignment = 0
 layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_ssf00")
 
+[node name="debug" type="Button" parent="VBoxContainer" unique_id=678159404]
+layout_mode = 2
+text = "Debug cell"
+icon = ExtResource("9_lv1og")
+alignment = 0
+
+[node name="HSeparator8" type="HSeparator" parent="VBoxContainer" unique_id=792421924]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_ssf00")
+
 [node name="Control" type="Control" parent="VBoxContainer" unique_id=923736609]
 layout_mode = 2
 
@@ -165,3 +176,4 @@ layout_mode = 2
 [connection signal="button_up" from="VBoxContainer/cell_removal" to="." method="_on_cell_removal_button_up"]
 [connection signal="button_up" from="VBoxContainer/cell_diagnostics" to="." method="_on_cell_diagnostics_button_up"]
 [connection signal="button_up" from="VBoxContainer/bind_adhesion" to="." method="_on_bind_adhesion_button_up"]
+[connection signal="button_up" from="VBoxContainer/debug" to="." method="_on_debug_button_up"]

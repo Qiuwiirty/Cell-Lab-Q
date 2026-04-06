@@ -9,6 +9,10 @@ const INCUBATE = preload("uid://dg2wqbvy11mos")
 const CUSTOM = preload("uid://dslg8yitragtg") #AKA custom
 ###Animation used is easing scale ( I think that's the name? :P )
 const ANIM_DURATION = 0.1
+
+var _dragging := false
+var _drag_offset := Vector2.ZERO
+
 func _ready() -> void:
 	$VBoxContainer/HSlider.value = 1.0
 	
@@ -78,3 +82,12 @@ func _on_hslider_value_changed(value: float) -> void:
 
 func _on_close_button_up() -> void:
 	close()
+
+func _gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_LEFT:
+			_dragging = event.pressed
+			_drag_offset = get_global_mouse_position() - global_position
+
+	elif event is InputEventMouseMotion and _dragging:
+		global_position = get_global_mouse_position() - _drag_offset

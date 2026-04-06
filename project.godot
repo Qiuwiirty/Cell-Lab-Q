@@ -22,6 +22,7 @@ config/icon="uid://bcergniwgv564"
 [autoload]
 
 Game="*res://Misc/Game.gd"
+Pool="*uid://sr1uhneeh418"
 
 [editor_plugins]
 

@@ -18,8 +18,14 @@ size = Vector2(256, 256)
 
 [node name="Luminocyte" unique_id=1462000660 instance=ExtResource("1_mx0vx")]
 script = ExtResource("2_nyf3r")
-lum_scale = 1.0
-lum_intensity = 1.0
+lum_scale = null
+lum_intensity = null
+mass = null
+energy_loss_coefficient = null
+disable_metabolism = null
+nitrogen_reserve = null
+k = null
+current_mode = null
 
 [node name="photocyte_detector" type="Area2D" parent="." index="1" unique_id=1563249957]
 

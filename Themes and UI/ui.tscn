@@ -20,6 +20,7 @@
 [ext_resource type="PackedScene" uid="uid://dik8va5bopm7k" path="res://substrate_temperature_custom.tscn" id="16_7jnlg"]
 [ext_resource type="PackedScene" uid="uid://6pbpc7ipi8lr" path="res://Themes and UI/select_tool_custom.tscn" id="17_whbqe"]
 [ext_resource type="Script" uid="uid://dqjlesg4sdqq5" path="res://Themes and UI/configuration_panel.gd" id="20_7yarc"]
+[ext_resource type="PackedScene" uid="uid://b1wwllrdsm4bx" path="res://Themes and UI/debug_cell.tscn" id="20_s1gou"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ux5x0"]
 bg_color = Color(0, 0, 0, 0.4862745)
@@ -250,7 +251,11 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_ux5x0")
 [node name="label" type="Label" parent="cell_diagnostics_panel" unique_id=727046136]
 layout_mode = 2
 
+[node name="debug_cell" parent="." unique_id=1330552201 instance=ExtResource("20_s1gou")]
+visible = false
+
 [node name="configuration_panel" type="PanelContainer" parent="." unique_id=1636530376]
+visible = false
 material = SubResource("ShaderMaterial_i6rmi")
 anchors_preset = 15
 anchor_right = 1.0

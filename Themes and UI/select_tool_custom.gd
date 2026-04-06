@@ -8,8 +8,13 @@ const CELL_BOOST = preload("uid://b7eex3xh62xi7")
 const CELL_REMOVAL = preload("uid://cw11ewl5y6str")
 const CELL_DIAGNOSTICS = preload("uid://cxf7ocmrdrqxk")
 const BIND_ADHESION = preload("uid://djx32y86pxg8q")
+const DEBUG_CELL = preload("uid://bntovk0lsluej")
 ###Animation used is easing scale ( I think that's the name? :P )
 const ANIM_DURATION = 0.1
+
+var _dragging := false
+var _drag_offset := Vector2.ZERO
+
 func open():
 	show()
 	scale = Vector2(0.8, 0.8)
@@ -89,5 +94,25 @@ func _on_bind_adhesion_button_up() -> void:
 		print("Plate is invalid and therefore unable to set the tools")
 	$"../ButtonClick2".play()
 	close()
+	
+func _on_debug_button_up() -> void:
+	$VBoxContainer/MarginContainer/heading/icon.texture = DEBUG_CELL
+	$"../TopPanel/Margin/Hbox/ToolSelector".icon = DEBUG_CELL
+	if plate is Plate:
+		plate.change_tool(Game.ToolSelector.DEBUG_CELL)
+	else:
+		print("Plate is invalid and therefore unable to set the tools")
+	$"../ButtonClick2".play()
+	close()
+
 func _on_close_button_up() -> void:
 	close()
+
+func _gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_LEFT:
+			_dragging = event.pressed
+			_drag_offset = get_global_mouse_position() - global_position
+
+	elif event is InputEventMouseMotion and _dragging:
+		global_position = get_global_mouse_position() - _drag_offset

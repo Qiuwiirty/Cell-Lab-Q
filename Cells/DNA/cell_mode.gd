@@ -7,9 +7,13 @@ extends Resource
 @export var split_angle := 0 #degrees
 @export var color: Color
 @export var nutrient_priority := 1.0
-@export var children1: CellMode = self #refer to another cell mode (by default it referring to itself)
-@export var children2: CellMode = self
+@export var child1: CellMode = self #refer to another cell mode (by default it referring to itself)
+@export var child2: CellMode = self
+@export var child1_kept_adhesion := false #For now, if true, make all the split cell try to make adhesion with the parent's cell adhesion
+@export var child2_kept_adhesion := false
+@export var make_adhesion := false
 @export var adhesion_stiffness := 5.0
 @export var index_mode: int #which mode it is, like 0, 1, ...
+@export var disable_metabolism := false
 func _init() -> void:
 	color = Color(randf(), randf(), randf())
