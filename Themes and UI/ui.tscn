@@ -21,6 +21,7 @@
 [ext_resource type="PackedScene" uid="uid://6pbpc7ipi8lr" path="res://Themes and UI/select_tool_custom.tscn" id="17_whbqe"]
 [ext_resource type="Script" uid="uid://dqjlesg4sdqq5" path="res://Themes and UI/configuration_panel.gd" id="20_7yarc"]
 [ext_resource type="PackedScene" uid="uid://b1wwllrdsm4bx" path="res://Themes and UI/debug_cell.tscn" id="20_s1gou"]
+[ext_resource type="Script" uid="uid://drp6jnvg17e8l" path="res://Themes and UI/input_image.gd" id="22_s1gou"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ux5x0"]
 bg_color = Color(0, 0, 0, 0.4862745)
@@ -36,11 +37,7 @@ script/source = "extends CheckBox
 const frost_glass_shader = preload(\"uid://cf7qe01ckvr4s\")
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	if $\"../..\".material.shader:
-		button_pressed = true
-	else:
-		button_pressed = false
-
+	button_pressed = is_instance_valid($\"../..\".material.shader)
 func _on_toggled(toggled_on: bool) -> void:
 	if toggled_on:
 		$\"../..\".material.shader = frost_glass_shader
@@ -56,6 +53,8 @@ func _ready() -> void:
 	button_pressed = Game.use_math_lightning
 func _on_toggled(toggled_on: bool) -> void:
 	Game.use_math_lightning = toggled_on
+	if Game.plate:
+		Game.plate.change_mathematical_lighting()
 "
 
 [sub_resource type="GDScript" id="GDScript_7yarc"]
@@ -79,6 +78,16 @@ func _on_w_value_changed(value: float) -> void:
 	Game.math_lighting.w = value
 "
 
+[sub_resource type="GDScript" id="GDScript_3s3c3"]
+resource_name = "use_only_a_brightness"
+script/source = "extends CheckBox
+
+func _ready() -> void:
+	button_pressed = Game.nonmath_use_only_alpha
+func _on_toggled(toggled_on: bool) -> void:
+	Game.nonmath_use_only_alpha = toggled_on
+"
+
 [sub_resource type="GDScript" id="GDScript_s1gou"]
 resource_name = "brightness_mult"
 script/source = "extends HBoxContainer
@@ -95,6 +104,16 @@ func _ready():
 	button_pressed = Game.use_voronoi
 func _on_toggled(toggled_on: bool) -> void:
 	Game.use_voronoi = toggled_on
+"
+
+[sub_resource type="GDScript" id="GDScript_8lusc"]
+resource_name = "light_feed_cost"
+script/source = "extends CheckBox
+
+func _ready() -> void:
+	button_pressed = Game.light_feed_cost_luminocyte
+func _on_toggled(toggled_on: bool) -> void:
+	Game.light_feed_cost_luminocyte = toggled_on
 "
 
 [sub_resource type="GDScript" id="GDScript_mk4ph"]
@@ -255,7 +274,6 @@ layout_mode = 2
 visible = false
 
 [node name="configuration_panel" type="PanelContainer" parent="." unique_id=1636530376]
-visible = false
 material = SubResource("ShaderMaterial_i6rmi")
 anchors_preset = 15
 anchor_right = 1.0
@@ -344,6 +362,45 @@ step = 0.001
 suffix = "W"
 custom_arrow_step = 0.1
 
+[node name="input_image" type="HBoxContainer" parent="configuration_panel/vbox" unique_id=451767562]
+layout_mode = 2
+script = ExtResource("22_s1gou")
+
+[node name="Label" type="Label" parent="configuration_panel/vbox/input_image" unique_id=941839493]
+layout_mode = 2
+text = "Input your image"
+
+[node name="Button" type="Button" parent="configuration_panel/vbox/input_image" unique_id=994927194]
+layout_mode = 2
+text = "res://platecolor.png"
+
+[node name="FileDialog" type="FileDialog" parent="configuration_panel/vbox/input_image" unique_id=2026502940]
+oversampling_override = 1.0
+title = "Open a File"
+initial_position = 1
+dialog_hide_on_ok = true
+file_mode = 0
+access = 2
+filters = PackedStringArray("*.png", "*.jpg")
+
+[node name="RichTextLabel7" type="RichTextLabel" parent="configuration_panel/vbox" unique_id=445269761]
+layout_mode = 2
+bbcode_enabled = true
+text = "[font_size=10] [color=thistle]For non-mathematical lighting photosynthesis"
+fit_content = true
+
+[node name="RichTextLabel8" type="RichTextLabel" parent="configuration_panel/vbox" unique_id=1024903958]
+layout_mode = 2
+bbcode_enabled = true
+text = "[font_size=10] [color=thistle](↓↓↓) Use alpha or not for brightness of non-mathematical lighting (If false, it still use alpha, just that r, g, & b would also be used)"
+fit_content = true
+
+[node name="use_only_a_brightness" type="CheckBox" parent="configuration_panel/vbox" unique_id=1792411096]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Use only alpha transparency to determine the brightness"
+script = SubResource("GDScript_3s3c3")
+
 [node name="brightness_mult" type="HBoxContainer" parent="configuration_panel/vbox" unique_id=700489363]
 layout_mode = 2
 script = SubResource("GDScript_s1gou")
@@ -375,6 +432,18 @@ script = SubResource("GDScript_i6rmi")
 layout_mode = 2
 bbcode_enabled = true
 text = "[font_size=10] [color=thistle]Disabling voronoi effect may improve perfomance a little bit"
+fit_content = true
+
+[node name="light_feed_cost_luminocyte" type="CheckBox" parent="configuration_panel/vbox" unique_id=835206519]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Light feed cost (Luminocyte)"
+script = SubResource("GDScript_8lusc")
+
+[node name="RichTextLabel6" type="RichTextLabel" parent="configuration_panel/vbox" unique_id=850814090]
+layout_mode = 2
+bbcode_enabled = true
+text = "[font_size=10] [color=thistle]If true, feeding on photocytes will cost mass for the Luminocyte"
 fit_content = true
 
 [node name="salinity" type="HBoxContainer" parent="configuration_panel/vbox" unique_id=1043677546]
@@ -434,6 +503,9 @@ autowrap_mode = 0
 [connection signal="value_changed" from="configuration_panel/vbox/math_lighting/y" to="configuration_panel/vbox/math_lighting" method="_on_y_value_changed"]
 [connection signal="value_changed" from="configuration_panel/vbox/math_lighting/z" to="configuration_panel/vbox/math_lighting" method="_on_z_value_changed"]
 [connection signal="value_changed" from="configuration_panel/vbox/math_lighting/w" to="configuration_panel/vbox/math_lighting" method="_on_w_value_changed"]
+[connection signal="button_up" from="configuration_panel/vbox/input_image/Button" to="configuration_panel/vbox/input_image" method="_on_button_up"]
+[connection signal="file_selected" from="configuration_panel/vbox/input_image/FileDialog" to="configuration_panel/vbox/input_image" method="_on_file_dialog_file_selected"]
+[connection signal="toggled" from="configuration_panel/vbox/use_only_a_brightness" to="configuration_panel/vbox/use_only_a_brightness" method="_on_toggled"]
 [connection signal="value_changed" from="configuration_panel/vbox/brightness_mult/b" to="configuration_panel/vbox/brightness_mult" method="_on_b_value_changed"]
 [connection signal="toggled" from="configuration_panel/vbox/use_voronoi" to="configuration_panel/vbox/use_voronoi" method="_on_toggled"]
 [connection signal="value_changed" from="configuration_panel/vbox/salinity/SpinBox" to="configuration_panel/vbox/salinity" method="_on_spin_box_value_changed"]

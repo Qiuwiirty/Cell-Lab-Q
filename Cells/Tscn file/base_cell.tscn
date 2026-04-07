@@ -10,9 +10,6 @@
 [sub_resource type="CircleShape2D" id="CircleShape2D_i10ga"]
 radius = 15.0
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_14hpr"]
-radius = 15.0
-
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_uvg6q"]
 shader = ExtResource("4_j53kt")
 shader_parameter/u_color = Vector3(1, 1, 1)
@@ -25,18 +22,12 @@ shader_parameter/u_size_mult = 1.0
 [sub_resource type="QuadMesh" id="QuadMesh_i10ga"]
 size = Vector2(30, 30)
 
-[node name="Cell" type="CharacterBody2D" unique_id=1462000660 groups=["cells"]]
+[node name="Cell" type="Area2D" unique_id=82719589 groups=["cells"]]
 z_index = 1
-input_pickable = true
 script = ExtResource("1_gwrgs")
 
-[node name="collision_detector" type="Area2D" parent="." unique_id=824408307]
-
-[node name="collison" type="CollisionShape2D" parent="collision_detector" unique_id=271180384]
+[node name="collision" type="CollisionShape2D" parent="." unique_id=1988143635]
 shape = SubResource("CircleShape2D_i10ga")
-
-[node name="collision" type="CollisionShape2D" parent="." unique_id=922520947]
-shape = SubResource("CircleShape2D_14hpr")
 
 [node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="." unique_id=1735079836]
 rect = Rect2(-15, -15, 30, 30)
@@ -47,7 +38,6 @@ panning_strength = 0.6
 
 [node name="render_quad" type="MeshInstance2D" parent="." unique_id=676684849]
 material = SubResource("ShaderMaterial_uvg6q")
-rotation = 6.2831855
 mesh = SubResource("QuadMesh_i10ga")
 
 [node name="selected_circle" type="Node2D" parent="." unique_id=1660257432]
@@ -68,9 +58,9 @@ stream = ExtResource("5_i10ga")
 [node name="deselect_cell" type="AudioStreamPlayer" parent="." unique_id=1019420750]
 stream = ExtResource("6_1c3qp")
 
+[connection signal="area_entered" from="." to="." method="_cell_entered"]
+[connection signal="area_exited" from="." to="." method="_cell_exited"]
 [connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
 [connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]
-[connection signal="area_entered" from="collision_detector" to="." method="_cell_entered"]
-[connection signal="area_exited" from="collision_detector" to="." method="_cell_exited"]
 [connection signal="screen_entered" from="VisibleOnScreenNotifier2D" to="." method="_screen_entered_notifier"]
 [connection signal="screen_exited" from="VisibleOnScreenNotifier2D" to="." method="_screen_exited_notifier"]

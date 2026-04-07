@@ -32,6 +32,9 @@ func close():
 	tween.tween_property(self, "modulate:a", 0.0, ANIM_DURATION)
 	tween.set_parallel(false)
 	tween.tween_callback(hide)
+	if cell:
+		cell.to_select(false)
+		cell = null
 
 func _on_close_button_up() -> void:
 	close()
@@ -57,7 +60,6 @@ func _gui_input(event: InputEvent) -> void:
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			_dragging = event.pressed
 			_drag_offset = get_global_mouse_position() - global_position
-
 	elif event is InputEventMouseMotion and _dragging:
 		global_position = get_global_mouse_position() - _drag_offset
 
@@ -93,7 +95,7 @@ func _on_disable_metabolism_toggled(toggled_on: bool) -> void:
 
 func _on_cell_type_selected(index: int) -> void:
 	if mode:
-		mode.cell_type = index
+		mode.cell_type = index as Game.CellType
 		cell.turn_into_another_cell_type(index)
 
 func _on_color_changed(color: Color) -> void:
@@ -116,11 +118,11 @@ func _on_split_angle_changed(value: float) -> void:
 
 func _on_child1_changed(value: float) -> void:
 	if mode:
-		mode.child1 = cell.dna.modes[value]
+		mode.child1 = cell.dna.modes[int(value)]
 
 func _on_child2_changed(value: float) -> void:
 	if mode:
-		mode.child2 = cell.dna.modes[value]
+		mode.child2 = cell.dna.modes[int(value)]
 
 func _on_make_adhesion_toggled(toggled_on: bool) -> void:
 	if mode:
@@ -136,6 +138,10 @@ func assign_cell(new_cell: BaseCell) -> void:
 	
 	update_DNA_values()
 
+func _on_flow_rate_changed(value: float) -> void:
+	if mode:
+		mode.flow_rate = value
+
 func update_DNA_values():
 	if cell:
 		$VBoxContainer/ScrollContainer/VBoxContainer/mode_editing/SpinBox.value = cell.current_mode
@@ -149,3 +155,4 @@ func update_DNA_values():
 		$VBoxContainer/ScrollContainer/VBoxContainer/child2/SpinBox.value = cell.mode.child2.index_mode
 		$VBoxContainer/ScrollContainer/VBoxContainer/make_adhesion.button_pressed = cell.mode.make_adhesion
 		$VBoxContainer/ScrollContainer/VBoxContainer/adhesion_stiffness/SpinBox.value = cell.mode.adhesion_stiffness
+		$VBoxContainer/ScrollContainer/VBoxContainer/flow_rate/SpinBox.value = cell.mode.flow_rate

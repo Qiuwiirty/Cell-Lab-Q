@@ -1,12 +1,13 @@
-extends CharacterBody2D
+extends Node2D
 class_name BaseCell
 #TODO: IMPROVE THE ADHESION
 const split_audio = preload("uid://c2ncgpkfynhkk")
 @onready var mode: CellMode = get_mode(dna) #mode like M0, M1, M2... It store essential thingies like color and etc..
-var colliding_cells: Array[Node2D]
+var colliding: Array[Node2D]
 
 var radius = 15.0
 @export var mass = 2.88
+@export var velocity = Vector2.ZERO
 @export var energy_loss_coefficient = 1 #Related to metabolism
 @export var adhesion: Array[BaseCell]
 @export var nitrogen_reserve := 100.
@@ -25,9 +26,6 @@ var age = 0.0
 ##--Adhesion stuff--
 #see this: https://cell-lab.fandom.com/wiki/User:CxrLol1/Formulas/Cellular
 var delta_mass = 0.0
-#how fast nutrients can flow through a connection
-#you could make k different for each cell, but it is best to make same for all cells rn
-@export var k = 0.01
 #Current color is the color the cell is actually in. For example if cell get injected cell booster, it might turn pink but it only is current color. Quickly it will reverted to its original color
 var current_color = Color.WHITE #it should immediately set on _ready
 
@@ -37,6 +35,7 @@ const FIXED_STEP := 1.0 / 60.0
 @export var dna: DNA
 @export var current_mode: int = 0 #start from 0.
 
+var is_debugged = false
 func _ready() -> void:
 	Game.cell_count += 1
 	if !dna:
@@ -45,15 +44,15 @@ func _ready() -> void:
 		dna = DNA.new()
 		mode = get_mode(dna)
 		mode.cell_type = Game.get_cell_type(self)
+	if is_debugged:
+		Game.UI.get_node("debug_cell").assign_cell(self)
 	#current_color = mode.color
-	input_pickable = true
 	$render_quad.material = $render_quad.material.duplicate()
 	$render_quad.mesh = $render_quad.mesh.duplicate()
 	#$render_quad.material.set_shader_parameter("u_use_decoration", 0.0)
 	#$render_quad.material.set_shader_parameter("decoration", load("uid://dpuiru35vknq5"))
 	set_physics_process(false if Game.temperature == Game.SubstrateTemperature.FREEZE else true)
 	$collision.shape = $collision.shape.duplicate()
-	$collision_detector/collison.shape = $collision_detector/collison.shape.duplicate()
 	make_adhesion_mutual() #Fix adhesion that isn't symmterical 
 	correct_appearance(1 / 60.) #Without this, you can see the default state of cell flash for a second when it's spawn. This func solve it
 func _process(delta: float) -> void:
@@ -63,7 +62,7 @@ func _process(delta: float) -> void:
 		create_voronoi_effect()
 		return
 		
-	accumulator += delta * timescale_modifier()
+	accumulator += delta * Game.timescale_modifier()
 	
 	while accumulator >= FIXED_STEP:
 		simulate_step(FIXED_STEP)
@@ -130,9 +129,13 @@ func _unhandled_input(event):
 				var debug_cell = Game.UI.get_node_or_null("debug_cell")
 				if debug_cell:
 					debug_cell.open()
+					if debug_cell.cell != self and debug_cell.cell:
+						debug_cell.cell.to_select(false, false)
 					debug_cell.assign_cell(self)
+					$select_cell.play()
 					$selected_circle.color = Color.CHARTREUSE
 					$selected_circle.show()
+					is_debugged = true
 #region To get the position for the shader
 func get_midpoint_intersection(c2: Vector2, r2: float) -> Vector2:
 	var d := global_position.distance_to(c2)
@@ -164,10 +167,10 @@ func world_to_screen_uv(world_pos: Vector2) -> Vector2:
 func create_voronoi_effect() -> void:
 	var positions := PackedVector2Array()
 	var rot_dirs := PackedVector2Array()
-	for cell in colliding_cells:
-		if !is_instance_valid(cell):
+	for cell in colliding:
+		if !is_instance_valid(cell) or cell is not BaseCell:
 			continue
-		var midpoint = get_midpoint_intersection(cell.global_position, cell.get_parent().radius)
+		var midpoint = get_midpoint_intersection(cell.global_position, cell.radius)
 		if midpoint == Vector2.ZERO:
 			continue
 		var uv = (midpoint + $render_quad.mesh.size * 0.5) / $render_quad.mesh.size
@@ -177,7 +180,7 @@ func create_voronoi_effect() -> void:
 		rot_dirs.append(Vector2(cos(angle_to), -sin(angle_to)))
 		
 	$render_quad.material.set_shader_parameter("centers", positions)
-	$render_quad.material.set_shader_parameter("cell_count", colliding_cells.size())
+	$render_quad.material.set_shader_parameter("cell_count", colliding.size())
 	$render_quad.material.set_shader_parameter("rot_dirs", rot_dirs)
 	$render_quad.material.set_shader_parameter("screen_size", get_viewport_rect().size)
 func colors_are_close(a: Color, b: Color, tolerance := 0.001) -> bool:
@@ -191,12 +194,12 @@ func correct_appearance(delta, modify_color_radius = true):
 	if modify_color_radius:
 		radius = lerp(radius, 15. * sqrt(mass / 3.6), 0.1) #Not linear 
 	$collision.shape.radius = radius
-	$collision_detector/collison.shape.radius = radius
-	#I am not using current_color != color cuz there will be always digits that are different. Instead I use tolerance (0.001)
-	if !colors_are_close(current_color, mode.color) and modify_color_radius:
-		current_color = lerp(current_color, mode.color, 3.5 * delta)
-	else: #Snap it
-		current_color = mode.color
+	if modify_color_radius:
+		#I am not using current_color != color cuz there will be always digits that are different. Instead I use tolerance (0.001)
+		if !colors_are_close(current_color, mode.color):
+			current_color = lerp(current_color, mode.color, 3.5 * delta)
+		else: #Snap it
+			current_color = mode.color
 	$render_quad.material.set_shader_parameter("u_color", current_color)
 	$render_quad.material.set_shader_parameter("u_size_mult", radius / 15.0)
 func metabolism(delta, modifier := 1.0):
@@ -233,9 +236,9 @@ func play_split_sound():
 #This is for voronoi purposes
 func _cell_entered(area: Area2D) -> void:
 	is_colliding = true
-	colliding_cells.append(area)
+	colliding.append(area)
 func _cell_exited(area: Area2D) -> void:
-	colliding_cells.erase(area)
+	colliding.erase(area)
 #Optimization method to perform less when not on screen
 func _screen_entered_notifier() -> void:
 	visible_on_screen = true
@@ -251,37 +254,25 @@ func _on_mouse_exited() -> void:
 	mouse_over = false
 #endregion
 #region Process thing
-func timescale_modifier() -> float:
-	match Game.temperature:
-		Game.SubstrateTemperature.SLOW_OBSERVE:
-			return 0.1
-		Game.SubstrateTemperature.OBSERVE:
-			return 1
-		Game.SubstrateTemperature.INCUBATE:
-			return 3
-		Game.SubstrateTemperature.CUSTOM:
-			return Game.custom_temperature
-		_:
-			print('No valid game.temperature')
-			return 1
 func apply_motion(delta):
 	velocity *= pow(0.9, delta * 60.0)
 	global_position += velocity * delta
 func apply_collision_forces(delta):
-	for other in colliding_cells:
-		if !adhesion.has(other.get_parent() as BaseCell):
-			var dir = global_position - other.global_position
-			var dist = dir.length()
+	for other in colliding:
+		if other is BaseCell:
+			if !adhesion.has(other.get_parent() as BaseCell):
+				var dir = global_position - other.global_position
+				var dist = dir.length()
 
-			if dist == 0:
-				continue
+				if dist == 0:
+					continue
 
-			var overlap = radius * 2 - dist
-			if overlap <= 0:
-				continue
+				var overlap = radius * 2 - dist
+				if overlap <= 0:
+					continue
 
-			var normal = dir / dist
-			velocity += normal * overlap * delta * 20
+				var normal = dir / dist
+				velocity += normal * overlap * delta * 20
 func update_cell_state(delta):
 	correct_appearance(delta)
 	metabolism(delta)
@@ -293,13 +284,13 @@ func handle_drag():
 		return
 	var target := get_global_mouse_position() + drag_offset
 	if Game.temperature != Game.SubstrateTemperature.FREEZE:
-		velocity = ((target - global_position) * drag_speed) * timescale_modifier()
+		velocity = ((target - global_position) * drag_speed) * Game.timescale_modifier()
 	else:
 		global_position = get_global_mouse_position() + drag_offset
 func update_voronoi_effect():
 	if not (is_colliding and visible_on_screen and Game.use_voronoi):
 		return
-	if colliding_cells.is_empty():
+	if colliding.is_empty():
 		$render_quad.material.set_shader_parameter("cell_count", 0)
 		is_colliding = false
 	else:
@@ -340,7 +331,7 @@ func compute_flows() -> void:
 			var pressure_self = mass / mode.nutrient_priority
 			var pressure_neighbor = neighbor.mass / neighbor.mode.nutrient_priority
 			
-			var flow = k * (pressure_neighbor - pressure_self)
+			var flow = mode.flow_rate * (pressure_neighbor - pressure_self)
 			
 			#clamp
 			flow = clamp(flow, -neighbor.mass, mass)
@@ -435,16 +426,18 @@ func turn_into_another_cell_type(type: Game.CellType) -> void:
 	new_cell.velocity = velocity
 	new_cell.dna = dna
 	get_parent().add_child.call_deferred(new_cell)
+	if Game.UI.get_node_or_null("debug_cell") and is_debugged:
+		new_cell.is_debugged = is_debugged
 	die()
 
 func split() -> void:
 	if !mode:
 		return
-	var split_dir := Vector2.RIGHT.rotated(deg_to_rad(mode.split_angle))
+	var split_dir := Vector2.RIGHT.rotated(rotation + deg_to_rad(mode.split_angle))
 	# child 1
 	var child1 = Game.get_instance_cell(mode.child1.cell_type).instantiate()
 	child1.position = position
-	child1.velocity = velocity + split_dir * 2
+	child1.velocity = velocity + split_dir * 100
 	child1.dna = dna
 	child1.current_mode = mode.child1.index_mode
 	child1.mass = mass * mode.split_ratio
@@ -454,7 +447,7 @@ func split() -> void:
 	# child 2
 	var child2 = Game.get_instance_cell(mode.child2.cell_type).instantiate()
 	child2.position = position
-	child2.velocity = velocity - split_dir * 2
+	child2.velocity = velocity - split_dir * 100
 	child2.dna = dna
 	child2.current_mode = mode.child2.index_mode
 	child2.mass = mass * (1.0 - mode.split_ratio)
@@ -473,12 +466,16 @@ func split() -> void:
 		var to_neighbor = (cell.position - position).normalized()
 		var dot = split_dir.dot(to_neighbor)
 		
-		if mode.child2_kept_adhesion and dot > 0:
-			child2.adhesion.append(cell)
-			cell.adhesion.append(child2)
-		elif mode.child1_kept_adhesion and dot < 0:
-			child1.adhesion.append(cell)
-			cell.adhesion.append(child1)
+		if mode.child1_kept_adhesion and dot > 0:
+			if not child1.adhesion.has(cell):
+				child1.adhesion.append(cell)
+			if not cell.adhesion.has(child1):
+				cell.adhesion.append(child1)
+		elif mode.child2_kept_adhesion and dot < 0:
+			if not child2.adhesion.has(cell):
+				child2.adhesion.append(cell)
+			if not cell.adhesion.has(child2):
+				cell.adhesion.append(child2)
 	get_parent().add_child.call_deferred(child1)
 	get_parent().add_child.call_deferred(child2)
 	die()

@@ -1,19 +1,9 @@
 extends BaseCell
 class_name Photocyte
 
-#These used for getting and reading image brightness to perform photosynthesis
-var width
-var height
-var format
 
-var data: PackedByteArray
 
 func _ready():
-	var img: Image = preload("res://platecolor.png").get_image()
-	img.convert(Image.FORMAT_RGBA8)
-	width = img.get_width()
-	height = img.get_height()
-	data = img.get_data()
 	$render_quad.material = $render_quad.material.duplicate()
 	$render_quad.material.set_shader_parameter("u_use_decoration", 1.0)
 	$render_quad.material.set_shader_parameter("decoration", load("uid://dpuiru35vknq5"))
@@ -28,14 +18,15 @@ func get_brightness() -> float:
 	if not Game.use_math_lightning:
 		var local_pos: Vector2 = $"../Platecolor".to_local(global_position)
 
-		var pixel_x := int(local_pos.x + width * 0.5)
-		var pixel_y := int(local_pos.y + height * 0.5)
+		var pixel_x := int(local_pos.x + Game.width * 0.5)
+		var pixel_y := int(local_pos.y + Game.height * 0.5)
 		#check if pixel are out of bounds
-		if (pixel_x >= width or pixel_x < 0) or (pixel_y >= height or pixel_y < 0):
+		if (pixel_x >= Game.width or pixel_x < 0) or (pixel_y >= Game.height or pixel_y < 0):
 			return 0.0
 		var colorpx := get_pixel_rgb8(pixel_x, pixel_y)
-		#based on transparency
-		#return colorpx.a
+		if Game.nonmath_use_only_alpha:
+			#based on transparency
+			return colorpx.a
 		var brightness = (0.299 * colorpx.r + 0.587 * colorpx.g + 0.114 * colorpx.b) * colorpx.a
 		return brightness
 	else:
@@ -46,12 +37,12 @@ func get_pixel_rgb8(
 		x: int,
 		y: int,
 	) -> Color:
-	var idx = (y * width + x) * 4
+	var idx = (y * Game.width + x) * 4
 	return Color(
-		data[idx]     / 255.0,
-		data[idx + 1] / 255.0,
-		data[idx + 2] / 255.0,
-		data[idx + 3] / 255.0
+		Game.data[idx]     / 255.0,
+		Game.data[idx + 1] / 255.0,
+		Game.data[idx + 2] / 255.0,
+		Game.data[idx + 3] / 255.0
 	)
 	
 func global_to_shader_p(gpos: Vector2) -> Vector2:

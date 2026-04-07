@@ -43,7 +43,7 @@ func _unhandled_input(event: InputEvent) -> void:
 						locked_to_selected = false
 					else:
 						$Invalid.play()
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if selected_cell:
 		if Game.UI:
 			Game.UI.set_diagnostics(selected_cell.diagnostics())
@@ -63,6 +63,7 @@ func change_tool(into: Game.ToolSelector):
 	mode = into
 	if mode != Game.ToolSelector.CELL_DIAGNOSTICS or mode != Game.ToolSelector.BIND_ADHESION:
 		discard_any_selection()
+		Game.UI.get_node("debug_cell").close()
 func discard_any_selection():
 	discard_old_selected_cell()
 	if bind_adhesion_cell1:
@@ -99,3 +100,14 @@ func handle_adhesion_bind():
 		bind_adhesion_cell2.adhesion.erase(bind_adhesion_cell1)
 		Game.infonotice.hide()
 	discard_any_selection()
+
+func change_mathematical_lighting() -> void:
+	if Game.use_math_lightning:
+		$Platecolor.hide()
+		$quad.show()
+	else: #not using mathematical lighting
+		$Platecolor.show()
+		$quad.hide()
+		var img := Image.new()
+		img.load(Game.current_path)
+		$Platecolor.texture = ImageTexture.create_from_image(img)

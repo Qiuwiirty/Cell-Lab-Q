@@ -10,9 +10,7 @@ radius = 2.0
 height = 4.0
 radial_segments = 4
 
-[node name="food" type="RigidBody2D" unique_id=511852752 groups=["food"]]
-gravity_scale = 0.0
-freeze = true
+[node name="food" type="Area2D" unique_id=1141989841 groups=["food"]]
 script = ExtResource("1_w5fg3")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=651854270]
@@ -20,5 +18,4 @@ visible = false
 shape = SubResource("CircleShape2D_w5fg3")
 
 [node name="MeshInstance2D" type="MeshInstance2D" parent="." unique_id=782409542]
-modulate = Color(1, 0.67058825, 0.54509807, 0.3647059)
 mesh = SubResource("SphereMesh_wfg33")

@@ -1,4 +1,4 @@
-extends RigidBody2D
+extends Area2D
 class_name Food
 ###Mobility of a food (Whether the food can move or not) determined by setting the var 'freeze'
 @export var nutrition = 10
@@ -8,4 +8,5 @@ func _process(delta: float) -> void:
 	var mods = nutrition / 10
 	$CollisionShape2D.scale = Vector2(mods, mods)
 	$MeshInstance2D.scale = Vector2(mods, mods)
-	$MeshInstance2D.modulate = Color(1.0, .68 - (coating / 10) * .68, 0.211, 0.545)
+	#$MeshInstance2D.modulate = Color(1.0, .68 - (coating / 10) * .68, 0.211, 0.545)
+	$MeshInstance2D.modulate = Color(1.0, 1.0 - (coating / 150), 1.0 - (coating / 150), 1.0)

@@ -39,6 +39,7 @@ offset_bottom = 149.0
 grow_horizontal = 2
 grow_vertical = 2
 pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_force_pass_scroll_events = false
 theme = ExtResource("1_djp13")
 theme_override_styles/panel = SubResource("StyleBoxFlat_hwqhx")
 script = ExtResource("2_s8gvq")
@@ -362,6 +363,21 @@ step = 0.001
 value = 5.0
 custom_arrow_step = 0.1
 
+[node name="flow_rate" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1537181467]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer/flow_rate" unique_id=1926707711]
+layout_mode = 2
+text = "Flow rate"
+
+[node name="SpinBox" type="SpinBox" parent="VBoxContainer/ScrollContainer/VBoxContainer/flow_rate" unique_id=1249377882]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = -100.0
+step = 0.001
+value = 0.010000000000005116
+custom_arrow_step = 0.1
+
 [node name="Control" type="Control" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=923736609]
 layout_mode = 2
 
@@ -382,3 +398,4 @@ layout_mode = 2
 [connection signal="value_changed" from="VBoxContainer/ScrollContainer/VBoxContainer/child2/SpinBox" to="." method="_on_child2_changed"]
 [connection signal="toggled" from="VBoxContainer/ScrollContainer/VBoxContainer/make_adhesion" to="." method="_on_make_adhesion_toggled"]
 [connection signal="value_changed" from="VBoxContainer/ScrollContainer/VBoxContainer/adhesion_stiffness/SpinBox" to="." method="_on_adhesion_stiffness_changed"]
+[connection signal="value_changed" from="VBoxContainer/ScrollContainer/VBoxContainer/flow_rate/SpinBox" to="." method="_on_flow_rate_changed"]

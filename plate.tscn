@@ -10,9 +10,9 @@
 [ext_resource type="AudioStream" uid="uid://bksrijmu5s6d7" path="res://Sound and Music/invalid.mp3" id="8_dhtvl"]
 [ext_resource type="PackedScene" uid="uid://t8q6yh1vds1" path="res://Themes and UI/ui.tscn" id="9_6v47p"]
 [ext_resource type="PackedScene" uid="uid://bcp4xdxc828fp" path="res://Misc/food.tscn" id="9_dhtvl"]
-[ext_resource type="PackedScene" uid="uid://sy8jnyx6hyux" path="res://Cells/Tscn file/photocyte.tscn" id="11_xw67q"]
 [ext_resource type="Script" uid="uid://bgr0v1ag1ojls" path="res://Cells/DNA/cell_mode.gd" id="12_0qo5v"]
 [ext_resource type="Script" uid="uid://bpnga7boyitwo" path="res://Cells/DNA/dna.gd" id="13_64qxx"]
+[ext_resource type="PackedScene" uid="uid://vorj3y1f0tbp" path="res://Cells/cell_spawn.tscn" id="14_0qo5v"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_3bkoa"]
 shader = ExtResource("2_nq5sa")
@@ -25,23 +25,21 @@ shader_parameter/dir = Vector4(4.955, 1.025, 2.375, 0.145)
 [sub_resource type="QuadMesh" id="QuadMesh_xw67q"]
 size = Vector2(1000, 1000)
 
-[sub_resource type="Resource" id="Resource_xw67q"]
+[sub_resource type="Resource" id="Resource_64qxx"]
 script = ExtResource("12_0qo5v")
-cell_type = 1
-child1_kept_adhesion = true
-child2_kept_adhesion = true
-make_adhesion = true
+cell_type = 3
 metadata/_custom_type_script = "uid://bgr0v1ag1ojls"
 
-[sub_resource type="Resource" id="Resource_16d2t"]
+[sub_resource type="Resource" id="Resource_tnin1"]
 script = ExtResource("13_64qxx")
-modes = Array[ExtResource("12_0qo5v")]([SubResource("Resource_xw67q")])
+modes = Array[ExtResource("12_0qo5v")]([SubResource("Resource_64qxx")])
 metadata/_custom_type_script = "uid://bpnga7boyitwo"
 
 [node name="plate" type="Node2D" unique_id=1644472444]
 script = ExtResource("1_g4jty")
 
 [node name="Platecolor" type="Sprite2D" parent="." unique_id=538529407]
+visible = false
 texture_filter = 1
 material = SubResource("ShaderMaterial_3bkoa")
 texture = ExtResource("2_ffgcv")
@@ -75,11 +73,12 @@ position = Vector2(-94, -187)
 [node name="food2" parent="." unique_id=1055725112 instance=ExtResource("9_dhtvl")]
 position = Vector2(-93, -185)
 
-[node name="Photocyte" parent="." unique_id=1844930053 instance=ExtResource("11_xw67q")]
-position = Vector2(-82, -136)
-mass = 2.88
-energy_loss_coefficient = 1
-nitrogen_reserve = 100.0
-k = 0.01
-dna = SubResource("Resource_16d2t")
-current_mode = 0
+[node name="food3" parent="." unique_id=2146062936 instance=ExtResource("9_dhtvl")]
+position = Vector2(-158, -70)
+
+[node name="food4" parent="." unique_id=1864487905 instance=ExtResource("9_dhtvl")]
+position = Vector2(264, -346)
+
+[node name="cell spawn" parent="." unique_id=1249728514 instance=ExtResource("14_0qo5v")]
+position = Vector2(-24, -159)
+dna = SubResource("Resource_tnin1")
