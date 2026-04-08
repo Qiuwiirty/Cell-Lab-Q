@@ -22,7 +22,8 @@ enum CellType
 	BASE_CELL, #The most basic cell
 	PHOTOCYTE,
 	LUMINOCYTE,
-	PHAGOCYTE
+	PHAGOCYTE,
+	FLAGELLOCYTE
 }
 signal UI_ready
 const max_modes_count = 40
@@ -55,6 +56,7 @@ var format
 
 var data: PackedByteArray
 var current_path = "res://platecolor.png"
+var image_scale = Vector2(1.0, 1.0)
 func _process(delta: float) -> void:
 	if temperature == SubstrateTemperature.FREEZE:
 		return
@@ -87,6 +89,8 @@ func get_cell_type(cell: BaseCell) -> CellType:
 		return CellType.LUMINOCYTE
 	elif cell is Phagocyte:
 		return CellType.PHAGOCYTE
+	elif cell is Flagellocyte:
+		return CellType.FLAGELLOCYTE
 	return CellType.BASE_CELL
 func get_instance_cell(cell_type: CellType):
 	match cell_type:
@@ -98,6 +102,8 @@ func get_instance_cell(cell_type: CellType):
 			return load("uid://b7wyhxq3hyig5")
 		CellType.PHAGOCYTE:
 			return load("uid://byt4u4bomwhbk")
+		CellType.FLAGELLOCYTE:
+			return load("uid://df45adrwx1bsm")
 		_:
 			print("Unknown cell type")
 			return load("uid://cymj82ljpiu70") #Load Base cell
@@ -125,6 +131,10 @@ func load_file(path: String) -> void: #Load file for non-mathematical lighting p
 			print("Failed to load image: " + path)
 			return
 		img.convert(Image.FORMAT_RGBA8)
+		# Apply scale before storing
+		var scaled_w := int(img.get_width() * image_scale.x)
+		var scaled_h := int(img.get_height() * image_scale.y)
+		img.resize(scaled_w, scaled_h, Image.INTERPOLATE_BILINEAR)
 		width = img.get_width()
 		height = img.get_height()
 		data = img.get_data()

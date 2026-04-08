@@ -17,22 +17,17 @@ func simulate_step(delta: float) -> void:
 func get_brightness() -> float:
 	if not Game.use_math_lightning:
 		var local_pos: Vector2 = $"../Platecolor".to_local(global_position)
-
-		var pixel_x := int(local_pos.x + Game.width * 0.5)
-		var pixel_y := int(local_pos.y + Game.height * 0.5)
-		#check if pixel are out of bounds
-		if (pixel_x >= Game.width or pixel_x < 0) or (pixel_y >= Game.height or pixel_y < 0):
+		var pixel_x := int(round(local_pos.x + Game.width * 0.5))
+		var pixel_y := int(round(local_pos.y + Game.height * 0.5))
+		if pixel_x >= Game.width or pixel_x < 0 or pixel_y >= Game.height or pixel_y < 0:
 			return 0.0
 		var colorpx := get_pixel_rgb8(pixel_x, pixel_y)
 		if Game.nonmath_use_only_alpha:
-			#based on transparency
 			return colorpx.a
-		var brightness = (0.299 * colorpx.r + 0.587 * colorpx.g + 0.114 * colorpx.b) * colorpx.a
-		return brightness
+		return (0.299 * colorpx.r + 0.587 * colorpx.g + 0.114 * colorpx.b) * colorpx.a
 	else:
 		var colorpx = shader_color(global_to_shader_p(global_position), Game.math_lighting)
-		var brightness = 0.299 * colorpx.r + 0.587 * colorpx.g + 0.114 * colorpx.b
-		return brightness
+		return 0.299 * colorpx.r + 0.587 * colorpx.g + 0.114 * colorpx.b
 func get_pixel_rgb8(
 		x: int,
 		y: int,

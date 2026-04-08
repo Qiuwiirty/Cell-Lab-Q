@@ -111,3 +111,7 @@ func change_mathematical_lighting() -> void:
 		var img := Image.new()
 		img.load(Game.current_path)
 		$Platecolor.texture = ImageTexture.create_from_image(img)
+		$Platecolor.scale = Game.image_scale
+
+func change_nonmath_plate_scale() -> void:
+	$Platecolor.scale = Game.image_scale

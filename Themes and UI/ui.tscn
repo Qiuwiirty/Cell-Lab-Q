@@ -78,6 +78,24 @@ func _on_w_value_changed(value: float) -> void:
 	Game.math_lighting.w = value
 "
 
+[sub_resource type="GDScript" id="GDScript_i34xa"]
+resource_name = "image_scale"
+script/source = "extends HBoxContainer
+func _ready() -> void:
+	$x.value = Game.image_scale.x
+	$y.value = Game.image_scale.y
+
+func _on_x_changed(value: float) -> void:
+	Game.image_scale.x = value
+	if Game.plate:
+		Game.plate.change_nonmath_plate_scale()
+
+func _on_y_value_changed(value: float) -> void:
+	Game.image_scale.y = value
+	if Game.plate:
+		Game.plate.change_nonmath_plate_scale()
+"
+
 [sub_resource type="GDScript" id="GDScript_3s3c3"]
 resource_name = "use_only_a_brightness"
 script/source = "extends CheckBox
@@ -274,6 +292,7 @@ layout_mode = 2
 visible = false
 
 [node name="configuration_panel" type="PanelContainer" parent="." unique_id=1636530376]
+visible = false
 material = SubResource("ShaderMaterial_i6rmi")
 anchors_preset = 15
 anchor_right = 1.0
@@ -388,6 +407,26 @@ layout_mode = 2
 bbcode_enabled = true
 text = "[font_size=10] [color=thistle]For non-mathematical lighting photosynthesis"
 fit_content = true
+
+[node name="image_scale" type="HBoxContainer" parent="configuration_panel/vbox" unique_id=2136250955]
+layout_mode = 2
+script = SubResource("GDScript_i34xa")
+
+[node name="Label" type="Label" parent="configuration_panel/vbox/image_scale" unique_id=1949247125]
+layout_mode = 2
+text = "Image scale"
+
+[node name="x" type="SpinBox" parent="configuration_panel/vbox/image_scale" unique_id=154883724]
+layout_mode = 2
+step = 0.001
+suffix = "X"
+custom_arrow_step = 0.05
+
+[node name="y" type="SpinBox" parent="configuration_panel/vbox/image_scale" unique_id=123404842]
+layout_mode = 2
+step = 0.001
+suffix = "Y"
+custom_arrow_step = 0.05
 
 [node name="RichTextLabel8" type="RichTextLabel" parent="configuration_panel/vbox" unique_id=1024903958]
 layout_mode = 2
@@ -505,6 +544,8 @@ autowrap_mode = 0
 [connection signal="value_changed" from="configuration_panel/vbox/math_lighting/w" to="configuration_panel/vbox/math_lighting" method="_on_w_value_changed"]
 [connection signal="button_up" from="configuration_panel/vbox/input_image/Button" to="configuration_panel/vbox/input_image" method="_on_button_up"]
 [connection signal="file_selected" from="configuration_panel/vbox/input_image/FileDialog" to="configuration_panel/vbox/input_image" method="_on_file_dialog_file_selected"]
+[connection signal="value_changed" from="configuration_panel/vbox/image_scale/x" to="configuration_panel/vbox/image_scale" method="_on_x_changed"]
+[connection signal="value_changed" from="configuration_panel/vbox/image_scale/y" to="configuration_panel/vbox/image_scale" method="_on_y_value_changed"]
 [connection signal="toggled" from="configuration_panel/vbox/use_only_a_brightness" to="configuration_panel/vbox/use_only_a_brightness" method="_on_toggled"]
 [connection signal="value_changed" from="configuration_panel/vbox/brightness_mult/b" to="configuration_panel/vbox/brightness_mult" method="_on_b_value_changed"]
 [connection signal="toggled" from="configuration_panel/vbox/use_voronoi" to="configuration_panel/vbox/use_voronoi" method="_on_toggled"]

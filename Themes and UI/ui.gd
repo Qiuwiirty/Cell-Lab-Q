@@ -11,7 +11,7 @@ func set_diagnostics(info: String) -> void:
 		return
 	$cell_diagnostics_panel.show()
 	$cell_diagnostics_panel/label.text = info
-func _input(event: InputEvent) -> void:
+func _unhandled_input(event: InputEvent) -> void:
 	#Open/close Substrate Temperature
 	if event.is_action_pressed("1"):
 		if $substrate_temperature.visible:

@@ -55,6 +55,7 @@ func _ready() -> void:
 	$collision.shape = $collision.shape.duplicate()
 	make_adhesion_mutual() #Fix adhesion that isn't symmterical 
 	correct_appearance(1 / 60.) #Without this, you can see the default state of cell flash for a second when it's spawn. This func solve it
+	dna.fix_dna()
 func _process(delta: float) -> void:
 	handle_drag()
 	if Game.temperature == Game.SubstrateTemperature.FREEZE:
@@ -315,7 +316,7 @@ func diagnostics() -> StringName:
 	Diameter: %s
 	Type: %s""" % [snappedf(age, 0.001), snappedf(mass, 0.001), snappedf(radius * 2, 0.001), get_script().get_global_name()]
 #region Adhesion
-#compute and apply flows are managed by a singleton (Game)
+#compute and apply flows
 func compute_flows() -> void:
 	var index = 0
 	for neighbor in adhesion:
@@ -345,37 +346,50 @@ func apply_flows() -> void:
 	mass += delta_mass
 	delta_mass = 0.0
 
-func apply_adhesion_force(rest_length: float = 20, damping: float = 0.3):
+func apply_adhesion_force(damping: float = 0.3):
 	###Credit to Genomeia (I borrowed the physics linking between cells from Genomeia) ^_^
+	#Note that collision physics disabled between adhesion cells to prevent cells mving infinitely
 	var index = 0
 	for neighbor in adhesion:
 		if !is_instance_valid(neighbor) or neighbor == self:
 			adhesion.remove_at(index)
 			continue
 		if neighbor.mode == null:
+			index += 1
 			continue
-		if get_instance_id() < neighbor.get_instance_id():
-			var r = position - neighbor.position
-			var distance = r.length()
-			if distance == 0:
-				return
-			if distance > Game.max_adhesion_length: #if too long then break it
-				adhesion.erase(neighbor)
-				neighbor.adhesion.erase(self)
-				return
-			var dir = r / distance  # unit vector along the link
-			#hookes law
-			var stiffness = (mode.adhesion_stiffness + neighbor.mode.adhesion_stiffness) / 2.0
-			var spring_force = stiffness * (distance - rest_length)
+		var rest_length = (radius + neighbor.radius) * 0.6667 #if cell A's radius 15 and B 15, then rest length 20 would look fine. basically this is an adjusted version
+		var r = position - neighbor.position
+		var distance = r.length()
+		if distance == 0:
+			index += 1
+			continue
+		if distance > Game.max_adhesion_length: #if too long then break it
+			adhesion.erase(neighbor)
+			neighbor.adhesion.erase(self)
+			continue
+		var dir = r / distance  # unit vector along the link
+		#hookes law
+		var stiffness = (mode.adhesion_stiffness + neighbor.mode.adhesion_stiffness) / 2.0
+		var spring_force = stiffness * (distance - rest_length)
 
-			#damp
-			var relative_velocity = velocity - neighbor.velocity
-			var damp_force = damping * relative_velocity.dot(dir)
+		#damp
+		var relative_velocity = velocity - neighbor.velocity
+		var damp_force = damping * relative_velocity.dot(dir)
 
-			var force = (spring_force + damp_force) * dir
+		var force = (spring_force + damp_force) * dir
 
-			velocity -= force
-			neighbor.velocity += force
+		velocity -= force
+		neighbor.velocity += force
+		
+		#rotational correction
+		#cross product (2D scalar) tells us how far off-axis the neighbor is
+		var to_neighbor = -dir  #direction FROM self TO neighbor
+		var facing = Vector2.RIGHT.rotated(rotation)
+		var cross = facing.cross(to_neighbor)  #positive = neighbor is to our left
+		
+		var rot_stiffness = stiffness * 0.002  #scale down, rotation is sensitive
+		rotation += cross * rot_stiffness
+		neighbor.rotation -= cross * rot_stiffness  #neighbor rotates opposite
 		index += 1
 #Make adhesion mutual or symmetric so there's no weirdness
 func make_adhesion_mutual():
@@ -432,28 +446,33 @@ func turn_into_another_cell_type(type: Game.CellType) -> void:
 
 func split() -> void:
 	if !mode:
+		print("Mode does not exist. Can't split")
 		return
 	var split_dir := Vector2.RIGHT.rotated(rotation + deg_to_rad(mode.split_angle))
 	# child 1
-	var child1 = Game.get_instance_cell(mode.child1.cell_type).instantiate()
+	var child1 = Game.get_instance_cell(dna.get_mode(mode.child1).cell_type).instantiate()
 	child1.position = position
-	child1.velocity = velocity + split_dir * 100
+	child1.rotation = rotation + mode.child1_angle
+	child1.velocity = velocity - split_dir * 100
 	child1.dna = dna
-	child1.current_mode = mode.child1.index_mode
+	child1.current_mode = dna.get_mode(mode.child1).id
 	child1.mass = mass * mode.split_ratio
 	child1.nitrogen_reserve = nitrogen_reserve / 2.
 	child1.radius = radius
 	child1.current_color = current_color
+	#child1.mode.set_up_custom_properties()
 	# child 2
-	var child2 = Game.get_instance_cell(mode.child2.cell_type).instantiate()
+	var child2 = Game.get_instance_cell(dna.get_mode(mode.child2).cell_type).instantiate()
 	child2.position = position
-	child2.velocity = velocity - split_dir * 100
+	child2.rotation = rotation + mode.child2_angle
+	child2.velocity = velocity + split_dir * 100
 	child2.dna = dna
-	child2.current_mode = mode.child2.index_mode
+	child2.current_mode = dna.get_mode(mode.child2).id
 	child2.mass = mass * (1.0 - mode.split_ratio)
 	child2.nitrogen_reserve = nitrogen_reserve / 2.
 	child2.radius = radius
 	child2.current_color = current_color
+	#child2.mode.set_up_custom_properties()
 	if mode.make_adhesion:
 		child1.adhesion.append(child2)
 		child2.adhesion.append(child1)
@@ -466,12 +485,12 @@ func split() -> void:
 		var to_neighbor = (cell.position - position).normalized()
 		var dot = split_dir.dot(to_neighbor)
 		
-		if mode.child1_kept_adhesion and dot > 0:
+		if mode.child1_kept_adhesion and dot < 0:
 			if not child1.adhesion.has(cell):
 				child1.adhesion.append(cell)
 			if not cell.adhesion.has(child1):
 				cell.adhesion.append(child1)
-		elif mode.child2_kept_adhesion and dot < 0:
+		elif mode.child2_kept_adhesion and dot > 0:
 			if not child2.adhesion.has(cell):
 				child2.adhesion.append(cell)
 			if not cell.adhesion.has(child2):

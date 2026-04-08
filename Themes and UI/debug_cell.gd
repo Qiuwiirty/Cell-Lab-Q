@@ -118,11 +118,11 @@ func _on_split_angle_changed(value: float) -> void:
 
 func _on_child1_changed(value: float) -> void:
 	if mode:
-		mode.child1 = cell.dna.modes[int(value)]
+		mode.child1 = int(value)
 
 func _on_child2_changed(value: float) -> void:
 	if mode:
-		mode.child2 = cell.dna.modes[int(value)]
+		mode.child2 = int(value)
 
 func _on_make_adhesion_toggled(toggled_on: bool) -> void:
 	if mode:
@@ -151,8 +151,8 @@ func update_DNA_values():
 		$VBoxContainer/ScrollContainer/VBoxContainer/split_mass/SpinBox.value = cell.mode.split_mass
 		$VBoxContainer/ScrollContainer/VBoxContainer/split_ratio/SpinBox.value = cell.mode.split_ratio
 		$VBoxContainer/ScrollContainer/VBoxContainer/split_angle/SpinBox.value = cell.mode.split_angle
-		$VBoxContainer/ScrollContainer/VBoxContainer/child1/SpinBox.value = cell.mode.child1.index_mode
-		$VBoxContainer/ScrollContainer/VBoxContainer/child2/SpinBox.value = cell.mode.child2.index_mode
+		$VBoxContainer/ScrollContainer/VBoxContainer/child1/SpinBox.value = cell.mode.child1
+		$VBoxContainer/ScrollContainer/VBoxContainer/child2/SpinBox.value = cell.mode.child2
 		$VBoxContainer/ScrollContainer/VBoxContainer/make_adhesion.button_pressed = cell.mode.make_adhesion
 		$VBoxContainer/ScrollContainer/VBoxContainer/adhesion_stiffness/SpinBox.value = cell.mode.adhesion_stiffness
 		$VBoxContainer/ScrollContainer/VBoxContainer/flow_rate/SpinBox.value = cell.mode.flow_rate
