@@ -1,7 +1,0 @@
-[gd_scene format=3 uid="uid://sy8jnyx6hyux"]
-
-[ext_resource type="Script" uid="uid://1dpl0rdhb00j" path="res://Cells/Cell script/photocyte.gd" id="1_02e2r"]
-[ext_resource type="PackedScene" uid="uid://cymj82ljpiu70" path="res://Cells/Tscn file/base_cell.tscn" id="1_7q7h6"]
-
-[node name="Photocyte" unique_id=1844930053 instance=ExtResource("1_7q7h6")]
-script = ExtResource("1_02e2r")

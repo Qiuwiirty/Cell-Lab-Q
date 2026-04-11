@@ -1,7 +1,7 @@
 [gd_resource type="Theme" format=3 uid="uid://db16spcdxljun"]
 
 [ext_resource type="StyleBox" uid="uid://bfn67d56fhwu1" path="res://Themes and UI/CellLab-hoverpressed-custompopup-button.tres" id="1_xbgs8"]
-[ext_resource type="Texture2D" uid="uid://co03234e6sch" path="res://Images/yellowcircle.svg" id="2_wuee4"]
+[ext_resource type="Texture2D" uid="uid://co03234e6sch" path="res://Images/Other images/yellowcircle.svg" id="2_wuee4"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_a67hb"]
 

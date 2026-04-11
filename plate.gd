@@ -1,10 +1,12 @@
 extends Node2D
 class_name Plate
 
-var mode = Game.ToolSelector.CELL_SYNTHESIZER
+var tool_mode = Game.ToolSelector.CELL_SYNTHESIZER
 const PHOTOCYTE = preload("uid://sy8jnyx6hyux") #I do not get why using preload and const cause an error in testplate if there basecell. 
 const FOOD = preload("uid://bcp4xdxc828fp")
 const ZONE = preload("uid://cddbgwbo87uoa")
+const CIRCLE_OBSTACLE = preload("uid://blqd56kk0y65a")
+const RECT_OBSTACLE = preload("uid://hojej0yihoy4")
 
 var selected_cell: BaseCell = null
 var locked_to_selected = false
@@ -14,8 +16,17 @@ var bind_adhesion_cell2: BaseCell = null
 
 var accumulator := 0.0
 const FIXED_STEP := 1.0 / 60.0
+
+#marker
+var zone_size_marker = Vector2(1.0, 1.0)
+var rect_obstacle_size_marker = Vector2(20.0, 20.0)
+var circle_obstacle_diameter_marker = 20
+
+var ctrl_mode := false #This will change if you press ctrl (just, not long pressed)
 func _unhandled_input(event: InputEvent) -> void:
 	#ui_cancel is esc
+	if event.is_action_pressed("ctrl"):
+		ctrl_mode = !ctrl_mode
 	if event.is_action_pressed("ui_cancel"):
 		discard_any_selection()
 		Game.infonotice.hide()
@@ -24,7 +35,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			handle_adhesion_bind()
 	if event is InputEventMouseButton:
 		if event.button_index == MouseButton.MOUSE_BUTTON_LEFT and event.pressed:
-			match mode:
+			match tool_mode:
 				Game.ToolSelector.CELL_SYNTHESIZER:
 					var new_cell = PHOTOCYTE.instantiate()
 					#Add by Vector2(randf(), randf()) to avoid weird physics issue
@@ -51,8 +62,51 @@ func _unhandled_input(event: InputEvent) -> void:
 					var new_zone = ZONE.instantiate()
 					new_zone.global_position = get_global_mouse_position()
 					new_zone.modulate = Color(randf(), randf(), randf(), 0.3906)
+					new_zone.scale = zone_size_marker
 					add_child(new_zone)
+				Game.ToolSelector.OBSTACLE_EDITOR:
+					var new_obstacle = RECT_OBSTACLE.instantiate() if ctrl_mode else CIRCLE_OBSTACLE.instantiate()
+					new_obstacle.global_position = get_global_mouse_position()
+					new_obstacle.modulate = Color("ababab")
+					if new_obstacle is RectObstacle:
+						new_obstacle.current_size = rect_obstacle_size_marker
+					else:
+						new_obstacle.current_diameter = circle_obstacle_diameter_marker
+					add_child(new_obstacle)
 func _process(delta: float) -> void:
+	match tool_mode: #Basically decide which marker to show (to show what is being placed)
+		Game.ToolSelector.ZONE_EDITOR:
+			$circle_marker.hide()
+			$rect_marker.show()
+			$rect_marker.scale = zone_size_marker * 5
+			$rect_marker.global_position = get_global_mouse_position()
+		Game.ToolSelector.OBSTACLE_EDITOR:
+			if ctrl_mode:
+				$circle_marker.hide()
+				$rect_marker.show()
+				$rect_marker.scale = rect_obstacle_size_marker / 20.0
+				$rect_marker.global_position = get_global_mouse_position()
+			else:
+				$rect_marker.hide()
+				$circle_marker.show()
+				$circle_marker.scale = Vector2(circle_obstacle_diameter_marker / 20.0, circle_obstacle_diameter_marker / 20.0)
+				$circle_marker.global_position = get_global_mouse_position()
+		_:
+			$rect_marker.hide()
+			$circle_marker.hide()
+	match tool_mode: #This is for adjusting the marker and how big the placed object is
+		Game.ToolSelector.OBSTACLE_EDITOR:
+			if !ctrl_mode:
+				if Input.is_action_pressed("ui_up"):
+					circle_obstacle_diameter_marker = circle_obstacle_diameter_marker + 100 * delta
+				elif Input.is_action_pressed("ui_down"):
+					circle_obstacle_diameter_marker = max(circle_obstacle_diameter_marker - 100 * delta, 0.0)
+			else:
+				var direction = Input.get_vector("ui_left", "ui_right", "ui_down", "ui_up")
+				rect_obstacle_size_marker = (rect_obstacle_size_marker + direction * delta * 100).max(Vector2(0.0, 0.0))
+		Game.ToolSelector.ZONE_EDITOR:
+			var direction = Input.get_vector("ui_left", "ui_right", "ui_down", "ui_up")
+			zone_size_marker = (zone_size_marker + direction * delta * 5).max(Vector2(0., 0.))
 	if Game.temperature == Game.SubstrateTemperature.FREEZE:
 		return
 	accumulator += delta * Game.timescale_modifier()
@@ -76,12 +130,14 @@ func _ready() -> void:
 func correct_brightness_plate():
 	$Platecolor.material.set_shader_parameter("brightness", Game.brightness_mult)
 func change_tool(into: Game.ToolSelector):
-	mode = into
-	if mode != Game.ToolSelector.CELL_DIAGNOSTICS or mode != Game.ToolSelector.BIND_ADHESION:
+	tool_mode = into
+	if tool_mode != Game.ToolSelector.CELL_DIAGNOSTICS or tool_mode != Game.ToolSelector.BIND_ADHESION:
 		discard_any_selection()
 		Game.UI.get_node("debug_cell").close()
-	if mode == Game.ToolSelector.ZONE_EDITOR:
-		Game.show_info_notice_timed("Click anywhere to create/edit a ZONE", 5)
+	if tool_mode == Game.ToolSelector.ZONE_EDITOR:
+		Game.show_info_notice_timed("Click anywhere to create/edit a zone. Use arrow key to change size", 5)
+	elif tool_mode == Game.ToolSelector.OBSTACLE_EDITOR:
+		Game.show_info_notice_timed("Click anywhere to create/edit an obstacle. Ctrl to change shape. Use arrow key to change size", 5)
 func discard_any_selection():
 	discard_old_selected_cell()
 	if bind_adhesion_cell1:

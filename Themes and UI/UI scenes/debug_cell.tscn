@@ -1,0 +1,405 @@
+[gd_scene format=3 uid="uid://b1wwllrdsm4bx"]
+
+[ext_resource type="Theme" uid="uid://db16spcdxljun" path="res://Themes and UI/NewCLQ.tres" id="1_1nivx"]
+[ext_resource type="Script" uid="uid://c17810xg2k4gy" path="res://Themes and UI/UI scripts/debug_cell.gd" id="2_hdu5r"]
+[ext_resource type="Texture2D" uid="uid://bntovk0lsluej" path="res://Images/Medium Resolution/debug_cell.png" id="3_w1uov"]
+[ext_resource type="StyleBox" uid="uid://bkrhc42x7sga1" path="res://Themes and UI/CellLab-green_hseperator.tres" id="4_65vxs"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hwqhx"]
+bg_color = Color(0.12156863, 0.12156863, 0.12156863, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+shadow_size = 10
+
+[sub_resource type="DPITexture" id="DPITexture_v33lj"]
+_source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#fff\" fill-opacity=\".75\" d=\"m1 3 2-2 5 5 5-5 2 2-5 5 5 5-2 2-5-5-5 5-2-2 5-5z\"/></svg>
+"
+
+[sub_resource type="DPITexture" id="DPITexture_qs8m7"]
+_source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#fff\" d=\"m1 3 2-2 5 5 5-5 2 2-5 5 5 5-2 2-5-5-5 5-2-2 5-5z\"/></svg>
+"
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_ssf00"]
+color = Color(0.25, 0.25, 0.25, 1)
+grow_begin = 0.0
+grow_end = 0.0
+
+[node name="debug_cell" type="PanelContainer" unique_id=965499745]
+anchors_preset = -1
+anchor_left = 0.4
+anchor_top = 0.5
+anchor_right = 0.6
+anchor_bottom = 0.5
+offset_left = -86.8
+offset_top = -149.0
+offset_right = 86.8
+offset_bottom = 149.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_force_pass_scroll_events = false
+theme = ExtResource("1_1nivx")
+theme_override_styles/panel = SubResource("StyleBoxFlat_hwqhx")
+script = ExtResource("2_hdu5r")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1553533709]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer" unique_id=288404908]
+layout_mode = 2
+theme_override_constants/margin_left = 7
+theme_override_constants/margin_top = 7
+theme_override_constants/margin_right = 7
+theme_override_constants/margin_bottom = 7
+
+[node name="heading" type="HBoxContainer" parent="VBoxContainer/MarginContainer" unique_id=1179430340]
+layout_mode = 2
+
+[node name="icon" type="TextureRect" parent="VBoxContainer/MarginContainer/heading" unique_id=347277042]
+layout_mode = 2
+texture = ExtResource("3_w1uov")
+
+[node name="title" type="Label" parent="VBoxContainer/MarginContainer/heading" unique_id=84012085]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.9372549, 0.6666667, 0.08627451, 1)
+text = "Debug cell"
+
+[node name="close" type="TextureButton" parent="VBoxContainer/MarginContainer/heading" unique_id=1544246922]
+layout_mode = 2
+texture_normal = SubResource("DPITexture_v33lj")
+texture_pressed = SubResource("DPITexture_qs8m7")
+
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer" unique_id=21676869]
+layout_mode = 2
+theme_override_styles/separator = ExtResource("4_65vxs")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer" unique_id=1178051854]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/ScrollContainer" unique_id=115110109]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 5
+
+[node name="Age" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1224124256]
+layout_mode = 2
+text = "Age: 0.0h"
+
+[node name="info" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1226253980]
+custom_minimum_size = Vector2(1, 1)
+layout_mode = 2
+theme_override_font_sizes/font_size = 10
+text = "Left side is the editable value. Right side is the current value for that cell (For non-DNA)"
+autowrap_mode = 3
+
+[node name="mass" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1763484810]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer/mass" unique_id=1488933852]
+layout_mode = 2
+text = "Mass"
+
+[node name="SpinBox" type="SpinBox" parent="VBoxContainer/ScrollContainer/VBoxContainer/mass" unique_id=2045154229]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = -100.0
+step = 0.001
+value = 2.8799999999999955
+suffix = "ng"
+custom_arrow_step = 0.1
+
+[node name="realvalue" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer/mass" unique_id=1785694758]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.8745098, 0.8745098, 0.8745098, 1)
+text = "2.88 ng"
+
+[node name="radius" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=444239450]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer/radius" unique_id=1675394772]
+layout_mode = 2
+text = "Radius"
+
+[node name="SpinBox" type="SpinBox" parent="VBoxContainer/ScrollContainer/VBoxContainer/radius" unique_id=897255355]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = -100.0
+step = 0.001
+value = 15.0
+suffix = "μm"
+custom_arrow_step = 0.1
+
+[node name="realvalue" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer/radius" unique_id=2113469696]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.8745098, 0.8745098, 0.8745098, 1)
+text = "15.0 μm"
+
+[node name="energy_loss_coefficient" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1269633249]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer/energy_loss_coefficient" unique_id=1958235792]
+layout_mode = 2
+text = "Energy Loss Coefficient"
+
+[node name="SpinBox" type="SpinBox" parent="VBoxContainer/ScrollContainer/VBoxContainer/energy_loss_coefficient" unique_id=1655148102]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = -100.0
+step = 0.001
+value = 1.0
+custom_arrow_step = 0.1
+
+[node name="realvalue" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer/energy_loss_coefficient" unique_id=868084810]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.8745098, 0.8745098, 0.8745098, 1)
+text = "1.0"
+
+[node name="nitrogen_reserve" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=448259358]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer/nitrogen_reserve" unique_id=1004104973]
+layout_mode = 2
+text = "Nitrogen Reserve"
+
+[node name="SpinBox" type="SpinBox" parent="VBoxContainer/ScrollContainer/VBoxContainer/nitrogen_reserve" unique_id=280373420]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = -100.0
+step = 0.001
+value = 100.0
+suffix = "%"
+custom_arrow_step = 0.1
+
+[node name="realvalue" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer/nitrogen_reserve" unique_id=379608983]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8745098, 0.8745098, 0.8745098, 1)
+text = "100.0 %"
+
+[node name="current_color" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1660546844]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Label" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer/current_color" unique_id=996531142]
+layout_mode = 2
+text = "Current Color"
+
+[node name="ColorPickerButton" type="ColorPickerButton" parent="VBoxContainer/ScrollContainer/VBoxContainer/current_color" unique_id=1762999537]
+layout_mode = 2
+size_flags_horizontal = 3
+color = Color(0, 0.6392157, 0, 1)
+
+[node name="real_current_color" type="ColorRect" parent="VBoxContainer/ScrollContainer/VBoxContainer/current_color" unique_id=486986085]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HSeparator2" type="HSeparator" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1935579344]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_ssf00")
+
+[node name="labeldna" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1188250345]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "DNA"
+
+[node name="mode_editing" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1758989492]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer/mode_editing" unique_id=778030926]
+layout_mode = 2
+text = "Current editing mode"
+
+[node name="SpinBox" type="SpinBox" parent="VBoxContainer/ScrollContainer/VBoxContainer/mode_editing" unique_id=1215491785]
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 40.0
+value = 40.0
+prefix = "M"
+custom_arrow_step = 0.1
+
+[node name="disable_metabolism" type="CheckBox" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1142530528]
+layout_mode = 2
+text = "Disable metabolism"
+
+[node name="Label2" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1661537767]
+layout_mode = 2
+theme_override_font_sizes/font_size = 10
+text = "(Cell can't die because of hunger if enabled)"
+
+[node name="cell_type" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1169089666]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer/cell_type" unique_id=1295663787]
+layout_mode = 2
+text = "Cell Type"
+
+[node name="OptionButton" type="OptionButton" parent="VBoxContainer/ScrollContainer/VBoxContainer/cell_type" unique_id=834757912]
+layout_mode = 2
+size_flags_horizontal = 3
+selected = 0
+item_count = 5
+popup/item_0/text = "Base Cell"
+popup/item_0/id = 0
+popup/item_1/text = "Photocyte"
+popup/item_1/id = 1
+popup/item_2/text = "Luminocyte"
+popup/item_2/id = 2
+popup/item_3/text = "Phagocyte"
+popup/item_3/id = 3
+popup/item_4/text = "Flagellocyte"
+popup/item_4/id = 4
+
+[node name="Label4" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=297703864]
+layout_mode = 2
+theme_override_font_sizes/font_size = 10
+text = "(This may need to change the entire cell)"
+
+[node name="actual_color" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=655941310]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer/actual_color" unique_id=1630649253]
+layout_mode = 2
+text = "Actual Color"
+
+[node name="ColorPickerButton" type="ColorPickerButton" parent="VBoxContainer/ScrollContainer/VBoxContainer/actual_color" unique_id=223127922]
+layout_mode = 2
+size_flags_horizontal = 3
+color = Color(0, 0.6392157, 0, 1)
+
+[node name="split_mass" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=2079009762]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer/split_mass" unique_id=500782732]
+layout_mode = 2
+text = "Split mass"
+
+[node name="SpinBox" type="SpinBox" parent="VBoxContainer/ScrollContainer/VBoxContainer/split_mass" unique_id=1373708302]
+layout_mode = 2
+size_flags_horizontal = 3
+step = 0.001
+value = 2.54
+suffix = "ng"
+custom_arrow_step = 0.1
+
+[node name="split_ratio" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1294634252]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer/split_ratio" unique_id=788737602]
+layout_mode = 2
+text = "Split ratio"
+
+[node name="SpinBox" type="SpinBox" parent="VBoxContainer/ScrollContainer/VBoxContainer/split_ratio" unique_id=1659318728]
+layout_mode = 2
+size_flags_horizontal = 3
+value = 50.0
+custom_arrow_step = 0.1
+
+[node name="consequent" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer/split_ratio" unique_id=2100993608]
+layout_mode = 2
+size_flags_horizontal = 3
+text = ": 50"
+
+[node name="split_angle" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=463948772]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer/split_angle" unique_id=1582027185]
+layout_mode = 2
+text = "Split angle"
+
+[node name="SpinBox" type="SpinBox" parent="VBoxContainer/ScrollContainer/VBoxContainer/split_angle" unique_id=142835512]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = -360.0
+max_value = 360.0
+suffix = "°"
+custom_arrow_step = 0.1
+
+[node name="child1" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=781997300]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer/child1" unique_id=1898878222]
+layout_mode = 2
+text = "Children 1"
+
+[node name="SpinBox" type="SpinBox" parent="VBoxContainer/ScrollContainer/VBoxContainer/child1" unique_id=403294938]
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 40.0
+prefix = "M"
+custom_arrow_step = 0.1
+
+[node name="child2" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1669532103]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer/child2" unique_id=378909744]
+layout_mode = 2
+text = "Children 2"
+
+[node name="SpinBox" type="SpinBox" parent="VBoxContainer/ScrollContainer/VBoxContainer/child2" unique_id=1553557524]
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 40.0
+prefix = "M"
+custom_arrow_step = 0.1
+
+[node name="make_adhesion" type="CheckBox" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1345200705]
+layout_mode = 2
+text = "Make adhesion"
+
+[node name="adhesion_stiffness" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1071398463]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer/adhesion_stiffness" unique_id=478608658]
+layout_mode = 2
+text = "Adhesion stiffness"
+
+[node name="SpinBox" type="SpinBox" parent="VBoxContainer/ScrollContainer/VBoxContainer/adhesion_stiffness" unique_id=723553774]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = -100.0
+step = 0.001
+value = 5.0
+custom_arrow_step = 0.1
+
+[node name="flow_rate" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1537181467]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer/flow_rate" unique_id=1926707711]
+layout_mode = 2
+text = "Flow rate"
+
+[node name="SpinBox" type="SpinBox" parent="VBoxContainer/ScrollContainer/VBoxContainer/flow_rate" unique_id=1249377882]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = -100.0
+step = 0.001
+value = 0.010000000000005116
+custom_arrow_step = 0.1
+
+[node name="Control" type="Control" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=923736609]
+layout_mode = 2
+
+[connection signal="button_up" from="VBoxContainer/MarginContainer/heading/close" to="." method="_on_close_button_up"]
+[connection signal="value_changed" from="VBoxContainer/ScrollContainer/VBoxContainer/mass/SpinBox" to="." method="_on_mass_changed"]
+[connection signal="value_changed" from="VBoxContainer/ScrollContainer/VBoxContainer/radius/SpinBox" to="." method="_on_radius_changed"]
+[connection signal="value_changed" from="VBoxContainer/ScrollContainer/VBoxContainer/energy_loss_coefficient/SpinBox" to="." method="_on_energy_loss_coefficient_changed"]
+[connection signal="value_changed" from="VBoxContainer/ScrollContainer/VBoxContainer/nitrogen_reserve/SpinBox" to="." method="_on_nitrogen_reserve_changed"]
+[connection signal="color_changed" from="VBoxContainer/ScrollContainer/VBoxContainer/current_color/ColorPickerButton" to="." method="_on_current_color_changed"]
+[connection signal="value_changed" from="VBoxContainer/ScrollContainer/VBoxContainer/mode_editing/SpinBox" to="." method="_on_spin_box_value_changed"]
+[connection signal="toggled" from="VBoxContainer/ScrollContainer/VBoxContainer/disable_metabolism" to="." method="_on_disable_metabolism_toggled"]
+[connection signal="item_selected" from="VBoxContainer/ScrollContainer/VBoxContainer/cell_type/OptionButton" to="." method="_on_cell_type_selected"]
+[connection signal="color_changed" from="VBoxContainer/ScrollContainer/VBoxContainer/actual_color/ColorPickerButton" to="." method="_on_color_changed"]
+[connection signal="value_changed" from="VBoxContainer/ScrollContainer/VBoxContainer/split_mass/SpinBox" to="." method="_on_split_mass_changed"]
+[connection signal="value_changed" from="VBoxContainer/ScrollContainer/VBoxContainer/split_ratio/SpinBox" to="." method="_on_split_ratio_changed"]
+[connection signal="value_changed" from="VBoxContainer/ScrollContainer/VBoxContainer/split_angle/SpinBox" to="." method="_on_split_angle_changed"]
+[connection signal="value_changed" from="VBoxContainer/ScrollContainer/VBoxContainer/child1/SpinBox" to="." method="_on_child1_changed"]
+[connection signal="value_changed" from="VBoxContainer/ScrollContainer/VBoxContainer/child2/SpinBox" to="." method="_on_child2_changed"]
+[connection signal="toggled" from="VBoxContainer/ScrollContainer/VBoxContainer/make_adhesion" to="." method="_on_make_adhesion_toggled"]
+[connection signal="value_changed" from="VBoxContainer/ScrollContainer/VBoxContainer/adhesion_stiffness/SpinBox" to="." method="_on_adhesion_stiffness_changed"]
+[connection signal="value_changed" from="VBoxContainer/ScrollContainer/VBoxContainer/flow_rate/SpinBox" to="." method="_on_flow_rate_changed"]

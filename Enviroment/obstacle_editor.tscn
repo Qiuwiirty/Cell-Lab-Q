@@ -1,0 +1,172 @@
+[gd_scene format=3 uid="uid://1jd7s2cpmvje"]
+
+[ext_resource type="Theme" uid="uid://db16spcdxljun" path="res://Themes and UI/NewCLQ.tres" id="1_h54dl"]
+[ext_resource type="Script" uid="uid://di7wcahxae4c" path="res://Enviroment/obstacle_editor.gd" id="2_71jqk"]
+[ext_resource type="Texture2D" uid="uid://um4bldqy6g2s" path="res://Images/Medium Resolution/obstacle.png" id="3_71jqk"]
+[ext_resource type="StyleBox" uid="uid://bkrhc42x7sga1" path="res://Themes and UI/CellLab-green_hseperator.tres" id="4_pufch"]
+[ext_resource type="PackedScene" uid="uid://j8bl45n8hqn7" path="res://Themes and UI/UI scenes/are_you_sure.tscn" id="5_cuxcp"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hwqhx"]
+bg_color = Color(0.12156863, 0.12156863, 0.12156863, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+shadow_size = 10
+
+[sub_resource type="DPITexture" id="DPITexture_v33lj"]
+_source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#fff\" fill-opacity=\".75\" d=\"m1 3 2-2 5 5 5-5 2 2-5 5 5 5-2 2-5-5-5 5-2-2 5-5z\"/></svg>
+"
+
+[sub_resource type="DPITexture" id="DPITexture_qs8m7"]
+_source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#fff\" d=\"m1 3 2-2 5 5 5-5 2 2-5 5 5 5-2 2-5-5-5 5-2-2 5-5z\"/></svg>
+"
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ev12y"]
+bg_color = Color(1, 0, 0.0333333, 1)
+
+[node name="obstacle_editor" type="PanelContainer" unique_id=965499745]
+anchors_preset = -1
+anchor_left = 0.4
+anchor_top = 0.4
+anchor_right = 0.6
+anchor_bottom = 0.525
+offset_left = -90.5
+offset_top = -44.0
+offset_right = 90.5
+offset_bottom = 74.5
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_force_pass_scroll_events = false
+theme = ExtResource("1_h54dl")
+theme_override_styles/panel = SubResource("StyleBoxFlat_hwqhx")
+script = ExtResource("2_71jqk")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1553533709]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer" unique_id=288404908]
+layout_mode = 2
+theme_override_constants/margin_left = 7
+theme_override_constants/margin_top = 7
+theme_override_constants/margin_right = 7
+theme_override_constants/margin_bottom = 7
+
+[node name="heading" type="HBoxContainer" parent="VBoxContainer/MarginContainer" unique_id=1179430340]
+layout_mode = 2
+
+[node name="icon" type="TextureRect" parent="VBoxContainer/MarginContainer/heading" unique_id=347277042]
+layout_mode = 2
+texture = ExtResource("3_71jqk")
+
+[node name="title" type="Label" parent="VBoxContainer/MarginContainer/heading" unique_id=84012085]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.9372549, 0.6666667, 0.08627451, 1)
+text = "Obstacle editor"
+
+[node name="close" type="TextureButton" parent="VBoxContainer/MarginContainer/heading" unique_id=1544246922]
+layout_mode = 2
+texture_normal = SubResource("DPITexture_v33lj")
+texture_pressed = SubResource("DPITexture_qs8m7")
+
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer" unique_id=21676869]
+layout_mode = 2
+theme_override_styles/separator = ExtResource("4_pufch")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer" unique_id=1178051854]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/ScrollContainer" unique_id=115110109]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 5
+
+[node name="color_of_zone" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1747158091]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer/color_of_zone" unique_id=1984674544]
+layout_mode = 2
+text = "Obstacle's color"
+
+[node name="ColorPickerButton" type="ColorPickerButton" parent="VBoxContainer/ScrollContainer/VBoxContainer/color_of_zone" unique_id=2092980137]
+layout_mode = 2
+size_flags_horizontal = 3
+color = Color(0.67, 0.67, 0.67, 1)
+
+[node name="shape" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=2145654781]
+layout_mode = 2
+
+[node name="Shape" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer/shape" unique_id=1672520788]
+layout_mode = 2
+text = "Shape"
+
+[node name="OptionButton" type="OptionButton" parent="VBoxContainer/ScrollContainer/VBoxContainer/shape" unique_id=1383049977]
+layout_mode = 2
+selected = 0
+item_count = 2
+popup/item_0/text = "Circle"
+popup/item_0/id = 0
+popup/item_1/text = "Rectangle"
+popup/item_1/id = 1
+
+[node name="Size" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1261201033]
+visible = false
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer/Size" unique_id=1024028586]
+layout_mode = 2
+text = "Size of obstacle"
+
+[node name="x" type="SpinBox" parent="VBoxContainer/ScrollContainer/VBoxContainer/Size" unique_id=999596365]
+layout_mode = 2
+max_value = 10000.0
+step = 0.001
+value = 1.0
+suffix = "X"
+
+[node name="y" type="SpinBox" parent="VBoxContainer/ScrollContainer/VBoxContainer/Size" unique_id=537901851]
+layout_mode = 2
+max_value = 10000.0
+step = 0.001
+value = 1.0
+suffix = "Y"
+
+[node name="Radius" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1964730792]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer/Radius" unique_id=715508272]
+layout_mode = 2
+text = "Diameter of obstacle"
+
+[node name="diameter" type="SpinBox" parent="VBoxContainer/ScrollContainer/VBoxContainer/Radius" unique_id=1035793323]
+layout_mode = 2
+max_value = 10000.0
+step = 0.001
+value = 1.0
+
+[node name="Label" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=106323539]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "You can also edit the size of zone via arrow keys"
+
+[node name="delete" type="Button" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1499700431]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_ev12y")
+text = "Delete zone"
+
+[node name="are_you_sure_todelete" parent="." unique_id=49534813 instance=ExtResource("5_cuxcp")]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[connection signal="button_up" from="VBoxContainer/MarginContainer/heading/close" to="." method="close"]
+[connection signal="color_changed" from="VBoxContainer/ScrollContainer/VBoxContainer/color_of_zone/ColorPickerButton" to="." method="_on_color_changed"]
+[connection signal="item_selected" from="VBoxContainer/ScrollContainer/VBoxContainer/shape/OptionButton" to="." method="_on_shape_selected"]
+[connection signal="value_changed" from="VBoxContainer/ScrollContainer/VBoxContainer/Size/x" to="." method="_on_x_changed"]
+[connection signal="value_changed" from="VBoxContainer/ScrollContainer/VBoxContainer/Size/y" to="." method="_on_y_changed"]
+[connection signal="value_changed" from="VBoxContainer/ScrollContainer/VBoxContainer/Radius/diameter" to="." method="_on_radii_changed"]
+[connection signal="button_up" from="VBoxContainer/ScrollContainer/VBoxContainer/delete" to="." method="_on_delete_button_up"]

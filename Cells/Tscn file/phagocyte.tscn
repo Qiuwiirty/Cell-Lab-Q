@@ -1,7 +1,0 @@
-[gd_scene format=3 uid="uid://byt4u4bomwhbk"]
-
-[ext_resource type="PackedScene" uid="uid://cymj82ljpiu70" path="res://Cells/Tscn file/base_cell.tscn" id="1_gpc6l"]
-[ext_resource type="Script" uid="uid://cmfhecblnbwpb" path="res://Cells/Cell script/phagocyte.gd" id="2_s50j2"]
-
-[node name="Phagocyte" unique_id=1462000660 instance=ExtResource("1_gpc6l")]
-script = ExtResource("2_s50j2")

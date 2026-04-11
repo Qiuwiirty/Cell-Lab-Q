@@ -1,22 +1,22 @@
-[gd_scene load_steps=2 format=3 uid="uid://moxe0r3xcsq"]
+[gd_scene format=3 uid="uid://cc8q5bou5unpk"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_67ltc"]
 
-[node name="Experiment" type="Node2D"]
+[node name="Experiment" type="Node2D" unique_id=1234729726]
 
-[node name="yi" type="RigidBody2D" parent="."]
+[node name="yi" type="RigidBody2D" parent="." unique_id=50941162]
 gravity_scale = 0.0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="yi"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="yi" unique_id=6916083]
 shape = SubResource("CircleShape2D_67ltc")
 
-[node name="er" type="RigidBody2D" parent="."]
+[node name="er" type="RigidBody2D" parent="." unique_id=1461716482]
 gravity_scale = 0.0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="er"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="er" unique_id=1180083696]
 position = Vector2(10, 0)
 shape = SubResource("CircleShape2D_67ltc")
 debug_color = Color(0.9584257, 3.080368e-06, 0.5298511, 0.41960785)
 
-[node name="Camera2D" type="Camera2D" parent="."]
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1887084399]
 zoom = Vector2(4, 4)

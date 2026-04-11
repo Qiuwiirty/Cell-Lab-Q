@@ -1,0 +1,23 @@
+[gd_scene format=3 uid="uid://df45adrwx1bsm"]
+
+[ext_resource type="PackedScene" uid="uid://cymj82ljpiu70" path="res://Cells related/Tscn file/base_cell.tscn" id="1_annor"]
+[ext_resource type="Script" uid="uid://8gtmudh5xxxk" path="res://Cells related/Cell script/flagellocyte.gd" id="2_m7grj"]
+[ext_resource type="Shader" uid="uid://vakw5ghoo6v8" path="res://Shaders/tail.gdshader" id="3_qsj2r"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_yejvc"]
+shader = ExtResource("3_qsj2r")
+shader_parameter/t = 2.565
+shader_parameter/cell_radius = 0.06
+shader_parameter/color = Color(0.7490196, 0.7490196, 0.7490196, 1)
+
+[sub_resource type="QuadMesh" id="QuadMesh_hgduh"]
+size = Vector2(40, 40)
+
+[node name="Flagellocyte" unique_id=82719589 instance=ExtResource("1_annor")]
+script = ExtResource("2_m7grj")
+
+[node name="tail_quad" type="MeshInstance2D" parent="." index="3" unique_id=381448529]
+material = SubResource("ShaderMaterial_yejvc")
+position = Vector2(-34, 0)
+rotation = -3.1415927
+mesh = SubResource("QuadMesh_hgduh")

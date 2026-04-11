@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://t8q6yh1vds1"]
 
-[ext_resource type="Script" uid="uid://drc6d5377hh6s" path="res://top_panel.gd" id="1_27fn8"]
+[ext_resource type="Script" uid="uid://drc6d5377hh6s" path="res://Themes and UI/UI scripts/top_panel.gd" id="1_27fn8"]
 [ext_resource type="Texture2D" uid="uid://bpcq56t1hw2oo" path="res://Images/Medium Resolution/plate_clear.png" id="1_fyqef"]
 [ext_resource type="Theme" uid="uid://fvn4uh6phepd" path="res://Themes and UI/Cell lab theme.tres" id="1_kgo6r"]
 [ext_resource type="Script" uid="uid://dj8v8hlmm32xq" path="res://Themes and UI/ui.gd" id="1_ux5x0"]
@@ -17,13 +17,14 @@
 [ext_resource type="AudioStream" uid="uid://cmaqwx5ybye08" path="res://Sound and Music/button2.mp3" id="12_uqsdy"]
 [ext_resource type="Texture2D" uid="uid://p5fmju3af5d7" path="res://Images/Medium Resolution/temp_slow.png" id="12_whbqe"]
 [ext_resource type="Texture2D" uid="uid://dg2wqbvy11mos" path="res://Images/Medium Resolution/temp_high.png" id="13_ux5x0"]
-[ext_resource type="PackedScene" uid="uid://dik8va5bopm7k" path="res://substrate_temperature_custom.tscn" id="16_7jnlg"]
-[ext_resource type="PackedScene" uid="uid://6pbpc7ipi8lr" path="res://Themes and UI/select_tool_custom.tscn" id="17_whbqe"]
-[ext_resource type="Script" uid="uid://dqjlesg4sdqq5" path="res://Themes and UI/configuration_panel.gd" id="20_7yarc"]
-[ext_resource type="PackedScene" uid="uid://b1wwllrdsm4bx" path="res://Themes and UI/debug_cell.tscn" id="20_s1gou"]
+[ext_resource type="PackedScene" uid="uid://dik8va5bopm7k" path="res://Themes and UI/UI scenes/substrate_temperature_custom.tscn" id="16_7jnlg"]
+[ext_resource type="PackedScene" uid="uid://6pbpc7ipi8lr" path="res://Themes and UI/UI scenes/select_tool_custom.tscn" id="17_whbqe"]
+[ext_resource type="Script" uid="uid://dqjlesg4sdqq5" path="res://Themes and UI/UI scripts/configuration_panel.gd" id="20_7yarc"]
+[ext_resource type="PackedScene" uid="uid://b1wwllrdsm4bx" path="res://Themes and UI/UI scenes/debug_cell.tscn" id="20_s1gou"]
 [ext_resource type="Shader" uid="uid://cf7qe01ckvr4s" path="res://Shaders/frost_glass_blur.gdshader" id="22_mk4ph"]
-[ext_resource type="Script" uid="uid://drp6jnvg17e8l" path="res://Themes and UI/input_image.gd" id="22_s1gou"]
-[ext_resource type="PackedScene" uid="uid://bbjqycigpx7a1" path="res://Themes and UI/zone_editor.tscn" id="23_i6rmi"]
+[ext_resource type="Script" uid="uid://drp6jnvg17e8l" path="res://Themes and UI/UI scripts/input_image.gd" id="22_s1gou"]
+[ext_resource type="PackedScene" uid="uid://1jd7s2cpmvje" path="res://Enviroment/obstacle_editor.tscn" id="22_yxjur"]
+[ext_resource type="PackedScene" uid="uid://bbjqycigpx7a1" path="res://Themes and UI/UI scenes/zone_editor.tscn" id="23_i6rmi"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ux5x0"]
 bg_color = Color(0, 0, 0, 0.4862745)
@@ -400,7 +401,11 @@ visible = false
 [node name="zone_editor" parent="." unique_id=622694091 instance=ExtResource("23_i6rmi")]
 visible = false
 
+[node name="obstacle_editor" parent="." unique_id=861809755 instance=ExtResource("22_yxjur")]
+visible = false
+
 [node name="configuration_panel" type="PanelContainer" parent="." unique_id=1636530376]
+visible = false
 material = SubResource("ShaderMaterial_i6rmi")
 anchors_preset = 15
 anchor_right = 1.0

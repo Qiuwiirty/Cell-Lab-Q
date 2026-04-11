@@ -21,7 +21,7 @@ config/icon="uid://bcergniwgv564"
 
 [autoload]
 
-Game="*res://Misc/Game.gd"
+Game="*res://Misc/Singleton/Game.gd"
 Pool="*uid://sr1uhneeh418"
 
 [editor_plugins]
@@ -31,9 +31,10 @@ enabled=PackedStringArray("res://addons/basic_shape_creation/plugin.cfg")
 [file_customization]
 
 folder_colors={
-"res://Cells/": "gray",
-"res://Cells/Cell script/": "red",
-"res://Cells/Tscn file/": "yellow",
+"res://Cells related/": "gray",
+"res://Cells related/Cell script/": "red",
+"res://Cells related/Tscn file/": "yellow",
+"res://Enviroment/": "orange",
 "res://Images/": "purple",
 "res://Shaders/": "green",
 "res://Sound and Music/": "pink",
@@ -80,6 +81,11 @@ t={
 2={
 "deadzone": 0.2,
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":50,"key_label":0,"unicode":50,"location":0,"echo":false,"script":null)
+]
+}
+ctrl={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":4194326,"key_label":0,"unicode":0,"location":0,"echo":false,"script":null)
 ]
 }
 

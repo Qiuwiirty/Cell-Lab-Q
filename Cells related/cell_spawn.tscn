@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://vorj3y1f0tbp"]
+
+[ext_resource type="Script" uid="uid://dhra413kwfqg1" path="res://Cells related/cell_spawn.gd" id="1_dtc2x"]
+
+[node name="cell spawn" type="Node2D" unique_id=1249728514]
+script = ExtResource("1_dtc2x")
+
+[node name="Marker2D" type="Marker2D" parent="." unique_id=135972514]
+editor_description = "This function for simply spawning the cell according to the DNA and what the mode are"

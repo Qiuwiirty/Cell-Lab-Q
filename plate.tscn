@@ -4,16 +4,17 @@
 [ext_resource type="Texture2D" uid="uid://dt4qdlwv3kaxq" path="res://platecolor.png" id="2_ffgcv"]
 [ext_resource type="Shader" uid="uid://b1kem5k1nhs1q" path="res://Shaders/brightener_plate.gdshader" id="2_nq5sa"]
 [ext_resource type="Script" uid="uid://n2ksox4sau5m" path="res://Misc/camera.gd" id="2_uw33f"]
-[ext_resource type="Shader" uid="uid://b1j0ja1ayhca" path="res://shader_plate.gdshader" id="4_vlcpl"]
+[ext_resource type="Shader" uid="uid://b1j0ja1ayhca" path="res://Shaders/shader_plate.gdshader" id="4_vlcpl"]
 [ext_resource type="AudioStream" uid="uid://2uj55rl6jmkp" path="res://Sound and Music/experiment_song.mp3" id="6_072o2"]
 [ext_resource type="AudioStream" uid="uid://c41r6k1d8o0qw" path="res://Sound and Music/place_cell.mp3" id="8_3bkoa"]
 [ext_resource type="AudioStream" uid="uid://bksrijmu5s6d7" path="res://Sound and Music/invalid.mp3" id="8_dhtvl"]
 [ext_resource type="PackedScene" uid="uid://t8q6yh1vds1" path="res://Themes and UI/ui.tscn" id="9_6v47p"]
-[ext_resource type="PackedScene" uid="uid://bcp4xdxc828fp" path="res://Misc/food.tscn" id="9_dhtvl"]
-[ext_resource type="PackedScene" uid="uid://vorj3y1f0tbp" path="res://Cells/cell_spawn.tscn" id="11_xw67q"]
-[ext_resource type="Script" uid="uid://bgr0v1ag1ojls" path="res://Cells/DNA/cell_mode.gd" id="12_xw67q"]
-[ext_resource type="Script" uid="uid://bpnga7boyitwo" path="res://Cells/DNA/dna.gd" id="13_0qo5v"]
+[ext_resource type="PackedScene" uid="uid://bcp4xdxc828fp" path="res://Enviroment/food.tscn" id="9_dhtvl"]
+[ext_resource type="PackedScene" uid="uid://vorj3y1f0tbp" path="res://Cells related/cell_spawn.tscn" id="11_xw67q"]
+[ext_resource type="Script" uid="uid://bgr0v1ag1ojls" path="res://Cells related/DNA/cell_mode.gd" id="12_xw67q"]
+[ext_resource type="Script" uid="uid://bpnga7boyitwo" path="res://Cells related/DNA/dna.gd" id="13_0qo5v"]
 [ext_resource type="Script" uid="uid://dtevq3yr3psre" path="res://Misc/food_spawner_marker.gd" id="15_64qxx"]
+[ext_resource type="PackedScene" uid="uid://hojej0yihoy4" path="res://Enviroment/rect_obstacle.tscn" id="15_tnin1"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_3bkoa"]
 shader = ExtResource("2_nq5sa")
@@ -63,6 +64,13 @@ metadata/_custom_type_script = "uid://bgr0v1ag1ojls"
 script = ExtResource("13_0qo5v")
 modes = Array[ExtResource("12_xw67q")]([SubResource("Resource_64qxx"), SubResource("Resource_xw67q"), SubResource("Resource_0qo5v")])
 metadata/_custom_type_script = "uid://bpnga7boyitwo"
+
+[sub_resource type="QuadMesh" id="QuadMesh_64qxx"]
+size = Vector2(20, 20)
+
+[sub_resource type="SphereMesh" id="SphereMesh_64qxx"]
+radius = 10.0
+height = 20.0
 
 [node name="plate" type="Node2D" unique_id=1644472444]
 script = ExtResource("1_g4jty")
@@ -118,3 +126,14 @@ script = ExtResource("15_64qxx")
 [node name="Timer" type="Timer" parent="." unique_id=911107188]
 wait_time = 0.1
 autostart = true
+
+[node name="rect_obstacle" parent="." unique_id=90277708 instance=ExtResource("15_tnin1")]
+position = Vector2(-26, 186)
+
+[node name="rect_marker" type="MeshInstance2D" parent="." unique_id=178248948]
+modulate = Color(0.65, 0.65, 0.65, 0.44313726)
+mesh = SubResource("QuadMesh_64qxx")
+
+[node name="circle_marker" type="MeshInstance2D" parent="." unique_id=1032550115]
+modulate = Color(0.6509804, 0.6509804, 0.6509804, 0.44313726)
+mesh = SubResource("SphereMesh_64qxx")

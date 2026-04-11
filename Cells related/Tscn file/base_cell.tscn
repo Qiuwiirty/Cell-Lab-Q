@@ -1,0 +1,66 @@
+[gd_scene format=3 uid="uid://cymj82ljpiu70"]
+
+[ext_resource type="Script" uid="uid://epvg3ni2qm8p" path="res://Cells related/Cell script/base_cell.gd" id="1_gwrgs"]
+[ext_resource type="AudioStream" uid="uid://c2ncgpkfynhkk" path="res://Sound and Music/split2.wav" id="3_c72ge"]
+[ext_resource type="Shader" uid="uid://bpauu42udup13" path="res://Shaders/render_quad_cell.gdshader" id="4_j53kt"]
+[ext_resource type="Script" uid="uid://cvalww7yv6c0i" path="res://addons/basic_shape_creation/basic_polygon2d/basic_polygon2d.gd" id="4_uvg6q"]
+[ext_resource type="AudioStream" uid="uid://b3im5wjuee3c0" path="res://Sound and Music/select_cell.mp3" id="5_i10ga"]
+[ext_resource type="AudioStream" uid="uid://bwi0f5pvon7ja" path="res://Sound and Music/deselect_cell.mp3" id="6_1c3qp"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_i10ga"]
+radius = 15.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_uvg6q"]
+shader = ExtResource("4_j53kt")
+shader_parameter/u_color = Vector3(1, 1, 1)
+shader_parameter/u_use_decoration = 0.0
+shader_parameter/cell_count = 0
+shader_parameter/centers = PackedVector2Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+shader_parameter/rot_dirs = PackedVector2Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+shader_parameter/u_size_mult = 1.0
+
+[sub_resource type="QuadMesh" id="QuadMesh_i10ga"]
+size = Vector2(30, 30)
+
+[node name="Cell" type="Area2D" unique_id=82719589 groups=["cells"]]
+z_index = 1
+script = ExtResource("1_gwrgs")
+
+[node name="collision" type="CollisionShape2D" parent="." unique_id=1988143635]
+shape = SubResource("CircleShape2D_i10ga")
+
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="." unique_id=1735079836]
+rect = Rect2(-15, -15, 30, 30)
+
+[node name="SplitSound" type="AudioStreamPlayer2D" parent="." unique_id=588514056]
+stream = ExtResource("3_c72ge")
+panning_strength = 0.6
+
+[node name="render_quad" type="MeshInstance2D" parent="." unique_id=676684849]
+material = SubResource("ShaderMaterial_uvg6q")
+mesh = SubResource("QuadMesh_i10ga")
+
+[node name="selected_circle" type="Node2D" parent="." unique_id=1660257432]
+visible = false
+z_index = 1
+script = ExtResource("4_uvg6q")
+sizes = PackedFloat64Array(21.099604)
+ring_ratio = 0.164
+offset_rotation = 1.6308234743213037
+color = Color(1, 0.65, 0, 1)
+_created_shape = PackedVector2Array(21.061602, 1.2657889, 20.409966, 5.350382, 18.973988, 9.2293625, 16.808846, 12.753664, 13.997753, 15.787849, 10.648735, 18.215317, 6.8904896, 19.94278, 2.8674479, 20.90385, -1.2657889, 21.061602, -5.350382, 20.409966, -9.2293625, 18.973988, -12.753664, 16.808846, -15.787849, 13.997753, -18.215317, 10.648735, -19.94278, 6.8904896, -20.90385, 2.8674479, -21.061602, -1.2657889, -20.409966, -5.350382, -18.973988, -9.2293625, -16.808846, -12.753664, -13.997753, -15.787849, -10.648735, -18.215317, -6.8904896, -19.94278, -2.8674479, -20.90385, 1.2657889, -21.061602, 5.350382, -20.409966, 9.2293625, -18.973988, 12.753664, -16.808846, 15.787849, -13.997753, 18.215317, -10.648735, 19.94278, -6.8904896, 20.90385, -2.8674479, 21.061602, 1.2657889, 17.607498, 1.0581995, 17.475618, -2.3971863, 16.672163, -5.7604494, 15.228004, -8.902343, 13.198642, -11.702122, 10.662064, -14.052195, 7.715747, -15.862253, 4.4729195, -17.06273, 1.0581995, -17.607498, -2.3971863, -17.475618, -5.7604494, -16.672163, -8.902343, -15.228004, -11.702122, -13.198642, -14.052195, -10.662064, -15.862253, -7.715747, -17.06273, -4.4729195, -17.607498, -1.0581995, -17.475618, 2.3971863, -16.672163, 5.7604494, -15.228004, 8.902343, -13.198642, 11.702122, -10.662064, 14.052195, -7.715747, 15.862253, -4.4729195, 17.06273, -1.0581995, 17.607498, 2.3971863, 17.475618, 5.7604494, 16.672163, 8.902343, 15.228004, 11.702122, 13.198642, 14.052195, 10.662064, 15.862253, 7.715747, 17.06273, 4.4729195, 17.607498, 1.0581995)
+_decomposed_created_shape = Array[PackedVector2Array]([PackedVector2Array(20.90385, -2.8674479, 21.061602, 1.2657889, 20.409966, 5.350382, 17.607498, 1.0581995, 17.475618, -2.3971863), PackedVector2Array(17.06273, 4.4729195, 17.607498, 1.0581995, 20.409966, 5.350382, 18.973988, 9.2293625), PackedVector2Array(15.862253, 7.715747, 17.06273, 4.4729195, 18.973988, 9.2293625, 16.808846, 12.753664), PackedVector2Array(14.052195, 10.662064, 15.862253, 7.715747, 16.808846, 12.753664, 13.997753, 15.787849), PackedVector2Array(11.702122, 13.198642, 14.052195, 10.662064, 13.997753, 15.787849, 10.648735, 18.215317), PackedVector2Array(8.902343, 15.228004, 11.702122, 13.198642, 10.648735, 18.215317, 6.8904896, 19.94278), PackedVector2Array(5.7604494, 16.672163, 8.902343, 15.228004, 6.8904896, 19.94278, 2.8674479, 20.90385), PackedVector2Array(2.3971863, 17.475618, 5.7604494, 16.672163, 2.8674479, 20.90385, -1.2657889, 21.061602), PackedVector2Array(-1.0581995, 17.607498, 2.3971863, 17.475618, -1.2657889, 21.061602, -5.350382, 20.409966), PackedVector2Array(-4.4729195, 17.06273, -1.0581995, 17.607498, -5.350382, 20.409966, -9.2293625, 18.973988), PackedVector2Array(-7.715747, 15.862253, -4.4729195, 17.06273, -9.2293625, 18.973988, -12.753664, 16.808846), PackedVector2Array(-10.662064, 14.052195, -7.715747, 15.862253, -12.753664, 16.808846, -15.787849, 13.997753), PackedVector2Array(-13.198642, 11.702122, -10.662064, 14.052195, -15.787849, 13.997753, -18.215317, 10.648735), PackedVector2Array(-15.228004, 8.902343, -13.198642, 11.702122, -18.215317, 10.648735, -19.94278, 6.8904896), PackedVector2Array(-16.672163, 5.7604494, -15.228004, 8.902343, -19.94278, 6.8904896, -20.90385, 2.8674479), PackedVector2Array(-17.475618, 2.3971863, -16.672163, 5.7604494, -20.90385, 2.8674479, -21.061602, -1.2657889), PackedVector2Array(-17.607498, -1.0581995, -17.475618, 2.3971863, -21.061602, -1.2657889, -20.409966, -5.350382), PackedVector2Array(-17.06273, -4.4729195, -17.607498, -1.0581995, -20.409966, -5.350382, -18.973988, -9.2293625), PackedVector2Array(-15.862253, -7.715747, -17.06273, -4.4729195, -18.973988, -9.2293625, -16.808846, -12.753664), PackedVector2Array(-14.052195, -10.662064, -15.862253, -7.715747, -16.808846, -12.753664, -13.997753, -15.787849), PackedVector2Array(-11.702122, -13.198642, -14.052195, -10.662064, -13.997753, -15.787849, -10.648735, -18.215317), PackedVector2Array(-8.902343, -15.228004, -11.702122, -13.198642, -10.648735, -18.215317, -6.8904896, -19.94278), PackedVector2Array(-5.7604494, -16.672163, -8.902343, -15.228004, -6.8904896, -19.94278, -2.8674479, -20.90385), PackedVector2Array(-2.3971863, -17.475618, -5.7604494, -16.672163, -2.8674479, -20.90385, 1.2657889, -21.061602), PackedVector2Array(1.0581995, -17.607498, -2.3971863, -17.475618, 1.2657889, -21.061602, 5.350382, -20.409966), PackedVector2Array(4.4729195, -17.06273, 1.0581995, -17.607498, 5.350382, -20.409966, 9.2293625, -18.973988), PackedVector2Array(7.715747, -15.862253, 4.4729195, -17.06273, 9.2293625, -18.973988, 12.753664, -16.808846), PackedVector2Array(10.662064, -14.052195, 7.715747, -15.862253, 12.753664, -16.808846, 15.787849, -13.997753), PackedVector2Array(13.198642, -11.702122, 10.662064, -14.052195, 15.787849, -13.997753, 18.215317, -10.648735), PackedVector2Array(15.228004, -8.902343, 13.198642, -11.702122, 18.215317, -10.648735, 19.94278, -6.8904896), PackedVector2Array(16.672163, -5.7604494, 15.228004, -8.902343, 19.94278, -6.8904896, 20.90385, -2.8674479), PackedVector2Array(16.672163, -5.7604494, 20.90385, -2.8674479, 17.475618, -2.3971863)])
+metadata/_custom_type_script = "uid://cvalww7yv6c0i"
+
+[node name="select_cell" type="AudioStreamPlayer" parent="." unique_id=2127269600]
+stream = ExtResource("5_i10ga")
+
+[node name="deselect_cell" type="AudioStreamPlayer" parent="." unique_id=1019420750]
+stream = ExtResource("6_1c3qp")
+
+[connection signal="area_entered" from="." to="." method="_cell_entered"]
+[connection signal="area_exited" from="." to="." method="_cell_exited"]
+[connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]
+[connection signal="screen_entered" from="VisibleOnScreenNotifier2D" to="." method="_screen_entered_notifier"]
+[connection signal="screen_exited" from="VisibleOnScreenNotifier2D" to="." method="_screen_exited_notifier"]

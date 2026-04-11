@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://hojej0yihoy4"]
+
+[ext_resource type="Script" uid="uid://dbff5nibc004s" path="res://Enviroment/rect_obstacle.gd" id="1_1ei5y"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_8dwal"]
+
+[sub_resource type="QuadMesh" id="QuadMesh_1ei5y"]
+size = Vector2(20, 20)
+
+[node name="rect_obstacle" type="Area2D" unique_id=90277708]
+script = ExtResource("1_1ei5y")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=165199543]
+modulate = Color(0.67058825, 0.67058825, 0.67058825, 1)
+shape = SubResource("RectangleShape2D_8dwal")
+
+[node name="MeshInstance2D" type="MeshInstance2D" parent="." unique_id=1000031164]
+mesh = SubResource("QuadMesh_1ei5y")
+
+[connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]

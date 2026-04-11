@@ -1,0 +1,23 @@
+[gd_scene format=3 uid="uid://blqd56kk0y65a"]
+
+[ext_resource type="Script" uid="uid://bwcsahqfi873o" path="res://Enviroment/circle_obstacle.gd" id="1_pvkhf"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_286ui"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_pvkhf"]
+radius = 10.0
+height = 20.0
+radial_segments = 4
+
+[node name="circle_obstacle" type="Area2D" unique_id=449544008]
+modulate = Color(0.67058825, 0.67058825, 0.67058825, 1)
+script = ExtResource("1_pvkhf")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=2073458934]
+shape = SubResource("CircleShape2D_286ui")
+
+[node name="MeshInstance2D" type="MeshInstance2D" parent="." unique_id=1409141156]
+mesh = SubResource("SphereMesh_pvkhf")
+
+[connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]
