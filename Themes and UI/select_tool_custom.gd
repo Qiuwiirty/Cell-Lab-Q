@@ -9,6 +9,7 @@ const CELL_REMOVAL = preload("uid://cw11ewl5y6str")
 const CELL_DIAGNOSTICS = preload("uid://cxf7ocmrdrqxk")
 const BIND_ADHESION = preload("uid://djx32y86pxg8q")
 const DEBUG_CELL = preload("uid://bntovk0lsluej")
+const ZONE_EDITOR = preload("uid://wdx06yvn7s88")
 ###Animation used is easing scale ( I think that's the name? :P )
 const ANIM_DURATION = 0.1
 
@@ -105,6 +106,15 @@ func _on_debug_button_up() -> void:
 	$"../ButtonClick2".play()
 	close()
 
+func _on_zone_editor_up() -> void:
+	$VBoxContainer/MarginContainer/heading/icon.texture = ZONE_EDITOR
+	$"../TopPanel/Margin/Hbox/ToolSelector".icon = ZONE_EDITOR
+	if plate is Plate:
+		plate.change_tool(Game.ToolSelector.ZONE_EDITOR)
+	else:
+		print("Plate is invalid and therefore unable to set the tools")
+	$"../ButtonClick2".play()
+	close()
 func _on_close_button_up() -> void:
 	close()
 

@@ -7,7 +7,8 @@ enum ToolSelector
 	CELL_REMOVAL,
 	CELL_DIAGNOSTICS,
 	BIND_ADHESION, #Make adhesion (links) between cells
-	DEBUG_CELL
+	DEBUG_CELL,
+	ZONE_EDITOR
 }
 enum SubstrateTemperature
 {
@@ -45,6 +46,14 @@ var nitrates = 100.0 #0.0-100.0
 var plate_age = 0.0 #h
 var light_feed_cost_luminocyte := false #Basically, if true, feeding on photocytes will cost mass for the Luminocyte
 var infonotice
+
+#Nutrients settings
+var food_spawn_shape := Food.SpawnShape.CIRCLE
+var rect_spawn_size := Vector2(1000, 1000)
+var radii_spawn_size := 500.0
+var nutrient_rate := 14. #0.0 - 15
+var nutrient_chunk_size := 1.2 #0.0 - 1.2
+var show_food_spawn_marker := true
 ##There are two options:
 #True: this means the game use math and shader to calculate and create light which could be faster and can quickly change
 #False: use image instead, which can create many unique stuff and probably more interesting plate
@@ -141,3 +150,21 @@ func load_file(path: String) -> void: #Load file for non-mathematical lighting p
 	else:
 		show_info_notice_timed("Cannot load path: " + path, 3)
 		print("Cannot load path: " + path)
+enum SubsConf #Substrate configuration (it's shorted so i don't need to type much lol)
+{
+	SALINITY,
+	NITRATES,
+	MAX_ADHESION_LENGTH,
+	BRIGHTNESS_MULT,
+	LIGHT_FEED_COST_LUMINOCYTE
+}
+func get_global_conf() -> Array:
+	var conf := []
+	###WARNING: NEED CHANGE THIS NUMBER EVERYTIME NEW CONFIGURATION CAME UP
+	conf.resize(5)
+	conf[SubsConf.SALINITY] = salinity
+	conf[SubsConf.NITRATES] = nitrates
+	conf[SubsConf.MAX_ADHESION_LENGTH] = max_adhesion_length
+	conf[SubsConf.BRIGHTNESS_MULT] = brightness_mult
+	conf[SubsConf.LIGHT_FEED_COST_LUMINOCYTE] = light_feed_cost_luminocyte
+	return conf

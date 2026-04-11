@@ -26,7 +26,7 @@ func simulate_step(delta: float) -> void:
 		var distance_mod = (128 * mode.custprop[LUM_SCALE]) / global_position.distance_to(photocyte.global_position)
 		var result = distance_mod * delta * mode.custprop[LUM_INTENSITY] / 5 
 		photocyte.mass = min(photocyte.mass + result, 3.6)
-		if Game.light_feed_cost_luminocyte and not mode.disable_metabolism:
+		if conf[Game.SubsConf.LIGHT_FEED_COST_LUMINOCYTE] and not mode.disable_metabolism:
 			mass -= result
 		i += 1
 		

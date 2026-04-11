@@ -1,0 +1,119 @@
+[gd_scene format=3 uid="uid://j8bl45n8hqn7"]
+
+[ext_resource type="Script" uid="uid://dnab72bem1qqw" path="res://Themes and UI/are_you_sure.gd" id="1_bm6tq"]
+[ext_resource type="Texture2D" uid="uid://byr8slrftdr2n" path="res://Images/Medium Resolution/tool_cell.png" id="2_ktl1o"]
+[ext_resource type="StyleBox" uid="uid://bkrhc42x7sga1" path="res://Themes and UI/CellLab-green_hseperator.tres" id="3_srwk4"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_i0k3j"]
+bg_color = Color(0.23392546, 0.23392546, 0.23392543, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2d1dl"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nnj10"]
+bg_color = Color(0.23392546, 0.23392546, 0.23392543, 1)
+
+[sub_resource type="Theme" id="Theme_n7thg"]
+Button/styles/hover = SubResource("StyleBoxFlat_i0k3j")
+Button/styles/normal = SubResource("StyleBoxEmpty_2d1dl")
+Button/styles/pressed = SubResource("StyleBoxFlat_nnj10")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hwqhx"]
+bg_color = Color(0.12156863, 0.12156863, 0.12156863, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+shadow_size = 10
+
+[sub_resource type="DPITexture" id="DPITexture_bm6tq"]
+_source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#fff\" fill-opacity=\".75\" d=\"m1 3 2-2 5 5 5-5 2 2-5 5 5 5-2 2-5-5-5 5-2-2 5-5z\"/></svg>
+"
+
+[sub_resource type="DPITexture" id="DPITexture_qs8m7"]
+_source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#fff\" d=\"m1 3 2-2 5 5 5-5 2 2-5 5 5 5-2 2-5-5-5 5-2-2 5-5z\"/></svg>
+"
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_luwbs"]
+bg_color = Color(0.12156863, 0.12156863, 0.12156863, 1)
+border_width_top = 1
+border_width_right = 1
+border_color = Color(0.2509804, 0.2509804, 0.2509804, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_h3yxr"]
+bg_color = Color(0.12156863, 0.12156863, 0.12156863, 1)
+border_width_top = 1
+border_color = Color(0.2509804, 0.2509804, 0.2509804, 1)
+
+[node name="are_you_sure" type="PanelContainer" unique_id=965499745]
+custom_minimum_size = Vector2(240.2, 101)
+anchors_preset = -1
+anchor_left = 0.45
+anchor_top = 0.5
+anchor_right = 0.55
+anchor_bottom = 0.5
+offset_left = -66.0
+offset_top = -20.0
+offset_right = 59.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme = SubResource("Theme_n7thg")
+theme_override_styles/panel = SubResource("StyleBoxFlat_hwqhx")
+script = ExtResource("1_bm6tq")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=115110109]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer" unique_id=288404908]
+layout_mode = 2
+theme_override_constants/margin_left = 7
+theme_override_constants/margin_top = 7
+theme_override_constants/margin_right = 7
+theme_override_constants/margin_bottom = 7
+
+[node name="heading" type="HBoxContainer" parent="VBoxContainer/MarginContainer" unique_id=1179430340]
+layout_mode = 2
+
+[node name="icon" type="TextureRect" parent="VBoxContainer/MarginContainer/heading" unique_id=347277042]
+layout_mode = 2
+texture = ExtResource("2_ktl1o")
+
+[node name="title" type="Label" parent="VBoxContainer/MarginContainer/heading" unique_id=84012085]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.9372549, 0.6666667, 0.08627451, 1)
+text = "Are you sure?"
+
+[node name="close" type="TextureButton" parent="VBoxContainer/MarginContainer/heading" unique_id=48644071]
+layout_mode = 2
+texture_normal = SubResource("DPITexture_bm6tq")
+texture_pressed = SubResource("DPITexture_qs8m7")
+
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer" unique_id=1985697202]
+layout_mode = 2
+theme_override_styles/separator = ExtResource("3_srwk4")
+
+[node name="Label" type="Label" parent="VBoxContainer" unique_id=1988350360]
+layout_mode = 2
+text = "This can't be undone!"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer" unique_id=1927269588]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="yes" type="Button" parent="VBoxContainer/HBoxContainer" unique_id=311993508]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/normal = SubResource("StyleBoxFlat_luwbs")
+text = "Yes"
+
+[node name="no" type="Button" parent="VBoxContainer/HBoxContainer" unique_id=640175037]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/normal = SubResource("StyleBoxFlat_h3yxr")
+text = "No"
+
+[connection signal="button_up" from="VBoxContainer/MarginContainer/heading/close" to="." method="close"]
+[connection signal="button_up" from="VBoxContainer/HBoxContainer/yes" to="." method="close"]
+[connection signal="button_up" from="VBoxContainer/HBoxContainer/no" to="." method="close"]

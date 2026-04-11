@@ -9,6 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://cxf7ocmrdrqxk" path="res://Images/Medium Resolution/tool_info.png" id="7_qs8m7"]
 [ext_resource type="Texture2D" uid="uid://djx32y86pxg8q" path="res://Images/Medium Resolution/bind_ahdesion.png" id="8_qs8m7"]
 [ext_resource type="Texture2D" uid="uid://bntovk0lsluej" path="res://Images/Medium Resolution/debug_cell.png" id="9_lv1og"]
+[ext_resource type="Texture2D" uid="uid://wdx06yvn7s88" path="res://Images/Medium Resolution/zone.png" id="10_l8dsk"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_i0k3j"]
 bg_color = Color(0.23392546, 0.23392546, 0.23392543, 1)
@@ -166,6 +167,16 @@ alignment = 0
 layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_ssf00")
 
+[node name="zone_editor" type="Button" parent="VBoxContainer" unique_id=1577482436]
+layout_mode = 2
+text = "Zone editor"
+icon = ExtResource("10_l8dsk")
+alignment = 0
+
+[node name="HSeparator9" type="HSeparator" parent="VBoxContainer" unique_id=48679456]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_ssf00")
+
 [node name="Control" type="Control" parent="VBoxContainer" unique_id=923736609]
 layout_mode = 2
 
@@ -177,3 +188,4 @@ layout_mode = 2
 [connection signal="button_up" from="VBoxContainer/cell_diagnostics" to="." method="_on_cell_diagnostics_button_up"]
 [connection signal="button_up" from="VBoxContainer/bind_adhesion" to="." method="_on_bind_adhesion_button_up"]
 [connection signal="button_up" from="VBoxContainer/debug" to="." method="_on_debug_button_up"]
+[connection signal="button_up" from="VBoxContainer/zone_editor" to="." method="_on_zone_editor_up"]

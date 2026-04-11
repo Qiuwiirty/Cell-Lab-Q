@@ -108,7 +108,7 @@ func _on_split_mass_changed(value: float) -> void:
 
 func _on_split_ratio_changed(value: float) -> void:
 	#a:b . a is the antecedent, b is the consequent
-	$VBoxContainer/ScrollContainer/VBoxContainer/split_ratio/consequent.text = ": " + str(100 - int(value))
+	$VBoxContainer/ScrollContainer/VBoxContainer/split_ratio/SpinBox.text = ": " + str(100 - int(value))
 	if mode:
 		mode.split_ratio = value / 100. # / 100. cuz split_ratio is in 0. - 1.
 
@@ -149,7 +149,7 @@ func update_DNA_values():
 		$VBoxContainer/ScrollContainer/VBoxContainer/cell_type/OptionButton.selected = Game.get_cell_type(cell)
 		$VBoxContainer/ScrollContainer/VBoxContainer/actual_color/ColorPickerButton.color = cell.mode.color
 		$VBoxContainer/ScrollContainer/VBoxContainer/split_mass/SpinBox.value = cell.mode.split_mass
-		$VBoxContainer/ScrollContainer/VBoxContainer/split_ratio/SpinBox.value = cell.mode.split_ratio
+		$VBoxContainer/ScrollContainer/VBoxContainer/split_ratio/SpinBox.value = cell.mode.split_ratio * 100
 		$VBoxContainer/ScrollContainer/VBoxContainer/split_angle/SpinBox.value = cell.mode.split_angle
 		$VBoxContainer/ScrollContainer/VBoxContainer/child1/SpinBox.value = cell.mode.child1
 		$VBoxContainer/ScrollContainer/VBoxContainer/child2/SpinBox.value = cell.mode.child2

@@ -21,12 +21,15 @@
 [ext_resource type="PackedScene" uid="uid://6pbpc7ipi8lr" path="res://Themes and UI/select_tool_custom.tscn" id="17_whbqe"]
 [ext_resource type="Script" uid="uid://dqjlesg4sdqq5" path="res://Themes and UI/configuration_panel.gd" id="20_7yarc"]
 [ext_resource type="PackedScene" uid="uid://b1wwllrdsm4bx" path="res://Themes and UI/debug_cell.tscn" id="20_s1gou"]
+[ext_resource type="Shader" uid="uid://cf7qe01ckvr4s" path="res://Shaders/frost_glass_blur.gdshader" id="22_mk4ph"]
 [ext_resource type="Script" uid="uid://drp6jnvg17e8l" path="res://Themes and UI/input_image.gd" id="22_s1gou"]
+[ext_resource type="PackedScene" uid="uid://bbjqycigpx7a1" path="res://Themes and UI/zone_editor.tscn" id="23_i6rmi"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ux5x0"]
 bg_color = Color(0, 0, 0, 0.4862745)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_i6rmi"]
+shader = ExtResource("22_mk4ph")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_i6rmi"]
 bg_color = Color(0.19, 0.19, 0.19, 0.76862746)
@@ -37,13 +40,19 @@ script/source = "extends CheckBox
 const frost_glass_shader = preload(\"uid://cf7qe01ckvr4s\")
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	button_pressed = is_instance_valid($\"../..\".material.shader)
+	button_pressed = is_instance_valid($\"../../..\".material.shader)
 func _on_toggled(toggled_on: bool) -> void:
 	if toggled_on:
-		$\"../..\".material.shader = frost_glass_shader
+		$\"../../..\".material.shader = frost_glass_shader
 	else:
-		$\"../..\".material.shader = null
+		$\"../../..\".material.shader = null
 "
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mk4ph"]
+bg_color = Color(0.12, 0.12, 0.12, 0.3137255)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yxjur"]
+bg_color = Color(0.12, 0.12, 0.12, 0.15686275)
 
 [sub_resource type="GDScript" id="GDScript_a5680"]
 resource_name = "use_math_lighting"
@@ -152,6 +161,103 @@ func _ready() -> void:
 
 func _on_value_changed(value: float) -> void:
 	Game.max_adhesion_length = value
+"
+
+[sub_resource type="GDScript" id="GDScript_oip7h"]
+resource_name = "food_spawn_shape"
+script/source = "extends HBoxContainer
+func _ready() -> void:
+	if Game.plate:
+		var food_spawner_marker = Game.plate.get_node_or_null(\"food_spawner_marker\")
+		if food_spawner_marker:
+			food_spawner_marker.queue_redraw()
+	$\"../size_rect_spawner\".hide()
+	$\"../size_circle_spawner\".hide()
+	$OptionButton.selected = Game.food_spawn_shape
+	match Game.food_spawn_shape:
+		Food.SpawnShape.RECTANGLE:
+			$\"../size_rect_spawner\".show()
+		Food.SpawnShape.CIRCLE:
+			$\"../size_circle_spawner\".show()
+func _on_option_selected(index: int) -> void:
+	$\"../size_rect_spawner\".hide()
+	$\"../size_circle_spawner\".hide()
+	Game.food_spawn_shape = index as Food.SpawnShape
+	match index:
+		Food.SpawnShape.RECTANGLE:
+			$\"../size_rect_spawner\".show()
+		Food.SpawnShape.CIRCLE:
+			$\"../size_circle_spawner\".show()
+	if Game.plate:
+		var food_spawner_marker = Game.plate.get_node_or_null(\"food_spawner_marker\")
+		if food_spawner_marker:
+			food_spawner_marker.queue_redraw()
+"
+
+[sub_resource type="GDScript" id="GDScript_1k61u"]
+resource_name = "size_rect_spawner"
+script/source = "extends HBoxContainer
+func _ready() -> void:
+	$x.value = Game.rect_spawn_size.x
+	$y.value = Game.rect_spawn_size.y
+
+func _on_x_changed(value: float) -> void:
+	Game.rect_spawn_size.x = value
+	if Game.plate:
+		var food_spawner_marker = Game.plate.get_node_or_null(\"food_spawner_marker\")
+		if food_spawner_marker:
+			food_spawner_marker.queue_redraw()
+func _on_y_changed(value: float) -> void:
+	Game.rect_spawn_size.y = value
+	if Game.plate:
+		var food_spawner_marker = Game.plate.get_node_or_null(\"food_spawner_marker\")
+		if food_spawner_marker:
+			food_spawner_marker.queue_redraw()
+"
+
+[sub_resource type="GDScript" id="GDScript_hxcci"]
+resource_name = "size_circle_spawner"
+script/source = "extends HBoxContainer
+func _ready() -> void:
+	$radii.value = Game.radii_spawn_size
+func _on_radii_value_changed(value: float) -> void:
+	Game.radii_spawn_size = value
+	if Game.plate:
+		var food_spawner_marker = Game.plate.get_node_or_null(\"food_spawner_marker\")
+		if food_spawner_marker:
+			food_spawner_marker.queue_redraw()
+"
+
+[sub_resource type="GDScript" id="GDScript_10vhn"]
+resource_name = "nutrient_rate"
+script/source = "extends HBoxContainer
+func _ready() -> void:
+	$SpinBox.value = Game.nutrient_rate
+func _on_spin_box_value_changed(value: float) -> void:
+	Game.nutrient_rate = value
+"
+
+[sub_resource type="GDScript" id="GDScript_0wf3a"]
+resource_name = "nutrient_chunk_size"
+script/source = "extends HBoxContainer
+func _ready() -> void:
+	$SpinBox.value = Game.nutrient_chunk_size
+
+func _on_nutrient_chunk_size_changed(value: float) -> void:
+	Game.nutrient_chunk_size = value
+"
+
+[sub_resource type="GDScript" id="GDScript_6s452"]
+resource_name = "show_food_spawn_marker"
+script/source = "extends CheckBox
+func _ready() -> void:
+	button_pressed = Game.show_food_spawn_marker
+func _on_toggled(toggled_on: bool) -> void:
+	Game.show_food_spawn_marker = toggled_on
+	if Game.plate:
+		var food_spawner_marker = Game.plate.get_node_or_null(\"food_spawner_marker\")
+		if food_spawner_marker:
+			food_spawner_marker.queue_redraw()
 "
 
 [node name="UI" type="CanvasLayer" unique_id=103741496]
@@ -291,8 +397,10 @@ layout_mode = 2
 [node name="debug_cell" parent="." unique_id=1330552201 instance=ExtResource("20_s1gou")]
 visible = false
 
-[node name="configuration_panel" type="PanelContainer" parent="." unique_id=1636530376]
+[node name="zone_editor" parent="." unique_id=622694091 instance=ExtResource("23_i6rmi")]
 visible = false
+
+[node name="configuration_panel" type="PanelContainer" parent="." unique_id=1636530376]
 material = SubResource("ShaderMaterial_i6rmi")
 anchors_preset = 15
 anchor_right = 1.0
@@ -301,13 +409,19 @@ offset_top = 43.0
 grow_horizontal = 2
 grow_vertical = 2
 pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_force_pass_scroll_events = false
 theme_override_styles/panel = SubResource("StyleBoxFlat_i6rmi")
 script = ExtResource("20_7yarc")
 
-[node name="vbox" type="VBoxContainer" parent="configuration_panel" unique_id=1518256763]
+[node name="ScrollContainer" type="ScrollContainer" parent="configuration_panel" unique_id=297010074]
 layout_mode = 2
 
-[node name="RichTextLabel" type="RichTextLabel" parent="configuration_panel/vbox" unique_id=586056322]
+[node name="vbox" type="VBoxContainer" parent="configuration_panel/ScrollContainer" unique_id=1518256763]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="RichTextLabel" type="RichTextLabel" parent="configuration_panel/ScrollContainer/vbox" unique_id=586056322]
 layout_mode = 2
 bbcode_enabled = true
 text = "[color=PALE_GREEN] [b]-=⚙️Configuration⚙️=-[/b] [/color]
@@ -315,25 +429,38 @@ text = "[color=PALE_GREEN] [b]-=⚙️Configuration⚙️=-[/b] [/color]
 Here, you can configure the game/plate ^_^"
 fit_content = true
 
-[node name="frost_glass_blur" type="CheckBox" parent="configuration_panel/vbox" unique_id=1843281289]
+[node name="frost_glass_blur" type="CheckBox" parent="configuration_panel/ScrollContainer/vbox" unique_id=1843281289]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "Frost glass for plate setting "
 script = SubResource("GDScript_yxjur")
 
-[node name="RichTextLabel5" type="RichTextLabel" parent="configuration_panel/vbox" unique_id=142629505]
+[node name="RichTextLabel5" type="RichTextLabel" parent="configuration_panel/ScrollContainer/vbox" unique_id=142629505]
 layout_mode = 2
 bbcode_enabled = true
 text = "[font_size=10] [color=thistle]So it will look cool ^_^ You can disable it for perfomance"
 fit_content = true
 
-[node name="use_math_lighting" type="CheckBox" parent="configuration_panel/vbox" unique_id=563286363]
+[node name="FoldableContainer" type="FoldableContainer" parent="configuration_panel/ScrollContainer/vbox" unique_id=2021841039]
+layout_mode = 2
+theme_override_styles/title_panel = SubResource("StyleBoxFlat_mk4ph")
+theme_override_styles/title_hover_panel = SubResource("StyleBoxFlat_mk4ph")
+theme_override_styles/title_collapsed_panel = SubResource("StyleBoxFlat_mk4ph")
+theme_override_styles/title_collapsed_hover_panel = SubResource("StyleBoxFlat_mk4ph")
+theme_override_styles/focus = SubResource("StyleBoxFlat_mk4ph")
+theme_override_styles/panel = SubResource("StyleBoxFlat_yxjur")
+title = "Lighting stuff"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="configuration_panel/ScrollContainer/vbox/FoldableContainer" unique_id=1364291997]
+layout_mode = 2
+
+[node name="use_math_lighting" type="CheckBox" parent="configuration_panel/ScrollContainer/vbox/FoldableContainer/VBoxContainer" unique_id=563286363]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "Use mathematical lighting?"
 script = SubResource("GDScript_a5680")
 
-[node name="RichTextLabel2" type="RichTextLabel" parent="configuration_panel/vbox" unique_id=230589660]
+[node name="use_math_lighting2" type="RichTextLabel" parent="configuration_panel/ScrollContainer/vbox/FoldableContainer/VBoxContainer" unique_id=230589660]
 layout_mode = 2
 bbcode_enabled = true
 text = "[font_size=10] [color=gold]Note![/color] [color=thistle]If use mathematical lighting, then it would use shader instead and math to compute brightness
@@ -341,15 +468,15 @@ If don't, then plate would use image instead and then calculate the brightness w
 (↓↓↓) Tweak the mathematical lighting below!"
 fit_content = true
 
-[node name="math_lighting" type="HBoxContainer" parent="configuration_panel/vbox" unique_id=806195829]
+[node name="use_math_lighting3" type="HBoxContainer" parent="configuration_panel/ScrollContainer/vbox/FoldableContainer/VBoxContainer" unique_id=806195829]
 layout_mode = 2
 script = SubResource("GDScript_7yarc")
 
-[node name="label" type="Label" parent="configuration_panel/vbox/math_lighting" unique_id=1053610030]
+[node name="label" type="Label" parent="configuration_panel/ScrollContainer/vbox/FoldableContainer/VBoxContainer/use_math_lighting3" unique_id=1053610030]
 layout_mode = 2
 text = "Math Lighting"
 
-[node name="x" type="SpinBox" parent="configuration_panel/vbox/math_lighting" unique_id=757670067]
+[node name="x" type="SpinBox" parent="configuration_panel/ScrollContainer/vbox/FoldableContainer/VBoxContainer/use_math_lighting3" unique_id=757670067]
 layout_mode = 2
 size_flags_horizontal = 3
 min_value = -100.0
@@ -357,7 +484,7 @@ step = 0.001
 suffix = "X"
 custom_arrow_step = 0.1
 
-[node name="y" type="SpinBox" parent="configuration_panel/vbox/math_lighting" unique_id=707094662]
+[node name="y" type="SpinBox" parent="configuration_panel/ScrollContainer/vbox/FoldableContainer/VBoxContainer/use_math_lighting3" unique_id=707094662]
 layout_mode = 2
 size_flags_horizontal = 3
 min_value = -100.0
@@ -365,7 +492,7 @@ step = 0.001
 suffix = "Y"
 custom_arrow_step = 0.1
 
-[node name="z" type="SpinBox" parent="configuration_panel/vbox/math_lighting" unique_id=1860800528]
+[node name="z" type="SpinBox" parent="configuration_panel/ScrollContainer/vbox/FoldableContainer/VBoxContainer/use_math_lighting3" unique_id=1860800528]
 layout_mode = 2
 size_flags_horizontal = 3
 min_value = -100.0
@@ -373,7 +500,7 @@ step = 0.001
 suffix = "Z"
 custom_arrow_step = 0.1
 
-[node name="w" type="SpinBox" parent="configuration_panel/vbox/math_lighting" unique_id=1554444382]
+[node name="w" type="SpinBox" parent="configuration_panel/ScrollContainer/vbox/FoldableContainer/VBoxContainer/use_math_lighting3" unique_id=1554444382]
 layout_mode = 2
 size_flags_horizontal = 3
 min_value = -100.0
@@ -381,19 +508,19 @@ step = 0.001
 suffix = "W"
 custom_arrow_step = 0.1
 
-[node name="input_image" type="HBoxContainer" parent="configuration_panel/vbox" unique_id=451767562]
+[node name="use_math_lighting4" type="HBoxContainer" parent="configuration_panel/ScrollContainer/vbox/FoldableContainer/VBoxContainer" unique_id=451767562]
 layout_mode = 2
 script = ExtResource("22_s1gou")
 
-[node name="Label" type="Label" parent="configuration_panel/vbox/input_image" unique_id=941839493]
+[node name="Label" type="Label" parent="configuration_panel/ScrollContainer/vbox/FoldableContainer/VBoxContainer/use_math_lighting4" unique_id=941839493]
 layout_mode = 2
 text = "Input your image"
 
-[node name="Button" type="Button" parent="configuration_panel/vbox/input_image" unique_id=994927194]
+[node name="Button" type="Button" parent="configuration_panel/ScrollContainer/vbox/FoldableContainer/VBoxContainer/use_math_lighting4" unique_id=994927194]
 layout_mode = 2
 text = "res://platecolor.png"
 
-[node name="FileDialog" type="FileDialog" parent="configuration_panel/vbox/input_image" unique_id=2026502940]
+[node name="FileDialog" type="FileDialog" parent="configuration_panel/ScrollContainer/vbox/FoldableContainer/VBoxContainer/use_math_lighting4" unique_id=2026502940]
 oversampling_override = 1.0
 title = "Open a File"
 initial_position = 1
@@ -402,117 +529,208 @@ file_mode = 0
 access = 2
 filters = PackedStringArray("*.png", "*.jpg")
 
-[node name="RichTextLabel7" type="RichTextLabel" parent="configuration_panel/vbox" unique_id=445269761]
+[node name="use_math_lighting5" type="RichTextLabel" parent="configuration_panel/ScrollContainer/vbox/FoldableContainer/VBoxContainer" unique_id=445269761]
 layout_mode = 2
 bbcode_enabled = true
 text = "[font_size=10] [color=thistle]For non-mathematical lighting photosynthesis"
 fit_content = true
 
-[node name="image_scale" type="HBoxContainer" parent="configuration_panel/vbox" unique_id=2136250955]
+[node name="use_math_lighting6" type="HBoxContainer" parent="configuration_panel/ScrollContainer/vbox/FoldableContainer/VBoxContainer" unique_id=2136250955]
 layout_mode = 2
 script = SubResource("GDScript_i34xa")
 
-[node name="Label" type="Label" parent="configuration_panel/vbox/image_scale" unique_id=1949247125]
+[node name="Label" type="Label" parent="configuration_panel/ScrollContainer/vbox/FoldableContainer/VBoxContainer/use_math_lighting6" unique_id=1949247125]
 layout_mode = 2
 text = "Image scale"
 
-[node name="x" type="SpinBox" parent="configuration_panel/vbox/image_scale" unique_id=154883724]
+[node name="x" type="SpinBox" parent="configuration_panel/ScrollContainer/vbox/FoldableContainer/VBoxContainer/use_math_lighting6" unique_id=154883724]
 layout_mode = 2
 step = 0.001
 suffix = "X"
 custom_arrow_step = 0.05
 
-[node name="y" type="SpinBox" parent="configuration_panel/vbox/image_scale" unique_id=123404842]
+[node name="y" type="SpinBox" parent="configuration_panel/ScrollContainer/vbox/FoldableContainer/VBoxContainer/use_math_lighting6" unique_id=123404842]
 layout_mode = 2
 step = 0.001
 suffix = "Y"
 custom_arrow_step = 0.05
 
-[node name="RichTextLabel8" type="RichTextLabel" parent="configuration_panel/vbox" unique_id=1024903958]
+[node name="use_math_lighting7" type="RichTextLabel" parent="configuration_panel/ScrollContainer/vbox/FoldableContainer/VBoxContainer" unique_id=1024903958]
 layout_mode = 2
 bbcode_enabled = true
 text = "[font_size=10] [color=thistle](↓↓↓) Use alpha or not for brightness of non-mathematical lighting (If false, it still use alpha, just that r, g, & b would also be used)"
 fit_content = true
 
-[node name="use_only_a_brightness" type="CheckBox" parent="configuration_panel/vbox" unique_id=1792411096]
+[node name="use_math_lighting8" type="CheckBox" parent="configuration_panel/ScrollContainer/vbox/FoldableContainer/VBoxContainer" unique_id=1792411096]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "Use only alpha transparency to determine the brightness"
 script = SubResource("GDScript_3s3c3")
 
-[node name="brightness_mult" type="HBoxContainer" parent="configuration_panel/vbox" unique_id=700489363]
+[node name="use_math_lighting9" type="HBoxContainer" parent="configuration_panel/ScrollContainer/vbox/FoldableContainer/VBoxContainer" unique_id=700489363]
 layout_mode = 2
 script = SubResource("GDScript_s1gou")
 
-[node name="Label" type="Label" parent="configuration_panel/vbox/brightness_mult" unique_id=1999158459]
+[node name="Label" type="Label" parent="configuration_panel/ScrollContainer/vbox/FoldableContainer/VBoxContainer/use_math_lighting9" unique_id=1999158459]
 layout_mode = 2
 text = "Brightness Multiplier"
 
-[node name="b" type="SpinBox" parent="configuration_panel/vbox/brightness_mult" unique_id=1900133426]
+[node name="b" type="SpinBox" parent="configuration_panel/ScrollContainer/vbox/FoldableContainer/VBoxContainer/use_math_lighting9" unique_id=1900133426]
 layout_mode = 2
 min_value = -100.0
 step = 0.001
 value = 1.0
 custom_arrow_step = 0.1
 
-[node name="RichTextLabel3" type="RichTextLabel" parent="configuration_panel/vbox" unique_id=1659241493]
+[node name="use_math_lighting10" type="RichTextLabel" parent="configuration_panel/ScrollContainer/vbox/FoldableContainer/VBoxContainer" unique_id=1659241493]
 layout_mode = 2
 bbcode_enabled = true
 text = "[font_size=10] [color=thistle]Brightness multiplier only work with non-mathematical lighting."
 fit_content = true
 
-[node name="use_voronoi" type="CheckBox" parent="configuration_panel/vbox" unique_id=1724931314]
+[node name="use_math_lighting11" type="CheckBox" parent="configuration_panel/ScrollContainer/vbox/FoldableContainer/VBoxContainer" unique_id=1724931314]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "Use voronoi"
 script = SubResource("GDScript_i6rmi")
 
-[node name="RichTextLabel4" type="RichTextLabel" parent="configuration_panel/vbox" unique_id=424295469]
+[node name="use_math_lighting12" type="RichTextLabel" parent="configuration_panel/ScrollContainer/vbox/FoldableContainer/VBoxContainer" unique_id=424295469]
 layout_mode = 2
 bbcode_enabled = true
 text = "[font_size=10] [color=thistle]Disabling voronoi effect may improve perfomance a little bit"
 fit_content = true
 
-[node name="light_feed_cost_luminocyte" type="CheckBox" parent="configuration_panel/vbox" unique_id=835206519]
+[node name="light_feed_cost_luminocyte" type="CheckBox" parent="configuration_panel/ScrollContainer/vbox/FoldableContainer/VBoxContainer" unique_id=835206519]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 text = "Light feed cost (Luminocyte)"
 script = SubResource("GDScript_8lusc")
 
-[node name="RichTextLabel6" type="RichTextLabel" parent="configuration_panel/vbox" unique_id=850814090]
+[node name="RichTextLabel6" type="RichTextLabel" parent="configuration_panel/ScrollContainer/vbox/FoldableContainer/VBoxContainer" unique_id=850814090]
 layout_mode = 2
 bbcode_enabled = true
 text = "[font_size=10] [color=thistle]If true, feeding on photocytes will cost mass for the Luminocyte"
 fit_content = true
 
-[node name="salinity" type="HBoxContainer" parent="configuration_panel/vbox" unique_id=1043677546]
+[node name="salinity" type="HBoxContainer" parent="configuration_panel/ScrollContainer/vbox" unique_id=1043677546]
 layout_mode = 2
 script = SubResource("GDScript_mk4ph")
 
-[node name="Label" type="Label" parent="configuration_panel/vbox/salinity" unique_id=463168006]
+[node name="Label" type="Label" parent="configuration_panel/ScrollContainer/vbox/salinity" unique_id=463168006]
 layout_mode = 2
 text = "Salinity"
 
-[node name="SpinBox" type="SpinBox" parent="configuration_panel/vbox/salinity" unique_id=1877644740]
+[node name="SpinBox" type="SpinBox" parent="configuration_panel/ScrollContainer/vbox/salinity" unique_id=1877644740]
 layout_mode = 2
 min_value = -100.0
 step = 0.001
 custom_arrow_step = 0.05
 
-[node name="max_adhesion_length" type="HBoxContainer" parent="configuration_panel/vbox" unique_id=1712752966]
+[node name="max_adhesion_length" type="HBoxContainer" parent="configuration_panel/ScrollContainer/vbox" unique_id=1712752966]
 layout_mode = 2
 script = SubResource("GDScript_2cuuw")
 
-[node name="Label" type="Label" parent="configuration_panel/vbox/max_adhesion_length" unique_id=1430790262]
+[node name="Label" type="Label" parent="configuration_panel/ScrollContainer/vbox/max_adhesion_length" unique_id=1430790262]
 layout_mode = 2
 text = "Max adhesion length"
 
-[node name="SpinBox" type="SpinBox" parent="configuration_panel/vbox/max_adhesion_length" unique_id=55627889]
+[node name="SpinBox" type="SpinBox" parent="configuration_panel/ScrollContainer/vbox/max_adhesion_length" unique_id=55627889]
 layout_mode = 2
 min_value = -100.0
 max_value = 100000.0
 step = 0.001
 custom_arrow_step = 0.05
+
+[node name="food_spawn_shape" type="HBoxContainer" parent="configuration_panel/ScrollContainer/vbox" unique_id=1757691895]
+layout_mode = 2
+script = SubResource("GDScript_oip7h")
+
+[node name="Label" type="Label" parent="configuration_panel/ScrollContainer/vbox/food_spawn_shape" unique_id=1515188889]
+layout_mode = 2
+text = "Shape of food spawner"
+
+[node name="OptionButton" type="OptionButton" parent="configuration_panel/ScrollContainer/vbox/food_spawn_shape" unique_id=1791386257]
+layout_mode = 2
+selected = 0
+item_count = 2
+popup/item_0/text = "Rectangle"
+popup/item_0/id = 0
+popup/item_1/text = "Circle"
+popup/item_1/id = 1
+
+[node name="size_rect_spawner" type="HBoxContainer" parent="configuration_panel/ScrollContainer/vbox" unique_id=2100855366]
+layout_mode = 2
+script = SubResource("GDScript_1k61u")
+
+[node name="Label" type="Label" parent="configuration_panel/ScrollContainer/vbox/size_rect_spawner" unique_id=1791371812]
+layout_mode = 2
+text = "Size of the rectangle"
+
+[node name="x" type="SpinBox" parent="configuration_panel/ScrollContainer/vbox/size_rect_spawner" unique_id=811204370]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+max_value = 10000.0
+step = 0.001
+prefix = "Width "
+custom_arrow_step = 0.05
+
+[node name="y" type="SpinBox" parent="configuration_panel/ScrollContainer/vbox/size_rect_spawner" unique_id=1945658433]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+max_value = 10000.0
+step = 0.001
+prefix = "Height"
+custom_arrow_step = 0.05
+
+[node name="size_circle_spawner" type="HBoxContainer" parent="configuration_panel/ScrollContainer/vbox" unique_id=826939347]
+layout_mode = 2
+script = SubResource("GDScript_hxcci")
+
+[node name="Label" type="Label" parent="configuration_panel/ScrollContainer/vbox/size_circle_spawner" unique_id=371520886]
+layout_mode = 2
+text = "Size of the circle"
+
+[node name="radii" type="SpinBox" parent="configuration_panel/ScrollContainer/vbox/size_circle_spawner" unique_id=2027167372]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+max_value = 10000.0
+step = 0.001
+prefix = "Radii"
+custom_arrow_step = 0.05
+
+[node name="nutrient_rate" type="HBoxContainer" parent="configuration_panel/ScrollContainer/vbox" unique_id=427112808]
+layout_mode = 2
+script = SubResource("GDScript_10vhn")
+
+[node name="Label" type="Label" parent="configuration_panel/ScrollContainer/vbox/nutrient_rate" unique_id=1221154274]
+layout_mode = 2
+text = "Nutrient rate"
+
+[node name="SpinBox" type="SpinBox" parent="configuration_panel/ScrollContainer/vbox/nutrient_rate" unique_id=1233490114]
+layout_mode = 2
+max_value = 15.0
+step = 0.001
+custom_arrow_step = 0.05
+
+[node name="nutrient_chunk_size" type="HBoxContainer" parent="configuration_panel/ScrollContainer/vbox" unique_id=1466944516]
+layout_mode = 2
+script = SubResource("GDScript_0wf3a")
+
+[node name="Label" type="Label" parent="configuration_panel/ScrollContainer/vbox/nutrient_chunk_size" unique_id=454283984]
+layout_mode = 2
+text = "Nutrient chunk size"
+
+[node name="SpinBox" type="SpinBox" parent="configuration_panel/ScrollContainer/vbox/nutrient_chunk_size" unique_id=311120981]
+layout_mode = 2
+max_value = 1.2
+step = 0.001
+custom_arrow_step = 0.05
+
+[node name="show_food_spawn_marker" type="CheckBox" parent="configuration_panel/ScrollContainer/vbox" unique_id=46548272]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Show where food would spawn"
+script = SubResource("GDScript_6s452")
 
 [node name="infonotice" type="RichTextLabel" parent="." unique_id=1106256924]
 visible = false
@@ -536,18 +754,25 @@ autowrap_mode = 0
 [connection signal="button_up" from="TopPanel/Margin/Hbox/TemperatureButton" to="TopPanel" method="_on_temperature_button_up"]
 [connection signal="id_pressed" from="SelectTool" to="TopPanel" method="_on_select_tool_pressed"]
 [connection signal="id_pressed" from="SubstrateTemperature" to="TopPanel" method="_on_substrate_temperature_id_pressed"]
-[connection signal="toggled" from="configuration_panel/vbox/frost_glass_blur" to="configuration_panel/vbox/frost_glass_blur" method="_on_toggled"]
-[connection signal="toggled" from="configuration_panel/vbox/use_math_lighting" to="configuration_panel/vbox/use_math_lighting" method="_on_toggled"]
-[connection signal="value_changed" from="configuration_panel/vbox/math_lighting/x" to="configuration_panel/vbox/math_lighting" method="_on_x_value_changed"]
-[connection signal="value_changed" from="configuration_panel/vbox/math_lighting/y" to="configuration_panel/vbox/math_lighting" method="_on_y_value_changed"]
-[connection signal="value_changed" from="configuration_panel/vbox/math_lighting/z" to="configuration_panel/vbox/math_lighting" method="_on_z_value_changed"]
-[connection signal="value_changed" from="configuration_panel/vbox/math_lighting/w" to="configuration_panel/vbox/math_lighting" method="_on_w_value_changed"]
-[connection signal="button_up" from="configuration_panel/vbox/input_image/Button" to="configuration_panel/vbox/input_image" method="_on_button_up"]
-[connection signal="file_selected" from="configuration_panel/vbox/input_image/FileDialog" to="configuration_panel/vbox/input_image" method="_on_file_dialog_file_selected"]
-[connection signal="value_changed" from="configuration_panel/vbox/image_scale/x" to="configuration_panel/vbox/image_scale" method="_on_x_changed"]
-[connection signal="value_changed" from="configuration_panel/vbox/image_scale/y" to="configuration_panel/vbox/image_scale" method="_on_y_value_changed"]
-[connection signal="toggled" from="configuration_panel/vbox/use_only_a_brightness" to="configuration_panel/vbox/use_only_a_brightness" method="_on_toggled"]
-[connection signal="value_changed" from="configuration_panel/vbox/brightness_mult/b" to="configuration_panel/vbox/brightness_mult" method="_on_b_value_changed"]
-[connection signal="toggled" from="configuration_panel/vbox/use_voronoi" to="configuration_panel/vbox/use_voronoi" method="_on_toggled"]
-[connection signal="value_changed" from="configuration_panel/vbox/salinity/SpinBox" to="configuration_panel/vbox/salinity" method="_on_spin_box_value_changed"]
-[connection signal="value_changed" from="configuration_panel/vbox/max_adhesion_length/SpinBox" to="configuration_panel/vbox/max_adhesion_length" method="_on_value_changed"]
+[connection signal="toggled" from="configuration_panel/ScrollContainer/vbox/frost_glass_blur" to="configuration_panel/ScrollContainer/vbox/frost_glass_blur" method="_on_toggled"]
+[connection signal="toggled" from="configuration_panel/ScrollContainer/vbox/FoldableContainer/VBoxContainer/use_math_lighting" to="configuration_panel/ScrollContainer/vbox/FoldableContainer/VBoxContainer/use_math_lighting" method="_on_toggled"]
+[connection signal="value_changed" from="configuration_panel/ScrollContainer/vbox/FoldableContainer/VBoxContainer/use_math_lighting3/x" to="configuration_panel/ScrollContainer/vbox/FoldableContainer/VBoxContainer/use_math_lighting3" method="_on_x_value_changed"]
+[connection signal="value_changed" from="configuration_panel/ScrollContainer/vbox/FoldableContainer/VBoxContainer/use_math_lighting3/y" to="configuration_panel/ScrollContainer/vbox/FoldableContainer/VBoxContainer/use_math_lighting3" method="_on_y_value_changed"]
+[connection signal="value_changed" from="configuration_panel/ScrollContainer/vbox/FoldableContainer/VBoxContainer/use_math_lighting3/z" to="configuration_panel/ScrollContainer/vbox/FoldableContainer/VBoxContainer/use_math_lighting3" method="_on_z_value_changed"]
+[connection signal="value_changed" from="configuration_panel/ScrollContainer/vbox/FoldableContainer/VBoxContainer/use_math_lighting3/w" to="configuration_panel/ScrollContainer/vbox/FoldableContainer/VBoxContainer/use_math_lighting3" method="_on_w_value_changed"]
+[connection signal="button_up" from="configuration_panel/ScrollContainer/vbox/FoldableContainer/VBoxContainer/use_math_lighting4/Button" to="configuration_panel/ScrollContainer/vbox/FoldableContainer/VBoxContainer/use_math_lighting4" method="_on_button_up"]
+[connection signal="file_selected" from="configuration_panel/ScrollContainer/vbox/FoldableContainer/VBoxContainer/use_math_lighting4/FileDialog" to="configuration_panel/ScrollContainer/vbox/FoldableContainer/VBoxContainer/use_math_lighting4" method="_on_file_dialog_file_selected"]
+[connection signal="value_changed" from="configuration_panel/ScrollContainer/vbox/FoldableContainer/VBoxContainer/use_math_lighting6/x" to="configuration_panel/ScrollContainer/vbox/FoldableContainer/VBoxContainer/use_math_lighting6" method="_on_x_changed"]
+[connection signal="value_changed" from="configuration_panel/ScrollContainer/vbox/FoldableContainer/VBoxContainer/use_math_lighting6/y" to="configuration_panel/ScrollContainer/vbox/FoldableContainer/VBoxContainer/use_math_lighting6" method="_on_y_value_changed"]
+[connection signal="toggled" from="configuration_panel/ScrollContainer/vbox/FoldableContainer/VBoxContainer/use_math_lighting8" to="configuration_panel/ScrollContainer/vbox/FoldableContainer/VBoxContainer/use_math_lighting8" method="_on_toggled"]
+[connection signal="value_changed" from="configuration_panel/ScrollContainer/vbox/FoldableContainer/VBoxContainer/use_math_lighting9/b" to="configuration_panel/ScrollContainer/vbox/FoldableContainer/VBoxContainer/use_math_lighting9" method="_on_b_value_changed"]
+[connection signal="toggled" from="configuration_panel/ScrollContainer/vbox/FoldableContainer/VBoxContainer/use_math_lighting11" to="configuration_panel/ScrollContainer/vbox/FoldableContainer/VBoxContainer/use_math_lighting11" method="_on_toggled"]
+[connection signal="value_changed" from="configuration_panel/ScrollContainer/vbox/salinity/SpinBox" to="configuration_panel/ScrollContainer/vbox/salinity" method="_on_spin_box_value_changed"]
+[connection signal="value_changed" from="configuration_panel/ScrollContainer/vbox/max_adhesion_length/SpinBox" to="configuration_panel/ScrollContainer/vbox/max_adhesion_length" method="_on_value_changed"]
+[connection signal="item_selected" from="configuration_panel/ScrollContainer/vbox/food_spawn_shape/OptionButton" to="configuration_panel/ScrollContainer/vbox/food_spawn_shape" method="_on_option_selected"]
+[connection signal="value_changed" from="configuration_panel/ScrollContainer/vbox/size_rect_spawner/x" to="configuration_panel/ScrollContainer/vbox/size_rect_spawner" method="_on_x_changed"]
+[connection signal="value_changed" from="configuration_panel/ScrollContainer/vbox/size_rect_spawner/y" to="configuration_panel/ScrollContainer/vbox/size_rect_spawner" method="_on_y_changed"]
+[connection signal="value_changed" from="configuration_panel/ScrollContainer/vbox/size_circle_spawner/radii" to="configuration_panel/ScrollContainer/vbox/size_circle_spawner" method="_on_radii_value_changed"]
+[connection signal="value_changed" from="configuration_panel/ScrollContainer/vbox/nutrient_rate/SpinBox" to="configuration_panel/ScrollContainer/vbox/nutrient_rate" method="_on_spin_box_value_changed"]
+[connection signal="value_changed" from="configuration_panel/ScrollContainer/vbox/nutrient_chunk_size/SpinBox" to="configuration_panel/ScrollContainer/vbox/nutrient_chunk_size" method="_on_nutrient_chunk_size_changed"]
+[connection signal="toggled" from="configuration_panel/ScrollContainer/vbox/show_food_spawn_marker" to="configuration_panel/ScrollContainer/vbox/show_food_spawn_marker" method="_on_toggled"]

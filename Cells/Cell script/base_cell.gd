@@ -1,4 +1,4 @@
-extends Node2D
+extends Area2D
 class_name BaseCell
 #TODO: IMPROVE THE ADHESION
 const split_audio = preload("uid://c2ncgpkfynhkk")
@@ -36,7 +36,11 @@ const FIXED_STEP := 1.0 / 60.0
 @export var current_mode: int = 0 #start from 0.
 
 var is_debugged = false
+
+#This a setting contain configuration
+var conf := []
 func _ready() -> void:
+	conf = Game.get_global_conf()
 	Game.cell_count += 1
 	if !dna:
 		#No dna, means we set it so there won't be any error
@@ -78,10 +82,11 @@ func simulate_step(delta: float) -> void:
 	apply_adhesion_force()
 	compute_flows()
 	apply_flows()
-	nitrogen_reserve = min(nitrogen_reserve + sqrt(Game.nitrates) * delta, 100)
+	nitrogen_reserve = min(nitrogen_reserve + sqrt(conf[Game.SubsConf.NITRATES]) * delta, 100)
 	if mode:
 		if mass > mode.split_mass and nitrogen_reserve > 20 and Game.cell_count < Game.maximum_cell_count and age > 0.5:
 			split()
+			age = 0
 func _unhandled_input(event):
 	match get_parent().mode:
 		Game.ToolSelector.OPTICAL_TWEEZERS:
@@ -209,7 +214,7 @@ func metabolism(delta, modifier := 1.0):
 	var alpha = 0.021614
 	var beta = 0.161532
 	var metabolic = -energy_loss_coefficient \
-		* (1.0778 - Game.salinity) \
+		* (1.0778 - conf[Game.SubsConf.SALINITY]) \
 		* (alpha * sqrt(mass) + beta)
 
 	#apply metabolism!!
@@ -363,7 +368,7 @@ func apply_adhesion_force(damping: float = 0.3):
 		if distance == 0:
 			index += 1
 			continue
-		if distance > Game.max_adhesion_length: #if too long then break it
+		if distance > conf[Game.SubsConf.MAX_ADHESION_LENGTH]: #if too long then break it
 			adhesion.erase(neighbor)
 			neighbor.adhesion.erase(self)
 			continue

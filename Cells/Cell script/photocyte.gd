@@ -1,8 +1,6 @@
 extends BaseCell
 class_name Photocyte
 
-
-
 func _ready():
 	$render_quad.material = $render_quad.material.duplicate()
 	$render_quad.material.set_shader_parameter("u_use_decoration", 1.0)
@@ -13,7 +11,7 @@ func _process(delta: float) -> void:
 	super(delta)
 func simulate_step(delta: float) -> void:
 	super(delta)
-	mass = min(mass + (get_brightness() * delta * (1.0 if Game.use_math_lightning else Game.brightness_mult)), 3.6)
+	mass = min(mass + (get_brightness() * delta * (1.0 if Game.use_math_lightning else conf[Game.SubsConf.BRIGHTNESS_MULT])), 3.6)
 func get_brightness() -> float:
 	if not Game.use_math_lightning:
 		var local_pos: Vector2 = $"../Platecolor".to_local(global_position)
