@@ -9,7 +9,7 @@ radius = 10.0
 height = 20.0
 radial_segments = 4
 
-[node name="circle_obstacle" type="Area2D" unique_id=449544008]
+[node name="circle_obstacle" type="Area2D" unique_id=449544008 groups=["obstacles"]]
 modulate = Color(0.67058825, 0.67058825, 0.67058825, 1)
 script = ExtResource("1_pvkhf")
 
@@ -19,5 +19,6 @@ shape = SubResource("CircleShape2D_286ui")
 [node name="MeshInstance2D" type="MeshInstance2D" parent="." unique_id=1409141156]
 mesh = SubResource("SphereMesh_pvkhf")
 
+[connection signal="area_entered" from="." to="." method="_on_area_entered"]
 [connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
 [connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]

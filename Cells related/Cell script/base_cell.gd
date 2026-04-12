@@ -1,7 +1,8 @@
 extends Area2D
 class_name BaseCell
 #TODO: IMPROVE THE ADHESION
-const split_audio = preload("uid://c2ncgpkfynhkk")
+const SPLIT_AUDIO = preload("uid://c2ncgpkfynhkk")
+const FOOD = preload("uid://bcp4xdxc828fp")
 @onready var mode: CellMode = get_mode(dna) #mode like M0, M1, M2... It store essential thingies like color and etc..
 var colliding: Array[Node2D]
 
@@ -87,6 +88,9 @@ func simulate_step(delta: float) -> void:
 		if mass > mode.split_mass and nitrogen_reserve > 20 and Game.cell_count < Game.maximum_cell_count and age > 0.5:
 			split()
 			age = 0
+	#check if cell should go bye bye
+	if mass < 0.90:
+		die()
 func _unhandled_input(event):
 	match get_parent().tool_mode:
 		Game.ToolSelector.OPTICAL_TWEEZERS:
@@ -106,7 +110,7 @@ func _unhandled_input(event):
 		Game.ToolSelector.CELL_REMOVAL:
 			if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and mouse_over and event.is_pressed():
 				play_split_sound()
-				die()
+				die() #Do not create food when injected cell removal
 				get_viewport().set_input_as_handled()
 		Game.ToolSelector.CELL_DIAGNOSTICS:
 			if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and mouse_over and event.is_pressed():
@@ -223,16 +227,18 @@ func metabolism(delta, modifier := 1.0):
 	#clamp so the mass cell won't go over 3.6
 	mass = minf(3.60, mass)
 
-	#check if cell should go bye bye
-	if mass < 0.90:
-		die()
-func die():
+func die(create_food := true) -> void:
+	if create_food:
+		var new_food: Food = FOOD.instantiate()
+		new_food.global_position = global_position
+		new_food.nutrition = mass
+		get_parent().add_child(new_food)
 	Game.cell_count -= 1
 	queue_free()
 
 func play_split_sound():
 	var sfx := AudioStreamPlayer2D.new()
-	sfx.stream = split_audio
+	sfx.stream = SPLIT_AUDIO
 	get_parent().add_child(sfx)
 	sfx.play()
 	sfx.finished.connect(sfx.queue_free)
@@ -264,15 +270,18 @@ func apply_motion(delta):
 	velocity *= pow(0.9, delta * 60.0)
 	global_position += velocity * delta
 func apply_collision_forces(delta):
+	if Game.use_plate_border: #Collision with plate's border 
+		if global_position.length() > (Game.plate_diameter / 2) - radius - Game.plate_thickness:
+			global_position = global_position.normalized() * ((Game.plate_diameter / 2) - radius - Game.plate_thickness)
 	for other in colliding:
 		if other is BaseCell:
 			if !adhesion.has(other.get_parent() as BaseCell):
 				var dir = global_position - other.global_position
 				var dist = dir.length()
 
-				if dist == 0:
+				if dist < other.radius - radius: #dies if it's on another cell
+					die()
 					continue
-
 				var overlap = radius * 2 - dist
 				if overlap <= 0:
 					continue
@@ -476,12 +485,16 @@ func inject_DNA(new_dna) -> void:
 func turn_into_another_cell_type(type: Game.CellType) -> void:
 	var new_cell = Game.get_instance_cell(type).instantiate()
 	new_cell.mass = mass
+	new_cell.radius = radius
 	new_cell.position = position
 	new_cell.velocity = velocity
 	new_cell.dna = dna
+	new_cell.current_color = current_color
 	get_parent().add_child.call_deferred(new_cell)
 	if Game.UI.get_node_or_null("debug_cell") and is_debugged:
 		new_cell.is_debugged = is_debugged
+		new_cell.get_node("selected_circle").color = Color.CHARTREUSE
+		new_cell.get_node("selected_circle").show()
 	die()
 
 func split() -> void:
@@ -491,9 +504,10 @@ func split() -> void:
 	var split_dir := Vector2.RIGHT.rotated(rotation + deg_to_rad(mode.split_angle))
 	# child 1
 	var child1 = Game.get_instance_cell(dna.get_mode(mode.child1).cell_type).instantiate()
-	child1.position = position
+	child1.position = position - split_dir
 	child1.rotation = rotation + mode.child1_angle
-	child1.velocity = velocity - split_dir * 100
+	#The velocity is randomized a bit, so there's no issue where cell split and become cramped because it's on 1D line
+	child1.velocity = velocity - split_dir * 100 + Vector2(randf_range(-0.5, 0.5), randf_range(-0.5, 0.5)) 
 	child1.dna = dna
 	child1.current_mode = dna.get_mode(mode.child1).id
 	child1.mass = mass * mode.split_ratio
@@ -503,9 +517,9 @@ func split() -> void:
 	#child1.mode.set_up_custom_properties()
 	# child 2
 	var child2 = Game.get_instance_cell(dna.get_mode(mode.child2).cell_type).instantiate()
-	child2.position = position
+	child2.position = position + split_dir
 	child2.rotation = rotation + mode.child2_angle
-	child2.velocity = velocity + split_dir * 100
+	child2.velocity = velocity + split_dir * 100 + Vector2(randf_range(-0.5, 0.5), randf_range(-0.5, 0.5))
 	child2.dna = dna
 	child2.current_mode = dna.get_mode(mode.child2).id
 	child2.mass = mass * (1.0 - mode.split_ratio)

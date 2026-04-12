@@ -127,6 +127,10 @@ func _process(delta: float) -> void:
 		$quad.material.set_shader_parameter("dir", Game.math_lighting)
 func _ready() -> void:
 	correct_brightness_plate()
+	set_plate_border_visibility(Game.use_plate_border)
+	set_plate_border_radii(Game.plate_diameter / 2)
+	set_plate_border_color(Game.plate_color)
+	set_plate_border_thickness(Game.plate_thickness)
 func correct_brightness_plate():
 	$Platecolor.material.set_shader_parameter("brightness", Game.brightness_mult)
 func change_tool(into: Game.ToolSelector):
@@ -135,9 +139,9 @@ func change_tool(into: Game.ToolSelector):
 		discard_any_selection()
 		Game.UI.get_node("debug_cell").close()
 	if tool_mode == Game.ToolSelector.ZONE_EDITOR:
-		Game.show_info_notice_timed("Click anywhere to create/edit a zone. Use arrow key to change size", 5)
+		Game.show_info_notice_timed("Click anywhere to create a zone (Shift to edit). Use arrow key to change size", 10)
 	elif tool_mode == Game.ToolSelector.OBSTACLE_EDITOR:
-		Game.show_info_notice_timed("Click anywhere to create/edit an obstacle. Ctrl to change shape. Use arrow key to change size", 5)
+		Game.show_info_notice_timed("Click anywhere to create an obstacle (Shift to edit). Ctrl to change shape. Use arrow key to change size", 10)
 func discard_any_selection():
 	discard_old_selected_cell()
 	if bind_adhesion_cell1:
@@ -202,14 +206,42 @@ func spawn_food() -> void:
 			var angle = randf() * TAU
 			var radius = sqrt(randf()) * Game.radii_spawn_size
 			new_food.global_position = Vector2(cos(angle), sin(angle)) * radius
-	new_food.nutrition = Game.nutrient_chunk_size * 8.3333
+	new_food.nutrition = Game.nutrient_chunk_size * 12.5
+	for obstacle in get_tree().get_nodes_in_group("obstacles"):
+		if obstacle_contains(obstacle, new_food.global_position, 10):
+			return
 	add_child(new_food)
-
 func get_nutrient_spawn_chance():
 	var A
-	if Game.use_math_lightning: #It must be circle 
+	if Game.food_spawn_shape == Food.SpawnShape.CIRCLE:
 		var area =  PI * pow($quad.mesh.size.x / 2, 2)
 		A = area / PI
 	else: #It assume it must be a rectangle
-		A = (Game.width * Game.height) / PI
+		A = (Game.width * Game.height)
 	return A * (Game.nutrient_rate / 100) / 0.02
+func obstacle_contains(obstacle: Node2D, pos: Vector2, radius: float) -> bool:
+	if obstacle is RectObstacle:  # or however you type them
+			var col_shape = obstacle.get_node("CollisionShape2D")
+			var shape = col_shape.shape as RectangleShape2D
+			var half = shape.size / 2.0 + Vector2(radius, radius)
+			var center = obstacle.global_position
+			var local = pos - center
+			return abs(local.x) < half.x and abs(local.y) < half.y
+
+	elif obstacle is CircleObstacle:
+		var center: Vector2 = obstacle.global_position
+		var obs_radius: float = obstacle.current_diameter / 2
+		return pos.distance_to(center) < (obs_radius + radius)
+
+	return false
+
+func set_plate_border_visibility(b: bool) -> void:
+	$plate_ring.visible = b
+func set_plate_border_radii(radii: float) -> void:
+	$plate_ring.sizes[0] = radii
+func set_plate_border_color(color: Color) -> void:
+	$plate_ring.color = color
+func set_plate_border_thickness(thickness: float) -> void:
+	#Thickness need to be adjusted first, because BasicPolygon2D's ring ratio is 0.-1. 
+	var radius = Game.plate_diameter / 2.0 #And also max plate's thickness
+	$plate_ring.ring_ratio = clamp((thickness / radius), 0.0, 1.0)

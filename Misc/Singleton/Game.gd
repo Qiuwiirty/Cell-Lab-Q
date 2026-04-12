@@ -28,26 +28,31 @@ enum CellType
 	FLAGELLOCYTE
 }
 signal UI_ready
-const max_modes_count = 40
+const max_modes_count := 40
 var UI = null #This must be immediately set so system can quickly access UI
 var plate: Plate
 ###Containing current plate configuration and managing stuff
-var maximum_cell_count = 100
-var cell_count = 0
-var brightness_mult = 1.0 #ONLY USE ON NON-MATH LIGHTNING BTW!!
-var salinity = 0.25
-var temperature = Game.SubstrateTemperature.OBSERVE
-var use_voronoi = true
-var math_lighting = Vector4(5.58, 1.025, 2.375, 0.14)
-var use_math_lightning = true
+var maximum_cell_count := 100
+var cell_count := 0
+var brightness_mult := 1.0 #ONLY USE ON NON-MATH LIGHTNING BTW!!
+var salinity := 0.25
+var temperature := Game.SubstrateTemperature.OBSERVE
+var use_voronoi := true
+var math_lighting := Vector4(5.58, 1.025, 2.375, 0.14)
+var use_math_lightning := true
 var nonmath_use_only_alpha := false #Use alpha or not for brightness of non-mathematical lighting (If false, it still use alpha, just that r, g, & b would also be used)
-var custom_temperature = 1.0
-var max_adhesion_length = 40
-var nitrates = 100.0 #0.0-100.0
-var plate_age = 0.0 #h
+var custom_temperature := 1.0
+var max_adhesion_length := 40
+var nitrates := 100.0 #0.0-100.0
+var plate_age := 0.0 #h
 var light_feed_cost_luminocyte := false #Basically, if true, feeding on photocytes will cost mass for the Luminocyte
 var infonotice
 
+#Plate border settings
+var use_plate_border := false
+var plate_diameter := 1000.
+var plate_color := Color(1.0, 1.0, 1.0)
+var plate_thickness := 20.
 #Nutrients settings
 var food_spawn_shape := Food.SpawnShape.CIRCLE
 var rect_spawn_size := Vector2(1000, 1000)

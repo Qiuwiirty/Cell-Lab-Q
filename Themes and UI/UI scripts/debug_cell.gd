@@ -83,7 +83,7 @@ func _on_current_color_changed(color: Color) -> void:
 	if cell:
 		cell.current_color = color
 
-func _on_spin_box_value_changed(value: float) -> void:
+func _on_mode_editing_changed(value: float) -> void:
 	if cell:
 		if cell.dna:
 			mode = cell.dna.modes[value]

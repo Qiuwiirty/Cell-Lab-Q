@@ -19,7 +19,7 @@ func _on_mouse_exited() -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if Game.plate.tool_mode == Game.ToolSelector.OBSTACLE_EDITOR:
-		if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and mouse_over and event.is_pressed():
+		if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and mouse_over and event.shift_pressed:
 			var obstacle_editor = Game.UI.get_node_or_null("obstacle_editor")
 			if obstacle_editor:
 				obstacle_editor.assign_obstacle(self)
@@ -27,3 +27,7 @@ func _unhandled_input(event: InputEvent) -> void:
 				get_viewport().set_input_as_handled()
 			else:
 				print("OBSTACLE EDITOR DOES NOT EXIST")
+
+#func _on_area_entered(area: Area2D) -> void:
+	#if area is Food:
+		#area.queue_free()

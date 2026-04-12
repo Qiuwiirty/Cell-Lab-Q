@@ -25,8 +25,10 @@ func _on_sterilize_button_up() -> void:
 
 func _on_tool_selector_button_up() -> void:
 	$"../ButtonClick".play()
-	$"../select_tool_custom".open()
-
+	if not $"../select_tool_custom".visible:
+		$"../select_tool_custom".open()
+	else:
+		$"../select_tool_custom".close()
 func _on_select_tool_pressed(id: int) -> void:
 	$"../ButtonClick2".play()
 	if plate is not Plate:
@@ -52,8 +54,10 @@ func _on_select_tool_pressed(id: int) -> void:
 
 func _on_temperature_button_up() -> void:
 	$"../ButtonClick".play()
-	$"../substrate_temperature".open()
-
+	if not $"../substrate_temperature".visible:
+		$"../substrate_temperature".open()
+	else:
+		$"../substrate_temperature".close()
 func _on_substrate_temperature_id_pressed(id: int) -> void:
 	$"../ButtonClick2".play()
 	if plate is not Plate:

@@ -11,6 +11,10 @@ enum SpawnShape
 }
 var accumulator := 0.0
 const FIXED_STEP := 1.0 / 60.0
+func _ready() -> void:
+	var mods = nutrition / 15.
+	$CollisionShape2D.scale = Vector2(mods, mods)
+	$MeshInstance2D.scale = Vector2(mods, mods)
 func _process(delta: float) -> void:
 	if nutrition <= 0.01:
 		queue_free()
@@ -20,7 +24,7 @@ func _process(delta: float) -> void:
 	while accumulator >= FIXED_STEP:
 		nutrition -= (15. / nutrition) * 0.1 *  FIXED_STEP
 		accumulator -= FIXED_STEP
-	var mods = nutrition / 10
+	var mods = nutrition / 15.
 	$CollisionShape2D.scale = Vector2(mods, mods)
 	$MeshInstance2D.scale = Vector2(mods, mods)
 	#$MeshInstance2D.modulate = Color(1.0, .68 - (coating / 10) * .68, 0.211, 0.545)

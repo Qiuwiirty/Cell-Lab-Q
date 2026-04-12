@@ -8,5 +8,5 @@ func simulate_step(delta: float) -> void:
 			if food is Food:
 				if food.coating <= 0 and food.nutrition > 0.0:
 					var consumption_rate = 1.0 * delta
-					food.nutrition -= consumption_rate
+					food.nutrition -= consumption_rate * 2
 					mass += consumption_rate

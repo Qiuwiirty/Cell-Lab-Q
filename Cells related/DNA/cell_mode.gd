@@ -13,6 +13,8 @@ extends Resource
 @export var child2_kept_adhesion := false
 @export var child1_angle := 0 #degrees, again
 @export var child2_angle := 0
+
+
 @export var make_adhesion := false
 @export var adhesion_stiffness := 5.0
 @export var id: int #which mode it is, like 0, 1, ...

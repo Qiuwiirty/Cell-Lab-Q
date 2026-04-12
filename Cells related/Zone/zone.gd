@@ -11,7 +11,7 @@ var mouse_over = false
 var cells_inside: Array[BaseCell] = []
 func _unhandled_input(event: InputEvent) -> void:
 	if Game.plate.tool_mode == Game.ToolSelector.ZONE_EDITOR:
-		if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and mouse_over and event.is_pressed():
+		if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and mouse_over and event.is_pressed() and event.shift_pressed:
 			var zone_editor = Game.UI.get_node_or_null("zone_editor")
 			if zone_editor:
 				zone_editor.assign_zone(self)

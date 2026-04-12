@@ -391,7 +391,7 @@ layout_mode = 2
 [connection signal="value_changed" from="VBoxContainer/ScrollContainer/VBoxContainer/energy_loss_coefficient/SpinBox" to="." method="_on_energy_loss_coefficient_changed"]
 [connection signal="value_changed" from="VBoxContainer/ScrollContainer/VBoxContainer/nitrogen_reserve/SpinBox" to="." method="_on_nitrogen_reserve_changed"]
 [connection signal="color_changed" from="VBoxContainer/ScrollContainer/VBoxContainer/current_color/ColorPickerButton" to="." method="_on_current_color_changed"]
-[connection signal="value_changed" from="VBoxContainer/ScrollContainer/VBoxContainer/mode_editing/SpinBox" to="." method="_on_spin_box_value_changed"]
+[connection signal="value_changed" from="VBoxContainer/ScrollContainer/VBoxContainer/mode_editing/SpinBox" to="." method="_on_mode_editing_changed"]
 [connection signal="toggled" from="VBoxContainer/ScrollContainer/VBoxContainer/disable_metabolism" to="." method="_on_disable_metabolism_toggled"]
 [connection signal="item_selected" from="VBoxContainer/ScrollContainer/VBoxContainer/cell_type/OptionButton" to="." method="_on_cell_type_selected"]
 [connection signal="color_changed" from="VBoxContainer/ScrollContainer/VBoxContainer/actual_color/ColorPickerButton" to="." method="_on_color_changed"]
