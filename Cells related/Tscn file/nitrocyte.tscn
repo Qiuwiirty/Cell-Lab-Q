@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://ks1w0m5l5a3d"]
+
+[ext_resource type="PackedScene" uid="uid://cymj82ljpiu70" path="res://Cells related/Tscn file/base_cell.tscn" id="1_tdxlp"]
+[ext_resource type="Script" uid="uid://wbxxjlwov0kc" path="res://Cells related/Cell script/nitrocyte.gd" id="2_4knbu"]
+
+[node name="Nitrocyte" unique_id=82719589 instance=ExtResource("1_tdxlp")]
+script = ExtResource("2_4knbu")

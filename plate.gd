@@ -74,6 +74,8 @@ func _unhandled_input(event: InputEvent) -> void:
 						new_obstacle.current_diameter = circle_obstacle_diameter_marker
 					add_child(new_obstacle)
 func _process(delta: float) -> void:
+	if Game.use_math_lightning:
+		$quad.material.set_shader_parameter("dir", Game.math_lighting)
 	match tool_mode: #Basically decide which marker to show (to show what is being placed)
 		Game.ToolSelector.ZONE_EDITOR:
 			$circle_marker.hide()
@@ -123,8 +125,6 @@ func _process(delta: float) -> void:
 		if Game.UI:
 			#false make it not show any diagnostics
 			Game.UI.set_diagnostics("false")
-	if Game.use_math_lightning:
-		$quad.material.set_shader_parameter("dir", Game.math_lighting)
 func _ready() -> void:
 	correct_brightness_plate()
 	set_plate_border_visibility(Game.use_plate_border)

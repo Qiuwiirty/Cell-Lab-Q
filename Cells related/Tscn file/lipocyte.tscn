@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://jo0e0p6p8q8l"]
+
+[ext_resource type="PackedScene" uid="uid://cymj82ljpiu70" path="res://Cells related/Tscn file/base_cell.tscn" id="1_d05kf"]
+[ext_resource type="Script" uid="uid://bc083jncc5mfw" path="res://Cells related/Cell script/lipocyte.gd" id="2_ujayo"]
+[ext_resource type="Shader" uid="uid://drrp1tur6rqdu" path="res://Shaders/lipocyte.gdshader" id="3_ujayo"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_o2i0x"]
+shader = ExtResource("3_ujayo")
+shader_parameter/radius = 0.25
+
+[sub_resource type="QuadMesh" id="QuadMesh_shqvv"]
+size = Vector2(30, 30)
+
+[node name="Lipocyte" unique_id=82719589 instance=ExtResource("1_d05kf")]
+script = ExtResource("2_ujayo")
+lipids = 13.68
+
+[node name="lipids" type="MeshInstance2D" parent="." index="4" unique_id=100203408]
+material = SubResource("ShaderMaterial_o2i0x")
+mesh = SubResource("QuadMesh_shqvv")

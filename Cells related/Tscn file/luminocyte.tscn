@@ -20,6 +20,7 @@ size = Vector2(256, 256)
 script = ExtResource("2_nyf3r")
 
 [node name="photocyte_detector" type="Area2D" parent="." index="1" unique_id=1563249957]
+visible = false
 
 [node name="collision" type="CollisionShape2D" parent="photocyte_detector" index="0" unique_id=730705591]
 shape = SubResource("RectangleShape2D_nyf3r")

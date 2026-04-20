@@ -7,7 +7,6 @@ enum {
 var photocytes_in_light: Array[Photocyte] = []
 func _ready() -> void:
 	super()
-	mode.set_up_custom_properties()
 	energy_loss_coefficient = 2.5
 func simulate_step(delta: float) -> void:
 	super(delta)

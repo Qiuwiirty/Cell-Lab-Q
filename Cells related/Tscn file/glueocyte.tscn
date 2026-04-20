@@ -1,0 +1,25 @@
+[gd_scene format=3 uid="uid://d3x0cbqjr0c6n"]
+
+[ext_resource type="PackedScene" uid="uid://cymj82ljpiu70" path="res://Cells related/Tscn file/base_cell.tscn" id="1_q8bq7"]
+[ext_resource type="Script" uid="uid://blp2bvgsmgml3" path="res://Cells related/Cell script/glueocyte.gd" id="2_tahyq"]
+[ext_resource type="Shader" uid="uid://bn7vdq4xqip7k" path="res://Shaders/glueocyte.gdshader" id="3_lwdyf"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_edv5c"]
+shader = ExtResource("3_lwdyf")
+shader_parameter/cell_color = Color(0.5019608, 0.5019608, 0.5019608, 1)
+shader_parameter/cell_rot = 0.0
+shader_parameter/cell_move = Vector2(0, 0)
+
+[sub_resource type="QuadMesh" id="QuadMesh_11lqt"]
+size = Vector2(48, 48)
+
+[node name="Glueocyte" unique_id=82719589 instance=ExtResource("1_q8bq7")]
+script = ExtResource("2_tahyq")
+
+[node name="VisibleOnScreenNotifier2D" parent="." index="1" unique_id=1735079836]
+rect = Rect2(-23, -23, 46, 46)
+
+[node name="glue_render" type="MeshInstance2D" parent="." index="4" unique_id=1830805068]
+z_as_relative = false
+material = SubResource("ShaderMaterial_edv5c")
+mesh = SubResource("QuadMesh_11lqt")

@@ -15,6 +15,7 @@ func _ready() -> void:
 	var mods = nutrition / 15.
 	$CollisionShape2D.scale = Vector2(mods, mods)
 	$MeshInstance2D.scale = Vector2(mods, mods)
+	$MeshInstance2D.modulate = Color(1.0, 1.0 - (coating / 15), 1.0 - (coating / 15), 1.0)
 func _process(delta: float) -> void:
 	if nutrition <= 0.01:
 		queue_free()
@@ -28,4 +29,4 @@ func _process(delta: float) -> void:
 	$CollisionShape2D.scale = Vector2(mods, mods)
 	$MeshInstance2D.scale = Vector2(mods, mods)
 	#$MeshInstance2D.modulate = Color(1.0, .68 - (coating / 10) * .68, 0.211, 0.545)
-	$MeshInstance2D.modulate = Color(1.0, 1.0 - (coating / 150), 1.0 - (coating / 150), 1.0)
+	$MeshInstance2D.modulate = Color(1.0, 1.0 - (coating / 15), 1.0 - (coating / 15), 1.0)

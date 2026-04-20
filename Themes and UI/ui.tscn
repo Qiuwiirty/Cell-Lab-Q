@@ -130,16 +130,6 @@ func _on_toggled(toggled_on: bool) -> void:
 	Game.use_voronoi = toggled_on
 "
 
-[sub_resource type="GDScript" id="GDScript_8lusc"]
-resource_name = "light_feed_cost"
-script/source = "extends CheckBox
-
-func _ready() -> void:
-	button_pressed = Game.light_feed_cost_luminocyte
-func _on_toggled(toggled_on: bool) -> void:
-	Game.light_feed_cost_luminocyte = toggled_on
-"
-
 [sub_resource type="GDScript" id="GDScript_es8cg"]
 resource_name = "enable_plate_border"
 script/source = "extends CheckBox
@@ -188,13 +178,14 @@ func _on_color_changed(color: Color) -> void:
 		Game.plate.set_plate_border_color(color)
 "
 
-[sub_resource type="GDScript" id="GDScript_mk4ph"]
-resource_name = "salinity"
-script/source = "extends HBoxContainer
+[sub_resource type="GDScript" id="GDScript_8lusc"]
+resource_name = "light_feed_cost"
+script/source = "extends CheckBox
+
 func _ready() -> void:
-	$SpinBox.value = Game.salinity
-func _on_spin_box_value_changed(value: float) -> void:
-	Game.salinity = value
+	button_pressed = Game.light_feed_cost_luminocyte
+func _on_toggled(toggled_on: bool) -> void:
+	Game.light_feed_cost_luminocyte = toggled_on
 "
 
 [sub_resource type="GDScript" id="GDScript_2cuuw"]
@@ -206,6 +197,15 @@ func _ready() -> void:
 
 func _on_value_changed(value: float) -> void:
 	Game.max_adhesion_length = value
+"
+
+[sub_resource type="GDScript" id="GDScript_mk4ph"]
+resource_name = "salinity"
+script/source = "extends HBoxContainer
+func _ready() -> void:
+	$SpinBox.value = Game.salinity
+func _on_spin_box_value_changed(value: float) -> void:
+	Game.salinity = value
 "
 
 [sub_resource type="GDScript" id="GDScript_oip7h"]
@@ -449,6 +449,7 @@ visible = false
 visible = false
 
 [node name="configuration_panel" type="PanelContainer" parent="." unique_id=1636530376]
+visible = false
 material = SubResource("ShaderMaterial_i6rmi")
 anchors_preset = 15
 anchor_right = 1.0
@@ -462,7 +463,6 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_i6rmi")
 script = ExtResource("20_7yarc")
 
 [node name="ScrollContainer" type="ScrollContainer" parent="configuration_panel" unique_id=297010074]
-clip_contents = false
 layout_mode = 2
 
 [node name="vbox" type="VBoxContainer" parent="configuration_panel/ScrollContainer" unique_id=1518256763]
@@ -500,9 +500,11 @@ theme_override_styles/title_collapsed_panel = ExtResource("25_8lusc")
 theme_override_styles/title_collapsed_hover_panel = ExtResource("25_8lusc")
 theme_override_styles/focus = ExtResource("25_8lusc")
 theme_override_styles/panel = ExtResource("26_3s3c3")
+folded = true
 title = "Lighting stuff"
 
 [node name="VBoxContainer" type="VBoxContainer" parent="configuration_panel/ScrollContainer/vbox/lighting_stuff" unique_id=1364291997]
+visible = false
 layout_mode = 2
 
 [node name="use_math_lighting" type="CheckBox" parent="configuration_panel/ScrollContainer/vbox/lighting_stuff/VBoxContainer" unique_id=563286363]
@@ -651,18 +653,6 @@ bbcode_enabled = true
 text = "[font_size=10] [color=thistle]Disabling voronoi effect may improve perfomance a little bit"
 fit_content = true
 
-[node name="light_feed_cost_luminocyte" type="CheckBox" parent="configuration_panel/ScrollContainer/vbox/lighting_stuff/VBoxContainer" unique_id=835206519]
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-text = "Light feed cost (Luminocyte)"
-script = SubResource("GDScript_8lusc")
-
-[node name="RichTextLabel6" type="RichTextLabel" parent="configuration_panel/ScrollContainer/vbox/lighting_stuff/VBoxContainer" unique_id=850814090]
-layout_mode = 2
-bbcode_enabled = true
-text = "[font_size=10] [color=thistle]If true, feeding on photocytes will cost mass for the Luminocyte"
-fit_content = true
-
 [node name="plate_border_conf" type="FoldableContainer" parent="configuration_panel/ScrollContainer/vbox" unique_id=847442025]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
@@ -672,9 +662,11 @@ theme_override_styles/title_collapsed_panel = ExtResource("25_8lusc")
 theme_override_styles/title_collapsed_hover_panel = ExtResource("25_8lusc")
 theme_override_styles/focus = ExtResource("25_8lusc")
 theme_override_styles/panel = ExtResource("26_3s3c3")
+folded = true
 title = "Plate's Border configuration"
 
 [node name="VBoxContainer" type="VBoxContainer" parent="configuration_panel/ScrollContainer/vbox/plate_border_conf" unique_id=1814497895]
+visible = false
 layout_mode = 2
 
 [node name="enable_plate_border" type="CheckBox" parent="configuration_panel/ScrollContainer/vbox/plate_border_conf/VBoxContainer" unique_id=533388390]
@@ -729,6 +721,48 @@ text = "Plate border color"
 custom_minimum_size = Vector2(125, 0)
 layout_mode = 2
 
+[node name="cells_behavior" type="FoldableContainer" parent="configuration_panel/ScrollContainer/vbox" unique_id=321463898]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_styles/title_panel = ExtResource("25_8lusc")
+theme_override_styles/title_hover_panel = ExtResource("25_8lusc")
+theme_override_styles/title_collapsed_panel = ExtResource("25_8lusc")
+theme_override_styles/title_collapsed_hover_panel = ExtResource("25_8lusc")
+theme_override_styles/focus = ExtResource("25_8lusc")
+theme_override_styles/panel = ExtResource("26_3s3c3")
+title = "Cells behavior"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="configuration_panel/ScrollContainer/vbox/cells_behavior" unique_id=219761691]
+layout_mode = 2
+
+[node name="light_feed_cost_luminocyte" type="CheckBox" parent="configuration_panel/ScrollContainer/vbox/cells_behavior/VBoxContainer" unique_id=733655209]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Light feed cost (Luminocyte)"
+script = SubResource("GDScript_8lusc")
+
+[node name="RichTextLabel6" type="RichTextLabel" parent="configuration_panel/ScrollContainer/vbox/cells_behavior/VBoxContainer" unique_id=2129635072]
+layout_mode = 2
+bbcode_enabled = true
+text = "[font_size=10] [color=thistle]If true, feeding on photocytes will cost mass for the Luminocyte"
+fit_content = true
+
+[node name="max_adhesion_length" type="HBoxContainer" parent="configuration_panel/ScrollContainer/vbox/cells_behavior/VBoxContainer" unique_id=149723504]
+layout_mode = 2
+script = SubResource("GDScript_2cuuw")
+
+[node name="Label" type="Label" parent="configuration_panel/ScrollContainer/vbox/cells_behavior/VBoxContainer/max_adhesion_length" unique_id=1413319967]
+layout_mode = 2
+text = "Max adhesion length"
+
+[node name="SpinBox" type="SpinBox" parent="configuration_panel/ScrollContainer/vbox/cells_behavior/VBoxContainer/max_adhesion_length" unique_id=636059321]
+custom_minimum_size = Vector2(125, 0)
+layout_mode = 2
+min_value = -100.0
+max_value = 100000.0
+step = 0.001
+custom_arrow_step = 0.05
+
 [node name="salinity" type="HBoxContainer" parent="configuration_panel/ScrollContainer/vbox" unique_id=1043677546]
 layout_mode = 2
 script = SubResource("GDScript_mk4ph")
@@ -740,22 +774,6 @@ text = "Salinity"
 [node name="SpinBox" type="SpinBox" parent="configuration_panel/ScrollContainer/vbox/salinity" unique_id=1877644740]
 layout_mode = 2
 min_value = -100.0
-step = 0.001
-custom_arrow_step = 0.05
-
-[node name="max_adhesion_length" type="HBoxContainer" parent="configuration_panel/ScrollContainer/vbox" unique_id=1712752966]
-layout_mode = 2
-script = SubResource("GDScript_2cuuw")
-
-[node name="Label" type="Label" parent="configuration_panel/ScrollContainer/vbox/max_adhesion_length" unique_id=1430790262]
-layout_mode = 2
-text = "Max adhesion length"
-
-[node name="SpinBox" type="SpinBox" parent="configuration_panel/ScrollContainer/vbox/max_adhesion_length" unique_id=55627889]
-custom_minimum_size = Vector2(125, 0)
-layout_mode = 2
-min_value = -100.0
-max_value = 100000.0
 step = 0.001
 custom_arrow_step = 0.05
 
@@ -889,8 +907,8 @@ autowrap_mode = 0
 [connection signal="value_changed" from="configuration_panel/ScrollContainer/vbox/plate_border_conf/VBoxContainer/plate_border_size/SpinBox" to="configuration_panel/ScrollContainer/vbox/plate_border_conf/VBoxContainer/plate_border_size" method="_on_diameter_changed"]
 [connection signal="value_changed" from="configuration_panel/ScrollContainer/vbox/plate_border_conf/VBoxContainer/plate_border_thickness/SpinBox" to="configuration_panel/ScrollContainer/vbox/plate_border_conf/VBoxContainer/plate_border_thickness" method="_on_thickness_changed"]
 [connection signal="color_changed" from="configuration_panel/ScrollContainer/vbox/plate_border_conf/VBoxContainer/plate_border_color/ColorPickerButton" to="configuration_panel/ScrollContainer/vbox/plate_border_conf/VBoxContainer/plate_border_color" method="_on_color_changed"]
+[connection signal="value_changed" from="configuration_panel/ScrollContainer/vbox/cells_behavior/VBoxContainer/max_adhesion_length/SpinBox" to="configuration_panel/ScrollContainer/vbox/cells_behavior/VBoxContainer/max_adhesion_length" method="_on_value_changed"]
 [connection signal="value_changed" from="configuration_panel/ScrollContainer/vbox/salinity/SpinBox" to="configuration_panel/ScrollContainer/vbox/salinity" method="_on_spin_box_value_changed"]
-[connection signal="value_changed" from="configuration_panel/ScrollContainer/vbox/max_adhesion_length/SpinBox" to="configuration_panel/ScrollContainer/vbox/max_adhesion_length" method="_on_value_changed"]
 [connection signal="item_selected" from="configuration_panel/ScrollContainer/vbox/food_spawn_shape/OptionButton" to="configuration_panel/ScrollContainer/vbox/food_spawn_shape" method="_on_option_selected"]
 [connection signal="value_changed" from="configuration_panel/ScrollContainer/vbox/size_rect_spawner/x" to="configuration_panel/ScrollContainer/vbox/size_rect_spawner" method="_on_x_changed"]
 [connection signal="value_changed" from="configuration_panel/ScrollContainer/vbox/size_rect_spawner/y" to="configuration_panel/ScrollContainer/vbox/size_rect_spawner" method="_on_y_changed"]

@@ -10,7 +10,8 @@ uniform int cell_count = 0; //Current count collision with cells for the loops
 uniform vec2 centers[MAX_CELL_COUNT]; //The midpoint intersections between this cells and the other cells, and use it for position of the slice
 uniform vec2 rot_dirs[MAX_CELL_COUNT];
 uniform float u_size_mult: hint_range(0.0, 1.0);
-
+uniform float ring_radius = 0.18;
+uniform float ring_thickness = 0.03;
 void fragment() {
 	if(cell_count != 0)
 	{
@@ -43,16 +44,19 @@ void fragment() {
 	float o_circle = step(dist, o_radius * o_radius);
 	float i_circle = step(dist, i_radius * i_radius);
 	float n_circle = step(dist, n_radius * n_radius);
-	
+	float ring_outer = step(dist, ring_radius * ring_radius); 
+	float ring_inner = step(dist, (ring_radius - ring_thickness) * (ring_radius - ring_thickness));
 	vec3 darker_color = u_color * 0.5;
 	
 	float outer_ring = o_circle - i_circle;
-	float inner_ring = i_circle - n_circle;
+	float cell_ring   = ring_outer - ring_inner;
+	float inner_ring = i_circle - n_circle - cell_ring; 
 	float nucleus    = n_circle;
 	
 	vec3 color =
 		outer_ring * darker_color +
 		inner_ring * u_color +
+		cell_ring   * darker_color + 
 		nucleus    * darker_color;
 	//(1.15 / (i_radius / 0.45)) is like that because: 1.15 is the scaling so it will look a little bit smaller. 
 	//Why adjust the size with / (i_radius / 0.45) and not / u_size_mult? I use i_radius / 0.45 because i_radius itself is o_radius - 0.05 which isn't affected by u_size_mult directly

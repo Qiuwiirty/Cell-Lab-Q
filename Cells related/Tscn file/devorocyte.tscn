@@ -1,0 +1,24 @@
+[gd_scene format=3 uid="uid://dwjpg3vw0amtl"]
+
+[ext_resource type="PackedScene" uid="uid://cymj82ljpiu70" path="res://Cells related/Tscn file/base_cell.tscn" id="1_jxssv"]
+[ext_resource type="Script" uid="uid://c47pbauujput4" path="res://Cells related/Cell script/devorocyte.gd" id="2_v5kbr"]
+[ext_resource type="Shader" uid="uid://8pdb0f8pbpmo" path="res://Shaders/devorocyte.gdshader" id="3_v5kbr"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_p1ciq"]
+shader = ExtResource("3_v5kbr")
+shader_parameter/cell_color = Color(0.5019608, 0.5019608, 0.5019608, 1)
+shader_parameter/cell_radius = 1.0000000475
+
+[sub_resource type="QuadMesh" id="QuadMesh_o8217"]
+size = Vector2(40, 40)
+
+[node name="Devorocyte" unique_id=82719589 instance=ExtResource("1_jxssv")]
+script = ExtResource("2_v5kbr")
+
+[node name="VisibleOnScreenNotifier2D" parent="." index="1" unique_id=1735079836]
+rect = Rect2(-20, -20, 40, 40)
+
+[node name="spikes" type="MeshInstance2D" parent="." index="3" unique_id=1342662366]
+z_index = -1
+material = SubResource("ShaderMaterial_p1ciq")
+mesh = SubResource("QuadMesh_o8217")

@@ -1,4 +1,5 @@
 extends Node
+#NOTICE: when adding new properties, remember to always edit SubsConf!
 enum ToolSelector
 {
 	CELL_SYNTHESIZER, #Fancy name, basically adding cell
@@ -25,7 +26,10 @@ enum CellType
 	PHOTOCYTE,
 	LUMINOCYTE,
 	PHAGOCYTE,
-	FLAGELLOCYTE
+	FLAGELLOCYTE,
+	DEVOROCYTE,
+	LIPOCYTE,
+	GLUEOCYTE
 }
 signal UI_ready
 const max_modes_count := 40
@@ -42,7 +46,7 @@ var math_lighting := Vector4(5.58, 1.025, 2.375, 0.14)
 var use_math_lightning := true
 var nonmath_use_only_alpha := false #Use alpha or not for brightness of non-mathematical lighting (If false, it still use alpha, just that r, g, & b would also be used)
 var custom_temperature := 1.0
-var max_adhesion_length := 40
+var max_adhesion_length := 40.
 var nitrates := 100.0 #0.0-100.0
 var plate_age := 0.0 #h
 var light_feed_cost_luminocyte := false #Basically, if true, feeding on photocytes will cost mass for the Luminocyte
@@ -60,6 +64,7 @@ var radii_spawn_size := 500.0
 var nutrient_rate := 5. #0.0 - 15
 var nutrient_chunk_size := 1.2 #0.0 - 1.2
 var show_food_spawn_marker := true
+
 ##There are two options:
 #True: this means the game use math and shader to calculate and create light which could be faster and can quickly change
 #False: use image instead, which can create many unique stuff and probably more interesting plate
@@ -96,6 +101,11 @@ func get_script_for_type(type: CellType) -> GDScript:
 		CellType.BASE_CELL: return BaseCell
 		CellType.PHOTOCYTE: return Photocyte
 		CellType.LUMINOCYTE: return Luminocyte
+		CellType.PHAGOCYTE: return Phagocyte
+		CellType.FLAGELLOCYTE: return Flagellocyte
+		CellType.DEVOROCYTE: return Devorocyte
+		CellType.LIPOCYTE: return Lipocyte
+		CellType.GLUEOCYTE: return Glueocyte
 		_: return BaseCell
 func get_cell_type(cell: BaseCell) -> CellType:
 	if cell is Photocyte:
@@ -106,7 +116,31 @@ func get_cell_type(cell: BaseCell) -> CellType:
 		return CellType.PHAGOCYTE
 	elif cell is Flagellocyte:
 		return CellType.FLAGELLOCYTE
+	elif cell is Devorocyte:
+		return CellType.DEVOROCYTE
+	elif cell is Lipocyte:
+		return CellType.LIPOCYTE
+	elif cell is Glueocyte:
+		return CellType.GLUEOCYTE
 	return CellType.BASE_CELL
+	#This doesn't work..
+	#match cell:
+		#Photocyte:
+			#return CellType.PHOTOCYTE
+		#Luminocyte:
+			#return CellType.LUMINOCYTE
+		#Phagocyte:
+			#return CellType.PHAGOCYTE
+		#Flagellocyte:
+			#return CellType.FLAGELLOCYTE
+		#Devorocyte:
+			#return CellType.DEVOROCYTE
+		#Lipocyte:
+			#return CellType.LIPOCYTE
+		#Glueocyte:
+			#return CellType.GLUEOCYTE
+		#_:
+			#return CellType.BASE_CELL
 func get_instance_cell(cell_type: CellType):
 	match cell_type:
 		CellType.BASE_CELL:
@@ -119,6 +153,12 @@ func get_instance_cell(cell_type: CellType):
 			return load("uid://byt4u4bomwhbk")
 		CellType.FLAGELLOCYTE:
 			return load("uid://df45adrwx1bsm")
+		CellType.DEVOROCYTE:
+			return load("uid://dwjpg3vw0amtl")
+		CellType.LIPOCYTE:
+			return load("uid://jo0e0p6p8q8l")
+		CellType.GLUEOCYTE:
+			return load("uid://d3x0cbqjr0c6n")
 		_:
 			print("Unknown cell type")
 			return load("uid://cymj82ljpiu70") #Load Base cell

@@ -1,0 +1,22 @@
+[gd_scene format=3 uid="uid://bbjukyt7bpctw"]
+
+[ext_resource type="PackedScene" uid="uid://cymj82ljpiu70" path="res://Cells related/Tscn file/base_cell.tscn" id="1_hhc4d"]
+[ext_resource type="Script" uid="uid://bofugrfjctah3" path="res://Cells related/Cell script/keratinocyte.gd" id="2_0skdr"]
+[ext_resource type="Shader" uid="uid://phpfx5c73660" path="res://Shaders/render_quad_keratinocyte.gdshader" id="3_n8lnh"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_lx0sx"]
+shader = ExtResource("3_n8lnh")
+shader_parameter/u_color = Vector3(1, 1, 1)
+shader_parameter/u_use_decoration = 0.0
+shader_parameter/cell_count = 0
+shader_parameter/centers = PackedVector2Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+shader_parameter/rot_dirs = PackedVector2Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+shader_parameter/u_size_mult = 1.0
+shader_parameter/ring_radius = 0.4
+shader_parameter/ring_thickness = 0.05
+
+[node name="Kerantinocyte" unique_id=82719589 instance=ExtResource("1_hhc4d")]
+script = ExtResource("2_0skdr")
+
+[node name="render_quad" parent="." index="3" unique_id=676684849]
+material = SubResource("ShaderMaterial_lx0sx")

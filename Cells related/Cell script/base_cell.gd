@@ -7,8 +7,9 @@ const FOOD = preload("uid://bcp4xdxc828fp")
 var colliding: Array[Node2D]
 
 var radius = 15.0
-@export var mass = 2.88
+@export var mass = 2.88 #Other name is nutrient. ng
 @export var velocity = Vector2.ZERO
+@export var angular_velocity = 0.0
 @export var energy_loss_coefficient = 1 #Related to metabolism
 @export var adhesion: Array[BaseCell]
 @export var nitrogen_reserve := 100.
@@ -37,7 +38,9 @@ const FIXED_STEP := 1.0 / 60.0
 @export var current_mode: int = 0 #start from 0.
 
 var is_debugged = false
-
+#If neighboured with Kerantinocyte, it should be protected
+var protected_devorocyte = false 
+var protected_injury = false
 #This a setting contain configuration
 var conf := []
 func _ready() -> void:
@@ -49,6 +52,7 @@ func _ready() -> void:
 		dna = DNA.new()
 		mode = get_mode(dna)
 		mode.cell_type = Game.get_cell_type(self)
+	mode.set_up_custom_properties() #If there aren't any custom properties when there supposed to be, then set up
 	if is_debugged:
 		Game.UI.get_node("debug_cell").assign_cell(self)
 	#current_color = mode.color
@@ -92,6 +96,8 @@ func simulate_step(delta: float) -> void:
 	if mass < 0.90:
 		die()
 func _unhandled_input(event):
+	if !get_parent() is Plate:
+		return
 	match get_parent().tool_mode:
 		Game.ToolSelector.OPTICAL_TWEEZERS:
 			if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
@@ -104,6 +110,7 @@ func _unhandled_input(event):
 			if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and mouse_over and event.is_pressed():
 				current_color = Color(1, 0, 1)
 				mass = 3.6
+				age = 0.
 				play_split_sound()
 				#This to prevent to spawn food when boosting on cell (Since cell boost both spawn food if on empty space and boosting cell)
 				get_viewport().set_input_as_handled()
@@ -269,13 +276,15 @@ func _on_mouse_exited() -> void:
 func apply_motion(delta):
 	velocity *= pow(0.9, delta * 60.0)
 	global_position += velocity * delta
+	angular_velocity *= pow(0.9, delta * 60.0)  # same drag as linear
+	rotation += angular_velocity * delta
 func apply_collision_forces(delta):
 	if Game.use_plate_border: #Collision with plate's border 
 		if global_position.length() > (Game.plate_diameter / 2) - radius - Game.plate_thickness:
 			global_position = global_position.normalized() * ((Game.plate_diameter / 2) - radius - Game.plate_thickness)
 	for other in colliding:
 		if other is BaseCell:
-			if !adhesion.has(other.get_parent() as BaseCell):
+			if !adhesion.has(other as BaseCell): #disable collision if adhered
 				var dir = global_position - other.global_position
 				var dist = dir.length()
 
@@ -406,7 +415,10 @@ func apply_adhesion_force(damping: float = 0.3):
 		if neighbor.mode == null:
 			index += 1
 			continue
-		var rest_length = (radius + neighbor.radius) * 0.6667 #if cell A's radius 15 and B 15, then rest length 20 would look fine. basically this is an adjusted version
+		if get_instance_id() >= neighbor.get_instance_id():
+			index += 1
+			continue
+		var rest_length = (radius + neighbor.radius) * 0.667 #if cell A's radius 15 and B 15, then rest length 20 would look fine. basically this is an adjusted version
 		var r = position - neighbor.position
 		var distance = r.length()
 		if distance == 0:
@@ -429,16 +441,19 @@ func apply_adhesion_force(damping: float = 0.3):
 
 		velocity -= force
 		neighbor.velocity += force
-		
-		#rotational correction
-		#cross product (2D scalar) tells us how far off-axis the neighbor is
-		var to_neighbor = -dir  #direction FROM self TO neighbor
+		#rotational correction is still quite.. wrong..
+		var to_neighbor = -dir
 		var facing = Vector2.RIGHT.rotated(rotation)
-		var cross = facing.cross(to_neighbor)  #positive = neighbor is to our left
+		var cross = facing.cross(to_neighbor)
+		var rot_stiffness = stiffness * 0.02
+		var angular_damping = 0.3
 		
-		var rot_stiffness = stiffness * 0.002  #scale down, rotation is sensitive
-		rotation += cross * rot_stiffness
-		neighbor.rotation -= cross * rot_stiffness  #neighbor rotates opposite
+		var torque = cross * rot_stiffness
+		var rel_angular_vel = angular_velocity - neighbor.angular_velocity
+		torque -= angular_damping * rel_angular_vel
+
+		angular_velocity += torque
+		neighbor.angular_velocity -= torque
 		index += 1
 #Make adhesion mutual or symmetric so there's no weirdness
 func make_adhesion_mutual():
@@ -551,7 +566,7 @@ func split() -> void:
 				cell.adhesion.append(child2)
 	get_parent().add_child.call_deferred(child1)
 	get_parent().add_child.call_deferred(child2)
-	die()
+	die(false)
 	#for cell in adhesion:
 		#if not is_instance_valid(cell):
 			#continue
@@ -562,3 +577,11 @@ func split() -> void:
 		#if mode.child1_kept_adhesion:
 			#child1.adhesion.append(cell)
 			#cell.adhesion.append(child1)
+func update_protected() -> void:
+	for cell in adhesion:
+		if cell is Keratinocyte:
+			protected_devorocyte = true
+			protected_injury = true
+			return
+	protected_devorocyte = false
+	protected_devorocyte = false
