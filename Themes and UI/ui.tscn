@@ -292,6 +292,16 @@ func _on_nutrient_chunk_size_changed(value: float) -> void:
 	Game.nutrient_chunk_size = value
 "
 
+[sub_resource type="GDScript" id="GDScript_7e4s3"]
+resource_name = "gravity"
+script/source = "extends HBoxContainer
+func _ready() -> void:
+	$SpinBox.value = Game.gravity
+
+func _on_gravity_changed(value: float) -> void:
+	Game.gravity = value
+"
+
 [sub_resource type="GDScript" id="GDScript_6s452"]
 resource_name = "show_food_spawn_marker"
 script/source = "extends CheckBox
@@ -449,7 +459,6 @@ visible = false
 visible = false
 
 [node name="configuration_panel" type="PanelContainer" parent="." unique_id=1636530376]
-visible = false
 material = SubResource("ShaderMaterial_i6rmi")
 anchors_preset = 15
 anchor_right = 1.0
@@ -862,6 +871,20 @@ max_value = 1.2
 step = 0.001
 custom_arrow_step = 0.05
 
+[node name="gravity" type="HBoxContainer" parent="configuration_panel/ScrollContainer/vbox" unique_id=2093306881]
+layout_mode = 2
+script = SubResource("GDScript_7e4s3")
+
+[node name="Label" type="Label" parent="configuration_panel/ScrollContainer/vbox/gravity" unique_id=1909408251]
+layout_mode = 2
+text = "Gravity "
+
+[node name="SpinBox" type="SpinBox" parent="configuration_panel/ScrollContainer/vbox/gravity" unique_id=1380229124]
+layout_mode = 2
+max_value = 1.2
+step = 0.001
+custom_arrow_step = 0.05
+
 [node name="show_food_spawn_marker" type="CheckBox" parent="configuration_panel/ScrollContainer/vbox" unique_id=46548272]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
@@ -915,4 +938,5 @@ autowrap_mode = 0
 [connection signal="value_changed" from="configuration_panel/ScrollContainer/vbox/size_circle_spawner/radii" to="configuration_panel/ScrollContainer/vbox/size_circle_spawner" method="_on_radii_value_changed"]
 [connection signal="value_changed" from="configuration_panel/ScrollContainer/vbox/nutrient_rate/SpinBox" to="configuration_panel/ScrollContainer/vbox/nutrient_rate" method="_on_spin_box_value_changed"]
 [connection signal="value_changed" from="configuration_panel/ScrollContainer/vbox/nutrient_chunk_size/SpinBox" to="configuration_panel/ScrollContainer/vbox/nutrient_chunk_size" method="_on_nutrient_chunk_size_changed"]
+[connection signal="value_changed" from="configuration_panel/ScrollContainer/vbox/gravity/SpinBox" to="configuration_panel/ScrollContainer/vbox/gravity" method="_on_gravity_changed"]
 [connection signal="toggled" from="configuration_panel/ScrollContainer/vbox/show_food_spawn_marker" to="configuration_panel/ScrollContainer/vbox/show_food_spawn_marker" method="_on_toggled"]

@@ -20,7 +20,8 @@
 [ext_resource type="PackedScene" uid="uid://b7wyhxq3hyig5" path="res://Cells related/Tscn file/luminocyte.tscn" id="18_qesth"]
 [ext_resource type="PackedScene" uid="uid://byt4u4bomwhbk" path="res://Cells related/Tscn file/phagocyte.tscn" id="19_mglap"]
 [ext_resource type="PackedScene" uid="uid://sy8jnyx6hyux" path="res://Cells related/Tscn file/photocyte.tscn" id="20_c7ddc"]
-[ext_resource type="PackedScene" uid="uid://bbjukyt7bpctw" path="res://keratinocyte.tscn" id="21_qesth"]
+[ext_resource type="PackedScene" uid="uid://bbjukyt7bpctw" path="res://Cells related/Tscn file/keratinocyte.tscn" id="21_qesth"]
+[ext_resource type="PackedScene" uid="uid://bhib6v5tv2d6d" path="res://Cells related/Tscn file/buoyocyte.tscn" id="22_mglap"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_3bkoa"]
 shader = ExtResource("2_nq5sa")
@@ -134,3 +135,6 @@ position = Vector2(99, -232)
 
 [node name="Kerantinocyte" parent="." unique_id=1393794411 instance=ExtResource("21_qesth")]
 position = Vector2(-22, -180)
+
+[node name="buoyocyte" parent="." unique_id=504167590 instance=ExtResource("22_mglap")]
+position = Vector2(41, -88)

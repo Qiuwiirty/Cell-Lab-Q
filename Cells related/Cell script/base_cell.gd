@@ -87,7 +87,7 @@ func simulate_step(delta: float) -> void:
 	apply_adhesion_force()
 	compute_flows()
 	apply_flows()
-	nitrogen_reserve = min(nitrogen_reserve + sqrt(conf[Game.SubsConf.NITRATES]) * delta, 100)
+	nitrogen_reserve = min(nitrogen_reserve + sqrt(conf[Game.SubsConf.NITRATES]) * delta, 100) #this add nitrogen reserve but slowed down at the end
 	if mode:
 		if mass > mode.split_mass and nitrogen_reserve > 20 and Game.cell_count < Game.maximum_cell_count and age > 0.5:
 			split()
@@ -505,11 +505,12 @@ func turn_into_another_cell_type(type: Game.CellType) -> void:
 	new_cell.velocity = velocity
 	new_cell.dna = dna
 	new_cell.current_color = current_color
-	get_parent().add_child.call_deferred(new_cell)
+	new_cell.current_mode = current_mode
 	if Game.UI.get_node_or_null("debug_cell") and is_debugged:
 		new_cell.is_debugged = is_debugged
 		new_cell.get_node("selected_circle").color = Color.CHARTREUSE
 		new_cell.get_node("selected_circle").show()
+	get_parent().add_child.call_deferred(new_cell)
 	die()
 
 func split() -> void:

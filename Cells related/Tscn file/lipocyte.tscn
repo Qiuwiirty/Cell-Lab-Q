@@ -2,19 +2,32 @@
 
 [ext_resource type="PackedScene" uid="uid://cymj82ljpiu70" path="res://Cells related/Tscn file/base_cell.tscn" id="1_d05kf"]
 [ext_resource type="Script" uid="uid://bc083jncc5mfw" path="res://Cells related/Cell script/lipocyte.gd" id="2_ujayo"]
-[ext_resource type="Shader" uid="uid://drrp1tur6rqdu" path="res://Shaders/lipocyte.gdshader" id="3_ujayo"]
+[ext_resource type="Shader" uid="uid://bpauu42udup13" path="res://Shaders/render_quad_cell.gdshader" id="3_o2i0x"]
+[ext_resource type="Shader" uid="uid://drrp1tur6rqdu" path="res://Shaders/lipocyte.gdshader" id="4_shqvv"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_o2i0x"]
-shader = ExtResource("3_ujayo")
+shader = ExtResource("3_o2i0x")
+shader_parameter/u_color = Vector3(1, 1, 1)
+shader_parameter/u_use_decoration = 0.0
+shader_parameter/cell_count = 0
+shader_parameter/centers = PackedVector2Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+shader_parameter/rot_dirs = PackedVector2Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+shader_parameter/u_size_mult = 1.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_f2kuy"]
+shader = ExtResource("4_shqvv")
 shader_parameter/radius = 0.25
 
-[sub_resource type="QuadMesh" id="QuadMesh_shqvv"]
+[sub_resource type="QuadMesh" id="QuadMesh_gur0w"]
 size = Vector2(30, 30)
 
 [node name="Lipocyte" unique_id=82719589 instance=ExtResource("1_d05kf")]
 script = ExtResource("2_ujayo")
 lipids = 13.68
 
-[node name="lipids" type="MeshInstance2D" parent="." index="4" unique_id=100203408]
+[node name="render_quad" parent="." index="3" unique_id=676684849]
 material = SubResource("ShaderMaterial_o2i0x")
-mesh = SubResource("QuadMesh_shqvv")
+
+[node name="lipids" type="MeshInstance2D" parent="." index="4" unique_id=933800443]
+material = SubResource("ShaderMaterial_f2kuy")
+mesh = SubResource("QuadMesh_gur0w")

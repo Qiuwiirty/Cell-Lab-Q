@@ -76,6 +76,7 @@ layout_mode = 2
 theme_override_styles/separator = ExtResource("3_qywba")
 
 [node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer" unique_id=1178051854]
+clip_contents = false
 layout_mode = 2
 size_flags_vertical = 3
 
@@ -178,6 +179,24 @@ step = 0.001
 value = 1.0
 suffix = "x"
 
+[node name="gravity" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1348084070]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer/gravity" unique_id=990010782]
+layout_mode = 2
+text = "Gravity"
+
+[node name="SpinBox" type="SpinBox" parent="VBoxContainer/ScrollContainer/VBoxContainer/gravity" unique_id=1067793023]
+layout_mode = 2
+min_value = -100.0
+step = 0.001
+value = 1.0
+
+[node name="Label2" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=165294448]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Normal range is 0.0-1.0"
+
 [node name="light_feed_cost_luminocyte" type="CheckBox" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=501743959]
 layout_mode = 2
 text = "Light feed cost (Luminocyte)"
@@ -201,5 +220,6 @@ size_flags_vertical = 4
 [connection signal="value_changed" from="VBoxContainer/ScrollContainer/VBoxContainer/nitrates/SpinBox" to="." method="_on_nitrates_changed"]
 [connection signal="value_changed" from="VBoxContainer/ScrollContainer/VBoxContainer/max_adhesion_length/SpinBox" to="." method="_on_max_adhesion_length_changed"]
 [connection signal="value_changed" from="VBoxContainer/ScrollContainer/VBoxContainer/brightness_mult/SpinBox" to="." method="_on_brightness_mult_changed"]
+[connection signal="value_changed" from="VBoxContainer/ScrollContainer/VBoxContainer/gravity/SpinBox" to="." method="_on_gravity_value_changed"]
 [connection signal="toggled" from="VBoxContainer/ScrollContainer/VBoxContainer/light_feed_cost_luminocyte" to="." method="_on_light_feed_cost_luminocyte_toggled"]
 [connection signal="button_up" from="VBoxContainer/ScrollContainer/VBoxContainer/delete" to="." method="_on_delete_button_up"]

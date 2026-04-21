@@ -2,7 +2,7 @@ class_name CellMode
 extends Resource
 #Not all cell properties is here because some of it isn't necessary (Like energy_loss_coefficient, can be easily defined by looking at the cell type)
 @export var cell_type: Game.CellType = Game.CellType.BASE_CELL
-@export var split_mass := 8
+@export var split_mass := 2.55
 @export var split_ratio := 0.5
 @export var split_angle := 0 #degrees
 @export var color: Color
@@ -34,19 +34,25 @@ func set_up_custom_properties():
 	match cell_type:
 		Game.CellType.LUMINOCYTE:
 			custprop.resize(2)
-			if custprop[Luminocyte.LUM_SCALE] == null:
-				custprop[Luminocyte.LUM_SCALE] = 1.0
-			if custprop[Luminocyte.LUM_INTENSITY] == null:
-				custprop[Luminocyte.LUM_INTENSITY] = 1.0
+			if custprop[Luminocyte.props.LUM_SCALE] == null:
+				custprop[Luminocyte.props.LUM_SCALE] = 1.0
+			if custprop[Luminocyte.props.LUM_INTENSITY] == null:
+				custprop[Luminocyte.props.LUM_INTENSITY] = 1.0
 		Game.CellType.FLAGELLOCYTE:
 			custprop.resize(1)
-			if custprop[Flagellocyte.SWIM_FORCE] == null:
-				custprop[Flagellocyte.SWIM_FORCE] = 50
+			if custprop[Flagellocyte.props.SWIM_FORCE] == null:
+				custprop[Flagellocyte.props.SWIM_FORCE] = 50
 		Game.CellType.DEVOROCYTE:
 			custprop.resize(1)
-			if custprop[Devorocyte.MASS_ABSORPTION_RATE] == null:
-				custprop[Devorocyte.MASS_ABSORPTION_RATE] = 7.3
+			if custprop[Devorocyte.props.MASS_ABSORPTION_RATE] == null:
+				custprop[Devorocyte.props.MASS_ABSORPTION_RATE] = 7.3
 		Game.CellType.LIPOCYTE:
 			custprop.resize(1)
-			if custprop[Lipocyte.MAX_LIPIDS] == null:
-				custprop[Lipocyte.MAX_LIPIDS] = 18.
+			if custprop[Lipocyte.props.MAX_LIPIDS] == null:
+				custprop[Lipocyte.props.MAX_LIPIDS] = 18.
+		Game.CellType.BUOYOCYTE:
+			custprop.resize(1)
+			if custprop[Buoyocyte.props.DENSITY] == null:
+				custprop[Buoyocyte.props.DENSITY] = 300
+		_:
+			custprop.clear()

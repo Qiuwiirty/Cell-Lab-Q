@@ -1,6 +1,6 @@
 extends BaseCell
 class_name Luminocyte
-enum {
+enum props {
 	LUM_SCALE,
 	LUM_INTENSITY
 }
@@ -10,27 +10,27 @@ func _ready() -> void:
 	energy_loss_coefficient = 2.5
 func simulate_step(delta: float) -> void:
 	super(delta)
-	$photocyte_detector/collision.scale = Vector2(mode.custprop[LUM_SCALE], mode.custprop[LUM_SCALE])
-	$light.scale = Vector2(mode.custprop[LUM_SCALE], mode.custprop[LUM_SCALE])
+	$photocyte_detector/collision.scale = Vector2(mode.custprop[props.LUM_SCALE], mode.custprop[props.LUM_SCALE])
+	$light.scale = Vector2(mode.custprop[props.LUM_SCALE], mode.custprop[props.LUM_SCALE])
 	var warm := Color(1.0, 0.8, 0.5)  #warm glow fallback
 	var t = current_color.v  #HSV value, 0.0 = black, 1.0 = bright
 	var light_color = current_color.lerp(warm, 1.0 - t)
 	$light.material.set_shader_parameter("u_color", light_color)
-	$light.material.set_shader_parameter("intensity", mode.custprop[LUM_INTENSITY])
+	$light.material.set_shader_parameter("intensity", mode.custprop[props.LUM_INTENSITY])
 	var i = 0
 	for photocyte in photocytes_in_light:
 		if !is_instance_valid(photocyte):
 			photocytes_in_light.remove_at(i)
 			continue
-		var distance_mod = (128 * mode.custprop[LUM_SCALE]) / global_position.distance_to(photocyte.global_position)
-		var result = distance_mod * delta * mode.custprop[LUM_INTENSITY] / 5 
+		var distance_mod = (128 * mode.custprop[props.LUM_SCALE]) / global_position.distance_to(photocyte.global_position)
+		var result = distance_mod * delta * mode.custprop[props.LUM_INTENSITY] / 5 
 		photocyte.mass = min(photocyte.mass + result, 3.6)
 		if conf[Game.SubsConf.LIGHT_FEED_COST_LUMINOCYTE] and not mode.disable_metabolism:
 			mass -= result
 		i += 1
 		
 func metabolism(delta, modifier := 1.0):
-	super(delta, modifier + (mode.custprop[LUM_INTENSITY] + mode.custprop[LUM_SCALE]) / 2.0)
+	super(delta, modifier + (mode.custprop[props.LUM_INTENSITY] + mode.custprop[props.LUM_SCALE]) / 2.0)
 	
 func _on_photocyte_detector_area_entered(body: Node2D) -> void:
 	if body is Photocyte:

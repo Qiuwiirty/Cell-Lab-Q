@@ -26,6 +26,9 @@ color = Color(0.25, 0.25, 0.25, 1)
 grow_begin = 0.0
 grow_end = 0.0
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1nivx"]
+bg_color = Color(0, 0.2833333, 1, 1)
+
 [node name="debug_cell" type="PanelContainer" unique_id=965499745]
 anchors_preset = -1
 anchor_left = 0.4
@@ -242,22 +245,6 @@ text = "Cell Type"
 [node name="OptionButton" type="OptionButton" parent="VBoxContainer/ScrollContainer/VBoxContainer/cell_type" unique_id=834757912]
 layout_mode = 2
 size_flags_horizontal = 3
-selected = 0
-item_count = 7
-popup/item_0/text = "Base Cell"
-popup/item_0/id = 0
-popup/item_1/text = "Photocyte"
-popup/item_1/id = 1
-popup/item_2/text = "Luminocyte"
-popup/item_2/id = 2
-popup/item_3/text = "Phagocyte"
-popup/item_3/id = 3
-popup/item_4/text = "Flagellocyte"
-popup/item_4/id = 4
-popup/item_5/text = "Devorocyte"
-popup/item_5/id = 5
-popup/item_6/text = "Lipocyte"
-popup/item_6/id = 6
 
 [node name="Label4" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=297703864]
 layout_mode = 2
@@ -386,6 +373,26 @@ step = 0.001
 value = 0.010000000000005116
 custom_arrow_step = 0.1
 
+[node name="labelcustprop" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1371411356]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Custom properties"
+
+[node name="custprops" type="VBoxContainer" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1549590473]
+layout_mode = 2
+
+[node name="make_dna_unique" type="Button" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=918484639]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_1nivx")
+text = "Make DNA unique"
+
+[node name="dna_unique_info" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1582007125]
+custom_minimum_size = Vector2(1, 1)
+layout_mode = 2
+theme_override_font_sizes/font_size = 10
+text = "This will make the DNA unique (not shared anymore) only to this cell. This is useful when you want to edit the DNA without impacting the rest of cells that share the same DNA. "
+autowrap_mode = 3
+
 [node name="Control" type="Control" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=923736609]
 layout_mode = 2
 
@@ -407,3 +414,4 @@ layout_mode = 2
 [connection signal="toggled" from="VBoxContainer/ScrollContainer/VBoxContainer/make_adhesion" to="." method="_on_make_adhesion_toggled"]
 [connection signal="value_changed" from="VBoxContainer/ScrollContainer/VBoxContainer/adhesion_stiffness/SpinBox" to="." method="_on_adhesion_stiffness_changed"]
 [connection signal="value_changed" from="VBoxContainer/ScrollContainer/VBoxContainer/flow_rate/SpinBox" to="." method="_on_flow_rate_changed"]
+[connection signal="button_up" from="VBoxContainer/ScrollContainer/VBoxContainer/make_dna_unique" to="." method="_on_make_dna_unique_button_up"]

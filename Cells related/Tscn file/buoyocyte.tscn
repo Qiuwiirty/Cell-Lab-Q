@@ -1,0 +1,44 @@
+[gd_scene format=3 uid="uid://bhib6v5tv2d6d"]
+
+[ext_resource type="PackedScene" uid="uid://cymj82ljpiu70" path="res://Cells related/Tscn file/base_cell.tscn" id="1_hp05g"]
+[ext_resource type="Script" uid="uid://cshbahct0fv3s" path="res://Cells related/Cell script/buoyocyte.gd" id="2_e3af3"]
+[ext_resource type="Shader" uid="uid://piejmscd1kp7" path="res://render_quad_buoy.gdshader" id="2_rjtny"]
+[ext_resource type="Shader" uid="uid://tx7pnebtkn6h" path="res://Shaders/buoyocyte.gdshader" id="3_e3af3"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_6jnwi"]
+shader = ExtResource("2_rjtny")
+shader_parameter/u_color = Vector3(1, 1, 1)
+shader_parameter/u_use_decoration = 0.0
+shader_parameter/cell_count = 0
+shader_parameter/centers = PackedVector2Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+shader_parameter/rot_dirs = PackedVector2Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+shader_parameter/u_size_mult = 1.0
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_eyoo2"]
+noise_type = 2
+frequency = 0.0299
+fractal_type = 0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_ux668"]
+noise = SubResource("FastNoiseLite_eyoo2")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_mdnhu"]
+shader = ExtResource("3_e3af3")
+shader_parameter/tex1 = SubResource("NoiseTexture2D_ux668")
+shader_parameter/angle1 = 1.571
+shader_parameter/angle2 = 0.0
+shader_parameter/color = Color(1, 1, 1, 1)
+
+[sub_resource type="QuadMesh" id="QuadMesh_tjw30"]
+size = Vector2(30, 30)
+
+[node name="buoyocyte" unique_id=82719589 instance=ExtResource("1_hp05g")]
+script = ExtResource("2_e3af3")
+
+[node name="render_quad" parent="." index="3" unique_id=676684849]
+material = SubResource("ShaderMaterial_6jnwi")
+
+[node name="buoy_quad" type="MeshInstance2D" parent="." index="4" unique_id=482155463]
+material = SubResource("ShaderMaterial_mdnhu")
+rotation = 1.5707964
+mesh = SubResource("QuadMesh_tjw30")

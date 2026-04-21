@@ -29,7 +29,10 @@ enum CellType
 	FLAGELLOCYTE,
 	DEVOROCYTE,
 	LIPOCYTE,
-	GLUEOCYTE
+	GLUEOCYTE,
+	KERATINOCYTE,
+	NITROCYTE,
+	BUOYOCYTE
 }
 signal UI_ready
 const max_modes_count := 40
@@ -65,6 +68,7 @@ var nutrient_rate := 5. #0.0 - 15
 var nutrient_chunk_size := 1.2 #0.0 - 1.2
 var show_food_spawn_marker := true
 
+var gravity := 1.0 #0.0 - 1.0
 ##There are two options:
 #True: this means the game use math and shader to calculate and create light which could be faster and can quickly change
 #False: use image instead, which can create many unique stuff and probably more interesting plate
@@ -106,6 +110,9 @@ func get_script_for_type(type: CellType) -> GDScript:
 		CellType.DEVOROCYTE: return Devorocyte
 		CellType.LIPOCYTE: return Lipocyte
 		CellType.GLUEOCYTE: return Glueocyte
+		CellType.KERATINOCYTE: return Keratinocyte
+		CellType.NITROCYTE: return Nitrocyte
+		CellType.BUOYOCYTE: return Buoyocyte
 		_: return BaseCell
 func get_cell_type(cell: BaseCell) -> CellType:
 	if cell is Photocyte:
@@ -122,6 +129,12 @@ func get_cell_type(cell: BaseCell) -> CellType:
 		return CellType.LIPOCYTE
 	elif cell is Glueocyte:
 		return CellType.GLUEOCYTE
+	elif cell is Keratinocyte:
+		return CellType.KERATINOCYTE
+	elif cell is Nitrocyte:
+		return CellType.NITROCYTE
+	elif cell is Buoyocyte:
+		return CellType.BUOYOCYTE
 	return CellType.BASE_CELL
 	#This doesn't work..
 	#match cell:
@@ -159,6 +172,12 @@ func get_instance_cell(cell_type: CellType):
 			return load("uid://jo0e0p6p8q8l")
 		CellType.GLUEOCYTE:
 			return load("uid://d3x0cbqjr0c6n")
+		CellType.KERATINOCYTE:
+			return load("uid://bbjukyt7bpctw")
+		CellType.NITROCYTE:
+			return load("uid://ks1w0m5l5a3d")
+		CellType.BUOYOCYTE:
+			return load("uid://bhib6v5tv2d6d")
 		_:
 			print("Unknown cell type")
 			return load("uid://cymj82ljpiu70") #Load Base cell
@@ -202,15 +221,17 @@ enum SubsConf #Substrate configuration (it's shorted so i don't need to type muc
 	NITRATES,
 	MAX_ADHESION_LENGTH,
 	BRIGHTNESS_MULT,
-	LIGHT_FEED_COST_LUMINOCYTE
+	LIGHT_FEED_COST_LUMINOCYTE,
+	GRAVITY
 }
 func get_global_conf() -> Array:
 	var conf := []
 	###WARNING: NEED CHANGE THIS NUMBER EVERYTIME NEW CONFIGURATION CAME UP
-	conf.resize(5)
+	conf.resize(6)
 	conf[SubsConf.SALINITY] = salinity
 	conf[SubsConf.NITRATES] = nitrates
 	conf[SubsConf.MAX_ADHESION_LENGTH] = max_adhesion_length
 	conf[SubsConf.BRIGHTNESS_MULT] = brightness_mult
 	conf[SubsConf.LIGHT_FEED_COST_LUMINOCYTE] = light_feed_cost_luminocyte
+	conf[SubsConf.GRAVITY] = gravity
 	return conf

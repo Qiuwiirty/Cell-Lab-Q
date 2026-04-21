@@ -110,3 +110,9 @@ func _on_light_feed_cost_luminocyte_toggled(toggled_on: bool) -> void:
 
 func _on_delete_button_up() -> void:
 	$are_you_sure_todelete.open()
+
+
+func _on_gravity_value_changed(value: float) -> void:
+	if zone:
+		zone.gravity_mult = value
+		zone.update_conf()

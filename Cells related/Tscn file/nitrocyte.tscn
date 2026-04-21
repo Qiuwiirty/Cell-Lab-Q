@@ -2,6 +2,22 @@
 
 [ext_resource type="PackedScene" uid="uid://cymj82ljpiu70" path="res://Cells related/Tscn file/base_cell.tscn" id="1_tdxlp"]
 [ext_resource type="Script" uid="uid://wbxxjlwov0kc" path="res://Cells related/Cell script/nitrocyte.gd" id="2_4knbu"]
+[ext_resource type="Shader" uid="uid://l412v2eu27kg" path="res://Shaders/nitrocyte.gdshader" id="3_opkg1"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_qe82e"]
+shader = ExtResource("3_opkg1")
+shader_parameter/N = 5.00000019
+shader_parameter/MAX_IT = 9
+shader_parameter/d_scale = 0.800000038
+shader_parameter/color = Color(0.5019608, 0.5019608, 0.5019608, 1)
+
+[sub_resource type="QuadMesh" id="QuadMesh_bp3ns"]
+size = Vector2(44, 44)
 
 [node name="Nitrocyte" unique_id=82719589 instance=ExtResource("1_tdxlp")]
 script = ExtResource("2_4knbu")
+
+[node name="fractal_quad" type="MeshInstance2D" parent="." index="4" unique_id=771595481]
+z_as_relative = false
+material = SubResource("ShaderMaterial_qe82e")
+mesh = SubResource("QuadMesh_bp3ns")

@@ -6,7 +6,7 @@ class_name Zone
 @export var max_adhesion_length := 40.0
 @export var brightness_mult := 1.0
 @export var light_feed_cost_luminocyte := false
-
+@export var gravity_mult := 1.0
 var mouse_over = false
 var cells_inside: Array[BaseCell] = []
 func _unhandled_input(event: InputEvent) -> void:
@@ -28,11 +28,12 @@ func _on_area_exited(area: Area2D) -> void:
 		area.conf = Game.get_global_conf()
 func inject_conf(cell:BaseCell) -> void:
 	var conf := []
-	conf.resize(5)
+	conf.resize(6)
 	conf[Game.SubsConf.SALINITY] = salinity
 	conf[Game.SubsConf.NITRATES] = nitrates
 	conf[Game.SubsConf.MAX_ADHESION_LENGTH] = max_adhesion_length
 	conf[Game.SubsConf.LIGHT_FEED_COST_LUMINOCYTE] = light_feed_cost_luminocyte
+	conf[Game.SubsConf.GRAVITY] = gravity_mult
 	cell.conf = conf
 func update_conf():
 	if not cells_inside.is_empty():

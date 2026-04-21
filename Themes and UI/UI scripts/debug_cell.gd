@@ -1,14 +1,17 @@
 extends PanelContainer
+const spinbox_container_UI = preload("uid://cpdpub4j2wjp2")
 ###NOTE: THIS NODE AND SCRIPT IS INTENDED USING INSIDE 'ui'. MAY BREAK IF PLACED INCORRECTLY
 @onready var plate = get_parent().get_parent()
 ###Animation used is easing scale ( I think that's the name? :P )
 const ANIM_DURATION = 0.1
-
+@onready var custprops = $VBoxContainer/ScrollContainer/VBoxContainer/custprops
 var _dragging := false
 var _drag_offset := Vector2.ZERO
 
 var cell: BaseCell
 var mode: CellMode
+func _ready() -> void:
+	create_cell_type_items()
 func open():
 	show()
 	scale = Vector2(0.8, 0.8)
@@ -95,9 +98,12 @@ func _on_disable_metabolism_toggled(toggled_on: bool) -> void:
 
 func _on_cell_type_selected(index: int) -> void:
 	if mode:
+		for other in get_tree().get_nodes_in_group("cells"):
+			if other is BaseCell:
+				if other.dna == cell.dna:
+					if other.mode.id == mode.id:
+						other.turn_into_another_cell_type(index)
 		mode.cell_type = index as Game.CellType
-		cell.turn_into_another_cell_type(index)
-
 func _on_color_changed(color: Color) -> void:
 	if mode:
 		mode.color = color
@@ -156,3 +162,30 @@ func update_DNA_values():
 		$VBoxContainer/ScrollContainer/VBoxContainer/make_adhesion.button_pressed = cell.mode.make_adhesion
 		$VBoxContainer/ScrollContainer/VBoxContainer/adhesion_stiffness/SpinBox.value = cell.mode.adhesion_stiffness
 		$VBoxContainer/ScrollContainer/VBoxContainer/flow_rate/SpinBox.value = cell.mode.flow_rate
+		#update_custprop()
+func update_custprop():
+	for child in custprops.get_children(): child.queue_free()
+	if mode.custprop.size() > 0:
+		var i = 0
+		for value in mode.custprop:
+			if value is float:
+				var new_spinbox_container_UI = spinbox_container_UI.instantiate()
+				new_spinbox_container_UI.get_node("Label").text = cell.props.keys()[i]
+				new_spinbox_container_UI.get_node("SpinBox").value = value
+				new_spinbox_container_UI.get_node("SpinBox").value_changed.connect(custprop_spinbox_value_changed.bind(i))
+				custprops.add_child(new_spinbox_container_UI)
+			else:
+				print("value is unknown")
+			i += 1
+func custprop_spinbox_value_changed(value: float, index: int) -> void:
+	mode.custprop[index] = value
+
+func _on_make_dna_unique_button_up() -> void:
+	cell.dna = cell.dna.duplicate()
+	mode = cell.dna.modes[cell.current_mode]
+
+func create_cell_type_items() -> void:
+	var i = 0
+	for cell_type in Game.CellType.keys():
+		$VBoxContainer/ScrollContainer/VBoxContainer/cell_type/OptionButton.add_item(cell_type, i)
+		i += 1
