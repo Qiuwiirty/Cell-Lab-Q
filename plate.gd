@@ -74,6 +74,15 @@ func _unhandled_input(event: InputEvent) -> void:
 						new_obstacle.current_diameter = circle_obstacle_diameter_marker
 					add_child(new_obstacle)
 func _process(delta: float) -> void:
+	if selected_cell:
+		if Game.UI:
+			Game.UI.set_diagnostics(selected_cell.diagnostics())
+		if locked_to_selected:
+			$Camera2D.global_position = selected_cell.global_position
+	else:
+		if Game.UI:
+			#false make it not show any diagnostics
+			Game.UI.set_diagnostics("false")
 	if Game.use_math_lightning:
 		$quad.material.set_shader_parameter("dir", Game.math_lighting)
 	match tool_mode: #Basically decide which marker to show (to show what is being placed)
@@ -116,15 +125,6 @@ func _process(delta: float) -> void:
 		if randf() < get_nutrient_spawn_chance() * FIXED_STEP:
 			spawn_food()
 		accumulator -= FIXED_STEP
-	if selected_cell:
-		if Game.UI:
-			Game.UI.set_diagnostics(selected_cell.diagnostics())
-		if locked_to_selected:
-			$Camera2D.global_position = selected_cell.global_position
-	else:
-		if Game.UI:
-			#false make it not show any diagnostics
-			Game.UI.set_diagnostics("false")
 func _ready() -> void:
 	correct_brightness_plate()
 	set_plate_border_visibility(Game.use_plate_border)
@@ -206,7 +206,7 @@ func spawn_food() -> void:
 			var angle = randf() * TAU
 			var radius = sqrt(randf()) * Game.radii_spawn_size
 			new_food.global_position = Vector2(cos(angle), sin(angle)) * radius
-	new_food.nutrition = Game.nutrient_chunk_size * 12.5
+	new_food.nutrition = Game.nutrient_chunk_size
 	for obstacle in get_tree().get_nodes_in_group("obstacles"):
 		if obstacle_contains(obstacle, new_food.global_position, 10):
 			return

@@ -36,7 +36,10 @@ rect = Rect2(-15, -15, 30, 30)
 stream = ExtResource("3_c72ge")
 panning_strength = 0.6
 
-[node name="render_quad" type="MeshInstance2D" parent="." unique_id=676684849]
+[node name="renders" type="CanvasGroup" parent="." unique_id=183095452]
+modulate = Color(1, 1, 1, 0.9019608)
+
+[node name="render_quad" type="MeshInstance2D" parent="renders" unique_id=676684849]
 material = SubResource("ShaderMaterial_uvg6q")
 mesh = SubResource("QuadMesh_i10ga")
 

@@ -1,0 +1,33 @@
+[gd_scene format=3 uid="uid://lwmroc28tmuy"]
+
+[ext_resource type="PackedScene" uid="uid://byt4u4bomwhbk" path="res://Cells related/Tscn file/phagocyte.tscn" id="1_xuktu"]
+[ext_resource type="Script" uid="uid://io31o3cv5x31" path="res://Cells related/Cell script/pintarocyte.gd" id="2_tk2e2"]
+[ext_resource type="Shader" uid="uid://bpauu42udup13" path="res://Shaders/render_quad_cell.gdshader" id="3_mll8k"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_mll8k"]
+size = Vector2(300, 300)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_eb2cu"]
+shader = ExtResource("3_mll8k")
+shader_parameter/u_color = Vector3(1, 1, 1)
+shader_parameter/u_use_decoration = 0.0
+shader_parameter/cell_count = 0
+shader_parameter/centers = PackedVector2Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+shader_parameter/rot_dirs = PackedVector2Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+shader_parameter/u_size_mult = 1.0
+
+[node name="Pintarocyte" unique_id=1462000660 instance=ExtResource("1_xuktu")]
+script = ExtResource("2_tk2e2")
+
+[node name="sense" type="Area2D" parent="." index="1" unique_id=777711765]
+
+[node name="collision" type="CollisionShape2D" parent="sense" index="0" unique_id=133275564]
+shape = SubResource("RectangleShape2D_mll8k")
+
+[node name="render_quad" parent="." index="4" unique_id=676684849]
+material = SubResource("ShaderMaterial_eb2cu")
+
+[node name="Timer" type="Timer" parent="." index="8" unique_id=1155262207]
+
+[connection signal="area_entered" from="sense" to="." method="_sense_area_entered"]
+[connection signal="area_exited" from="sense" to="." method="_sense_area_exited"]

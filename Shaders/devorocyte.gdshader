@@ -1,5 +1,5 @@
 shader_type canvas_item;
-//this code is borrowed from cell lab
+//this code is borrowed from cell lab (create spikes in devorocyte)
 const float scale = 50.0;
 const float N = 19.0;
 const float Nhat = N / (2.0 * PI);

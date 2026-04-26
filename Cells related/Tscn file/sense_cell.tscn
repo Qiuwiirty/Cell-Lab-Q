@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://dp52tlvcqclxw"]
+
+[ext_resource type="PackedScene" uid="uid://bbewpguehphum" path="res://Cells related/Tscn file/signal_producer_cell.tscn" id="1_wtbjv"]
+[ext_resource type="Script" uid="uid://bp1i7md02wnp5" path="res://Cells related/Cell script/sense_cell.gd" id="2_grkgf"]
+
+[node name="SenseCell" unique_id=82719589 instance=ExtResource("1_wtbjv")]
+script = ExtResource("2_grkgf")

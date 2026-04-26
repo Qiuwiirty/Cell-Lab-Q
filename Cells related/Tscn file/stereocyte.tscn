@@ -1,0 +1,35 @@
+[gd_scene format=3 uid="uid://tadwqrypfa1l"]
+
+[ext_resource type="PackedScene" uid="uid://dp52tlvcqclxw" path="res://Cells related/Tscn file/sense_cell.tscn" id="1_8b0nb"]
+[ext_resource type="Shader" uid="uid://bchg1owgxdfsf" path="res://Shaders/stereocyte.gdshader" id="2_6sjw6"]
+[ext_resource type="Script" uid="uid://be55k5nd5826w" path="res://Cells related/Cell script/stereocyte.gd" id="2_a1mjl"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6sjw6"]
+size = Vector2(320, 300)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_a1mjl"]
+shader = ExtResource("2_6sjw6")
+shader_parameter/cell_color = Color(0.47058824, 0.48235294, 0.49411765, 1)
+shader_parameter/cell_radius = 0.70700003032262
+shader_parameter/spike_ratio = 0.4
+
+[sub_resource type="QuadMesh" id="QuadMesh_6lmed"]
+size = Vector2(42, 42)
+
+[node name="Stereocyte" unique_id=82719589 instance=ExtResource("1_8b0nb")]
+script = ExtResource("2_a1mjl")
+
+[node name="detector" type="Area2D" parent="." index="0" unique_id=652005592]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="detector" index="0" unique_id=1588348094]
+shape = SubResource("RectangleShape2D_6sjw6")
+
+[node name="collision" parent="." index="1" unique_id=1988143635]
+visible = false
+
+[node name="stereo" type="MeshInstance2D" parent="renders" parent_id_path=PackedInt32Array(183095452) index="1" unique_id=1461204170]
+material = SubResource("ShaderMaterial_a1mjl")
+mesh = SubResource("QuadMesh_6lmed")
+
+[connection signal="area_entered" from="detector" to="." method="_on_detector_area_entered"]
+[connection signal="area_exited" from="detector" to="." method="_on_detector_area_exited"]

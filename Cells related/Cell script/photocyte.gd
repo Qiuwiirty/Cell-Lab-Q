@@ -2,9 +2,9 @@ extends BaseCell
 class_name Photocyte
 
 func _ready():
-	$render_quad.material = $render_quad.material.duplicate()
-	$render_quad.material.set_shader_parameter("u_use_decoration", 1.0)
-	$render_quad.material.set_shader_parameter("decoration", load("uid://dpuiru35vknq5"))
+	$renders/render_quad.material = $renders/render_quad.material.duplicate()
+	$renders/render_quad.material.set_shader_parameter("u_use_decoration", 1.0)
+	$renders/render_quad.material.set_shader_parameter("decoration", load("uid://dpuiru35vknq5"))
 	super()
 	energy_loss_coefficient = 2
 func _process(delta: float) -> void:

@@ -32,7 +32,11 @@ enum CellType
 	GLUEOCYTE,
 	KERATINOCYTE,
 	NITROCYTE,
-	BUOYOCYTE
+	BUOYOCYTE,
+	SIGNAL_PRODUCER_CELL,
+	SENSE_CELL, #Based on Signal Producer Cell
+	MONOCYTE, #or senseocyte. Based on Sense Cell
+	STEREOCYTE #Based on Sense Cell
 }
 signal UI_ready
 const max_modes_count := 40
@@ -56,7 +60,7 @@ var light_feed_cost_luminocyte := false #Basically, if true, feeding on photocyt
 var infonotice
 
 #Plate border settings
-var use_plate_border := false
+var use_plate_border := true
 var plate_diameter := 1000.
 var plate_color := Color(1.0, 1.0, 1.0)
 var plate_thickness := 20.
@@ -64,7 +68,7 @@ var plate_thickness := 20.
 var food_spawn_shape := Food.SpawnShape.CIRCLE
 var rect_spawn_size := Vector2(1000, 1000)
 var radii_spawn_size := 500.0
-var nutrient_rate := 5. #0.0 - 15
+var nutrient_rate := 5. #0.0 - 1.2
 var nutrient_chunk_size := 1.2 #0.0 - 1.2
 var show_food_spawn_marker := true
 
@@ -135,6 +139,12 @@ func get_cell_type(cell: BaseCell) -> CellType:
 		return CellType.NITROCYTE
 	elif cell is Buoyocyte:
 		return CellType.BUOYOCYTE
+	elif cell is Stereocyte:
+		return CellType.STEREOCYTE
+	elif cell is SenseCell:
+		return CellType.SENSE_CELL
+	elif cell is SignalProducerCell:
+		return CellType.SIGNAL_PRODUCER_CELL
 	return CellType.BASE_CELL
 	#This doesn't work..
 	#match cell:
@@ -178,6 +188,14 @@ func get_instance_cell(cell_type: CellType):
 			return load("uid://ks1w0m5l5a3d")
 		CellType.BUOYOCYTE:
 			return load("uid://bhib6v5tv2d6d")
+		CellType.SIGNAL_PRODUCER_CELL:
+			return load("uid://bbewpguehphum")
+		CellType.SENSE_CELL:
+			return load("uid://dp52tlvcqclxw")
+		CellType.MONOCYTE:
+			return load("uid://udehj2qq6oau")
+		CellType.STEREOCYTE:
+			return load("uid://tadwqrypfa1l")
 		_:
 			print("Unknown cell type")
 			return load("uid://cymj82ljpiu70") #Load Base cell

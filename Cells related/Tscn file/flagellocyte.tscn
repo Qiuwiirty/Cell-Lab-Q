@@ -16,8 +16,8 @@ size = Vector2(40, 40)
 [node name="Flagellocyte" unique_id=82719589 instance=ExtResource("1_annor")]
 script = ExtResource("2_m7grj")
 
-[node name="tail_quad" type="MeshInstance2D" parent="." index="3" unique_id=381448529]
+[node name="tail" type="MeshInstance2D" parent="renders" parent_id_path=PackedInt32Array(183095452) index="1" unique_id=381448529]
 material = SubResource("ShaderMaterial_yejvc")
-position = Vector2(-34, 0)
-rotation = -3.1415927
+position = Vector2(-34.553, 0)
+rotation = 3.1415925
 mesh = SubResource("QuadMesh_hgduh")

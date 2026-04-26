@@ -17,7 +17,7 @@ size = Vector2(44, 44)
 [node name="Nitrocyte" unique_id=82719589 instance=ExtResource("1_tdxlp")]
 script = ExtResource("2_4knbu")
 
-[node name="fractal_quad" type="MeshInstance2D" parent="." index="4" unique_id=771595481]
+[node name="fractal" type="MeshInstance2D" parent="renders" parent_id_path=PackedInt32Array(183095452) index="1" unique_id=771595481]
 z_as_relative = false
 material = SubResource("ShaderMaterial_qe82e")
 mesh = SubResource("QuadMesh_bp3ns")

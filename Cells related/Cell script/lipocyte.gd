@@ -1,6 +1,6 @@
 extends BaseCell
 class_name Lipocyte
-enum props{
+enum Props{
 	MAX_LIPIDS
 }
 @export var lipids := 13.68 #ng. Lipids max is 18.0 but can be modified with editing custom property of the mode
@@ -8,7 +8,7 @@ var delta_lipids = 0.0
 func _ready() -> void:
 	super()
 	energy_loss_coefficient = 0.05
-	$lipids.material = $lipids.material.duplicate()
+	$renders/lipids.material = $renders/lipids.material.duplicate()
 func _unhandled_input(event):
 	super(event)
 	if !get_parent() is Plate:
@@ -16,13 +16,13 @@ func _unhandled_input(event):
 	match get_parent().tool_mode:
 		Game.ToolSelector.CELL_BOOST:
 			if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and mouse_over and event.is_pressed():
-				lipids = mode.custprop[props.MAX_LIPIDS]
+				lipids = gprop(Props.MAX_LIPIDS)
 func correct_appearance(delta, modify_color_radius = true):
 	super(delta, modify_color_radius)
 	#use curve
-	var lipid_ratio = lipids / mode.custprop[props.MAX_LIPIDS]
+	var lipid_ratio = lipids / gprop(Props.MAX_LIPIDS)
 	var lipid_radius = (0.25 + lipid_ratio * 0.20) * radius / 15
-	$lipids.material.set_shader_parameter("radius", lipid_radius)
+	$renders/lipids.material.set_shader_parameter("radius", lipid_radius)
 #Override the metabolism to fit lipocyte
 func metabolism(delta, modifier := 1.0):
 	if mass < 3.6:
@@ -43,14 +43,14 @@ func metabolism(delta, modifier := 1.0):
 		lipids += metabolic * delta * modifier
 	else:
 		mass += metabolic * delta * modifier
-	lipids = minf(mode.custprop[props.MAX_LIPIDS], lipids)
+	lipids = minf(gprop(Props.MAX_LIPIDS), lipids)
 	mass = minf(3.60, mass)
 
 func die(create_food := true) -> void:
 	if create_food:
 		var new_food: Food = FOOD.instantiate()
 		new_food.global_position = global_position
-		new_food.nutrition = mass
+		new_food.nutrition = max(mass / 12, 0.5)
 		new_food.coating = 10. #Coat it
 		get_parent().add_child(new_food)
 	Game.cell_count -= 1
@@ -92,7 +92,7 @@ func compute_flows() -> void:
 					neighbor.delta_mass -= neighbor_mass_give
 					
 					# We receive into lipids first, then mass
-					var lipid_receive = min(flow, mode.custprop[props.MAX_LIPIDS] - lipids)
+					var lipid_receive = min(flow, gprop(Props.MAX_LIPIDS) - lipids)
 					delta_lipids += lipid_receive
 					delta_mass += (flow - lipid_receive)
 				else:
@@ -100,7 +100,7 @@ func compute_flows() -> void:
 					neighbor.delta_mass -= flow
 					
 					# We receive (lipids first if we can store them)
-					var lipid_receive = min(flow, mode.custprop[props.MAX_LIPIDS] - lipids)
+					var lipid_receive = min(flow, gprop(Props.MAX_LIPIDS) - lipids)
 					delta_lipids += lipid_receive
 					delta_mass += (flow - lipid_receive)
 					
@@ -116,7 +116,7 @@ func compute_flows() -> void:
 				
 				# Neighbor receives
 				if neighbor is Lipocyte:
-					var neighbor_lipid_receive = min(flow, neighbor.mode.custprop[props.MAX_LIPIDS] - neighbor.lipids)
+					var neighbor_lipid_receive = min(flow, neighbor.gprop(Props.MAX_LIPIDS) - neighbor.lipids)
 					neighbor.delta_lipids += neighbor_lipid_receive
 					neighbor.delta_mass += (flow - neighbor_lipid_receive)
 				else:
@@ -130,7 +130,7 @@ func apply_flows() -> void:
 	delta_mass = 0.0
 	
 	lipids += delta_lipids
-	lipids = clampf(lipids, 0.0, mode.custprop[props.MAX_LIPIDS])
+	lipids = clampf(lipids, 0.0, gprop(Props.MAX_LIPIDS))
 	delta_lipids = 0.0
 func split() -> void:
 	if !mode:

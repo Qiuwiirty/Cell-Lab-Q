@@ -1,0 +1,23 @@
+[gd_scene format=3 uid="uid://bbewpguehphum"]
+
+[ext_resource type="PackedScene" uid="uid://cymj82ljpiu70" path="res://Cells related/Tscn file/base_cell.tscn" id="1_0304s"]
+[ext_resource type="Script" uid="uid://da0gwjb23x6qj" path="res://Cells related/Cell script/signal_producer_cell.gd" id="2_5imfm"]
+[ext_resource type="Shader" uid="uid://dtrurnbvonq5w" path="res://Shaders/nerve.gdshader" id="3_ljqhj"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_mlmue"]
+shader = ExtResource("3_ljqhj")
+shader_parameter/cell_color = Color(1, 1, 1, 1)
+shader_parameter/cell_radius = 1.4500000656151202
+shader_parameter/tp = 0.0
+shader_parameter/aux = Vector4(0, 0, 0, 0)
+shader_parameter/aux2 = Vector4(0, 0, 0, 0)
+
+[sub_resource type="QuadMesh" id="QuadMesh_pkxqs"]
+size = Vector2(30, 30)
+
+[node name="SignalProducerCell" unique_id=82719589 instance=ExtResource("1_0304s")]
+script = ExtResource("2_5imfm")
+
+[node name="nerve" type="MeshInstance2D" parent="renders" parent_id_path=PackedInt32Array(183095452) index="1" unique_id=953727336]
+material = SubResource("ShaderMaterial_mlmue")
+mesh = SubResource("QuadMesh_pkxqs")

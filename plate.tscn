@@ -9,8 +9,7 @@
 [ext_resource type="AudioStream" uid="uid://c41r6k1d8o0qw" path="res://Sound and Music/place_cell.mp3" id="8_3bkoa"]
 [ext_resource type="AudioStream" uid="uid://bksrijmu5s6d7" path="res://Sound and Music/invalid.mp3" id="8_dhtvl"]
 [ext_resource type="PackedScene" uid="uid://t8q6yh1vds1" path="res://Themes and UI/ui.tscn" id="9_6v47p"]
-[ext_resource type="PackedScene" uid="uid://bcp4xdxc828fp" path="res://Enviroment/food.tscn" id="9_dhtvl"]
-[ext_resource type="Script" uid="uid://dtevq3yr3psre" path="res://Misc/food_spawner_marker.gd" id="15_64qxx"]
+[ext_resource type="Script" uid="uid://drwbak1x6dkrb" path="res://Cells related/DNA related/genome_parameter.gd" id="13_tnin1"]
 [ext_resource type="PackedScene" uid="uid://df45adrwx1bsm" path="res://Cells related/Tscn file/flagellocyte.tscn" id="15_d1yvr"]
 [ext_resource type="Script" uid="uid://cvalww7yv6c0i" path="res://addons/basic_shape_creation/basic_polygon2d/basic_polygon2d.gd" id="15_tnin1"]
 [ext_resource type="PackedScene" uid="uid://dwjpg3vw0amtl" path="res://Cells related/Tscn file/devorocyte.tscn" id="16_tnin1"]
@@ -18,10 +17,12 @@
 [ext_resource type="PackedScene" uid="uid://cymj82ljpiu70" path="res://Cells related/Tscn file/base_cell.tscn" id="18_3ufnc"]
 [ext_resource type="PackedScene" uid="uid://d3x0cbqjr0c6n" path="res://Cells related/Tscn file/glueocyte.tscn" id="18_c1pk6"]
 [ext_resource type="PackedScene" uid="uid://b7wyhxq3hyig5" path="res://Cells related/Tscn file/luminocyte.tscn" id="18_qesth"]
-[ext_resource type="PackedScene" uid="uid://byt4u4bomwhbk" path="res://Cells related/Tscn file/phagocyte.tscn" id="19_mglap"]
-[ext_resource type="PackedScene" uid="uid://sy8jnyx6hyux" path="res://Cells related/Tscn file/photocyte.tscn" id="20_c7ddc"]
 [ext_resource type="PackedScene" uid="uid://bbjukyt7bpctw" path="res://Cells related/Tscn file/keratinocyte.tscn" id="21_qesth"]
 [ext_resource type="PackedScene" uid="uid://bhib6v5tv2d6d" path="res://Cells related/Tscn file/buoyocyte.tscn" id="22_mglap"]
+[ext_resource type="PackedScene" uid="uid://udehj2qq6oau" path="res://Cells related/Tscn file/monocyte.tscn" id="23_c7ddc"]
+[ext_resource type="Script" uid="uid://bgr0v1ag1ojls" path="res://Cells related/DNA related/cell_mode.gd" id="24_wyyjd"]
+[ext_resource type="Script" uid="uid://bpnga7boyitwo" path="res://Cells related/DNA related/dna.gd" id="25_ganj6"]
+[ext_resource type="PackedScene" uid="uid://tadwqrypfa1l" path="res://Cells related/Tscn file/stereocyte.tscn" id="26_ganj6"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_3bkoa"]
 shader = ExtResource("2_nq5sa")
@@ -40,6 +41,40 @@ size = Vector2(20, 20)
 [sub_resource type="SphereMesh" id="SphereMesh_64qxx"]
 radius = 10.0
 height = 20.0
+
+[sub_resource type="Resource" id="Resource_wyyjd"]
+script = ExtResource("24_wyyjd")
+cell_type = 6
+split_mass = 8.0
+color = Color(1, 0, 0.016666412, 1)
+metadata/_custom_type_script = "uid://bgr0v1ag1ojls"
+
+[sub_resource type="Resource" id="Resource_ganj6"]
+script = ExtResource("25_ganj6")
+modes = Array[ExtResource("24_wyyjd")]([SubResource("Resource_wyyjd")])
+metadata/_custom_type_script = "uid://bpnga7boyitwo"
+
+[sub_resource type="Resource" id="Resource_e3qrh"]
+script = ExtResource("24_wyyjd")
+cell_type = 13
+split_mass = 8.0
+metadata/_custom_type_script = "uid://bgr0v1ag1ojls"
+
+[sub_resource type="Resource" id="Resource_r27ha"]
+script = ExtResource("25_ganj6")
+modes = Array[ExtResource("24_wyyjd")]([SubResource("Resource_e3qrh")])
+metadata/_custom_type_script = "uid://bpnga7boyitwo"
+
+[sub_resource type="Resource" id="Resource_gf420"]
+script = ExtResource("24_wyyjd")
+cell_type = 14
+split_mass = 8.0
+metadata/_custom_type_script = "uid://bgr0v1ag1ojls"
+
+[sub_resource type="Resource" id="Resource_oekb1"]
+script = ExtResource("25_ganj6")
+modes = Array[ExtResource("24_wyyjd")]([SubResource("Resource_gf420")])
+metadata/_custom_type_script = "uid://bpnga7boyitwo"
 
 [node name="plate" type="Node2D" unique_id=1644472444]
 script = ExtResource("1_g4jty")
@@ -73,21 +108,6 @@ stream = ExtResource("8_dhtvl")
 
 [node name="UI" parent="." unique_id=1839804217 instance=ExtResource("9_6v47p")]
 
-[node name="food" parent="." unique_id=511852752 instance=ExtResource("9_dhtvl")]
-position = Vector2(-94, -187)
-
-[node name="food2" parent="." unique_id=1055725112 instance=ExtResource("9_dhtvl")]
-position = Vector2(-93, -185)
-
-[node name="food3" parent="." unique_id=2146062936 instance=ExtResource("9_dhtvl")]
-position = Vector2(-158, -70)
-
-[node name="food4" parent="." unique_id=1864487905 instance=ExtResource("9_dhtvl")]
-position = Vector2(264, -346)
-
-[node name="food_spawner_marker" type="Node2D" parent="." unique_id=1960328150]
-script = ExtResource("15_64qxx")
-
 [node name="Timer" type="Timer" parent="." unique_id=911107188]
 wait_time = 0.1
 autostart = true
@@ -109,32 +129,38 @@ _created_shape = PackedVector2Array(0, -500, 52.264233, -497.26096, 103.95584, -
 _decomposed_created_shape = Array[PackedVector2Array]([PackedVector2Array(50.173664, -477.3705, 0, -480, -52.264233, -497.26096, 0, -500, 52.264233, -497.26096, 103.95584, -489.07382), PackedVector2Array(-52.264233, -497.26096, 0, -480, -50.173664, -477.3705, -103.95584, -489.07382), PackedVector2Array(99.79761, -469.51086, 50.173664, -477.3705, 103.95584, -489.07382, 154.5085, -475.52826), PackedVector2Array(148.32816, -456.50714, 99.79761, -469.51086, 154.5085, -475.52826, 203.36832, -456.7727), PackedVector2Array(195.23358, -438.5018, 148.32816, -456.50714, 203.36832, -456.7727, 250, -433.0127), PackedVector2Array(-103.95584, -489.07382, -50.173664, -477.3705, -99.79761, -469.51086, -154.5085, -475.52826), PackedVector2Array(-154.5085, -475.52826, -99.79761, -469.51086, -148.32816, -456.50714, -203.36832, -456.7727), PackedVector2Array(-203.36832, -456.7727, -148.32816, -456.50714, -195.23358, -438.5018, -250, -433.0127), PackedVector2Array(240, -415.6922, 195.23358, -438.5018, 250, -433.0127, 293.8926, -404.5085), PackedVector2Array(-250, -433.0127, -195.23358, -438.5018, -240, -415.6922), PackedVector2Array(282.1369, -388.3282, 240, -415.6922, 293.8926, -404.5085, 334.5653, -371.57242), PackedVector2Array(321.1827, -356.70953, 282.1369, -388.3282, 334.5653, -371.57242, 371.57242, -334.5653), PackedVector2Array(356.70953, -321.1827, 321.1827, -356.70953, 371.57242, -334.5653, 404.5085, -293.8926), PackedVector2Array(388.3282, -282.1369, 356.70953, -321.1827, 404.5085, -293.8926, 433.0127, -250), PackedVector2Array(415.6922, -240, 388.3282, -282.1369, 433.0127, -250, 456.7727, -203.36832), PackedVector2Array(438.5018, -195.23358, 415.6922, -240, 456.7727, -203.36832, 475.52826, -154.5085), PackedVector2Array(456.50714, -148.32816, 438.5018, -195.23358, 475.52826, -154.5085, 489.07382, -103.95584), PackedVector2Array(469.51086, -99.79761, 456.50714, -148.32816, 489.07382, -103.95584, 497.26096, -52.264233), PackedVector2Array(477.3705, -50.173664, 469.51086, -99.79761, 497.26096, -52.264233, 500, -3.0616172e-14), PackedVector2Array(480, -2.9391525e-14, 477.3705, -50.173664, 500, -3.0616172e-14, 497.26096, 52.264233), PackedVector2Array(477.3705, 50.173664, 480, -2.9391525e-14, 497.26096, 52.264233, 489.07382, 103.95584), PackedVector2Array(469.51086, 99.79761, 477.3705, 50.173664, 489.07382, 103.95584, 475.52826, 154.5085), PackedVector2Array(456.50714, 148.32816, 469.51086, 99.79761, 475.52826, 154.5085, 456.7727, 203.36832), PackedVector2Array(438.5018, 195.23358, 456.50714, 148.32816, 456.7727, 203.36832, 433.0127, 250), PackedVector2Array(415.6922, 240, 438.5018, 195.23358, 433.0127, 250, 404.5085, 293.8926), PackedVector2Array(388.3282, 282.1369, 415.6922, 240, 404.5085, 293.8926, 371.57242, 334.5653), PackedVector2Array(356.70953, 321.1827, 388.3282, 282.1369, 371.57242, 334.5653, 334.5653, 371.57242), PackedVector2Array(321.1827, 356.70953, 356.70953, 321.1827, 334.5653, 371.57242, 293.8926, 404.5085), PackedVector2Array(282.1369, 388.3282, 321.1827, 356.70953, 293.8926, 404.5085, 250, 433.0127), PackedVector2Array(240, 415.6922, 282.1369, 388.3282, 250, 433.0127, 203.36832, 456.7727), PackedVector2Array(195.23358, 438.5018, 240, 415.6922, 203.36832, 456.7727, 154.5085, 475.52826), PackedVector2Array(148.32816, 456.50714, 195.23358, 438.5018, 154.5085, 475.52826, 103.95584, 489.07382), PackedVector2Array(99.79761, 469.51086, 148.32816, 456.50714, 103.95584, 489.07382, 52.264233, 497.26096), PackedVector2Array(50.173664, 477.3705, 99.79761, 469.51086, 52.264233, 497.26096, 6.1232344e-14, 500), PackedVector2Array(5.878305e-14, 480, 50.173664, 477.3705, 6.1232344e-14, 500, -52.264233, 497.26096), PackedVector2Array(-50.173664, 477.3705, 5.878305e-14, 480, -52.264233, 497.26096, -103.95584, 489.07382), PackedVector2Array(-99.79761, 469.51086, -50.173664, 477.3705, -103.95584, 489.07382, -154.5085, 475.52826), PackedVector2Array(-148.32816, 456.50714, -99.79761, 469.51086, -154.5085, 475.52826, -203.36832, 456.7727), PackedVector2Array(-195.23358, 438.5018, -148.32816, 456.50714, -203.36832, 456.7727, -250, 433.0127), PackedVector2Array(-240, 415.6922, -195.23358, 438.5018, -250, 433.0127, -293.8926, 404.5085), PackedVector2Array(-282.1369, 388.3282, -240, 415.6922, -293.8926, 404.5085, -334.5653, 371.57242), PackedVector2Array(-321.1827, 356.70953, -282.1369, 388.3282, -334.5653, 371.57242, -371.57242, 334.5653), PackedVector2Array(-356.70953, 321.1827, -321.1827, 356.70953, -371.57242, 334.5653, -404.5085, 293.8926), PackedVector2Array(-388.3282, 282.1369, -356.70953, 321.1827, -404.5085, 293.8926, -433.0127, 250), PackedVector2Array(-415.6922, 240, -388.3282, 282.1369, -433.0127, 250, -456.7727, 203.36832), PackedVector2Array(-438.5018, 195.23358, -415.6922, 240, -456.7727, 203.36832, -475.52826, 154.5085), PackedVector2Array(-456.50714, 148.32816, -438.5018, 195.23358, -475.52826, 154.5085, -489.07382, 103.95584), PackedVector2Array(-469.51086, 99.79761, -456.50714, 148.32816, -489.07382, 103.95584, -497.26096, 52.264233), PackedVector2Array(-477.3705, 50.173664, -469.51086, 99.79761, -497.26096, 52.264233, -500, 9.1848506e-14), PackedVector2Array(-480, 8.8174564e-14, -477.3705, 50.173664, -500, 9.1848506e-14, -497.26096, -52.264233), PackedVector2Array(-477.3705, -50.173664, -480, 8.8174564e-14, -497.26096, -52.264233, -489.07382, -103.95584), PackedVector2Array(-469.51086, -99.79761, -477.3705, -50.173664, -489.07382, -103.95584, -475.52826, -154.5085), PackedVector2Array(-456.50714, -148.32816, -469.51086, -99.79761, -475.52826, -154.5085, -456.7727, -203.36832), PackedVector2Array(-438.5018, -195.23358, -456.50714, -148.32816, -456.7727, -203.36832, -433.0127, -250), PackedVector2Array(-415.6922, -240, -438.5018, -195.23358, -433.0127, -250, -404.5085, -293.8926), PackedVector2Array(-388.3282, -282.1369, -415.6922, -240, -404.5085, -293.8926, -371.57242, -334.5653), PackedVector2Array(-356.70953, -321.1827, -388.3282, -282.1369, -371.57242, -334.5653, -334.5653, -371.57242), PackedVector2Array(-321.1827, -356.70953, -356.70953, -321.1827, -334.5653, -371.57242, -293.8926, -404.5085), PackedVector2Array(-282.1369, -388.3282, -321.1827, -356.70953, -293.8926, -404.5085, -250, -433.0127), PackedVector2Array(-282.1369, -388.3282, -250, -433.0127, -240, -415.6922)])
 metadata/_custom_type_script = "uid://cvalww7yv6c0i"
 
-[node name="Cell" parent="." unique_id=82719589 instance=ExtResource("18_3ufnc")]
-position = Vector2(29, -263)
-
-[node name="Devorocyte" parent="." unique_id=1111285390 instance=ExtResource("16_tnin1")]
-position = Vector2(55, -230)
-
-[node name="Flagellocyte" parent="." unique_id=1355246119 instance=ExtResource("15_d1yvr")]
-position = Vector2(-3, -227)
-
-[node name="Glueocyte" parent="." unique_id=574791929 instance=ExtResource("18_c1pk6")]
-position = Vector2(72, -276)
-
 [node name="Lipocyte" parent="." unique_id=1651595943 instance=ExtResource("17_16d2t")]
 position = Vector2(21, -190)
+dna = SubResource("Resource_ganj6")
+
+[node name="Monocyte" parent="." unique_id=344973513 instance=ExtResource("23_c7ddc")]
+position = Vector2(-54, -107)
+dna = SubResource("Resource_r27ha")
+
+[node name="Stereocyte" parent="." unique_id=1311717237 instance=ExtResource("26_ganj6")]
+position = Vector2(122, -148)
+dna = SubResource("Resource_oekb1")
+
+[node name="Cell" parent="." unique_id=82719589 instance=ExtResource("18_3ufnc")]
+position = Vector2(23, -96)
+
+[node name="buoyocyte" parent="." unique_id=41499577 instance=ExtResource("22_mglap")]
+position = Vector2(69, -68)
+
+[node name="Devorocyte" parent="." unique_id=238061451 instance=ExtResource("16_tnin1")]
+position = Vector2(-38, -42)
+
+[node name="Flagellocyte" parent="." unique_id=2141816347 instance=ExtResource("15_d1yvr")]
+position = Vector2(-24, -150)
+
+[node name="Glueocyte" parent="." unique_id=847336644 instance=ExtResource("18_c1pk6")]
+position = Vector2(54, -155)
+
+[node name="Kerantinocyte" parent="." unique_id=1070704734 instance=ExtResource("21_qesth")]
+position = Vector2(-100, -157)
+
+[node name="Lipocyte2" parent="." unique_id=74754576 instance=ExtResource("17_16d2t")]
+position = Vector2(117, -95)
 
 [node name="Luminocyte" parent="." unique_id=1462000660 instance=ExtResource("18_qesth")]
-position = Vector2(141, -234)
-
-[node name="Phagocyte" parent="." unique_id=373872497 instance=ExtResource("19_mglap")]
-position = Vector2(82, -188)
-
-[node name="Photocyte" parent="." unique_id=1844930053 instance=ExtResource("20_c7ddc")]
-position = Vector2(99, -232)
-
-[node name="Kerantinocyte" parent="." unique_id=1393794411 instance=ExtResource("21_qesth")]
-position = Vector2(-22, -180)
-
-[node name="buoyocyte" parent="." unique_id=504167590 instance=ExtResource("22_mglap")]
-position = Vector2(41, -88)
+position = Vector2(38, -20)

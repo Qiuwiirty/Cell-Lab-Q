@@ -7,7 +7,7 @@ func _ready() -> void:
 	protected_injury = true
 func correct_appearance(delta, modify_color_radius = true):
 	super(delta, modify_color_radius)
-	$render_quad.material.set_shader_parameter("ring_radius", (radius / 15) * 0.4)
+	$renders/render_quad.material.set_shader_parameter("ring_radius", (radius / 15) * 0.4)
 
 func simulate_step(delta: float) -> void:
 	super(delta)

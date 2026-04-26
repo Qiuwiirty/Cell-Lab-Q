@@ -43,6 +43,16 @@ var protected_devorocyte = false
 var protected_injury = false
 #This a setting contain configuration
 var conf := []
+
+#SIGNAL
+#Signal production can range from -20.0 to 20.0, but the actual signal can any cell carry is -1.0 to 1.0
+#I observe that when signal production is >10 (or <-10), then the signal = 1.0, but when like it's <10 (or >-10) it won't always be 1.0
+#That could be correlation between signal_dissipation and the production of signal but I am not sure
+const SIGNAL_DISSIPATION := 0.96 #Shouldn't be more than one or signal can explode into infinity (normal range would be 0.0-1.0)
+const SIGNAL_FLOW_RATE := 2.0
+const SIGNAL_MAX := 1.0
+@export var signals = [0.0, 0.0, 0.0, 0.0] #REMEMBER: S0, S1, S2, and S3. It does NOT start from S1!
+var delta_signals := [0.0, 0.0, 0.0, 0.0]
 func _ready() -> void:
 	conf = Game.get_global_conf()
 	Game.cell_count += 1
@@ -53,13 +63,13 @@ func _ready() -> void:
 		mode = get_mode(dna)
 		mode.cell_type = Game.get_cell_type(self)
 	mode.set_up_custom_properties() #If there aren't any custom properties when there supposed to be, then set up
-	if is_debugged:
+	if is_debugged: 
 		Game.UI.get_node("debug_cell").assign_cell(self)
 	#current_color = mode.color
-	$render_quad.material = $render_quad.material.duplicate()
-	$render_quad.mesh = $render_quad.mesh.duplicate()
-	#$render_quad.material.set_shader_parameter("u_use_decoration", 0.0)
-	#$render_quad.material.set_shader_parameter("decoration", load("uid://dpuiru35vknq5"))
+	$renders/render_quad.material = $renders/render_quad.material.duplicate()
+	$renders/render_quad.mesh = $renders/render_quad.mesh.duplicate()
+	#$renders/render_quad.material.set_shader_parameter("u_use_decoration", 0.0)
+	#$renders/render_quad.material.set_shader_parameter("decoration", load("uid://dpuiru35vknq5"))
 	set_physics_process(false if Game.temperature == Game.SubstrateTemperature.FREEZE else true)
 	$collision.shape = $collision.shape.duplicate()
 	make_adhesion_mutual() #Fix adhesion that isn't symmterical 
@@ -87,13 +97,16 @@ func simulate_step(delta: float) -> void:
 	apply_adhesion_force()
 	compute_flows()
 	apply_flows()
+	compute_signal_flows()
+	apply_signal_flows()
+	dissipate_signals()
 	nitrogen_reserve = min(nitrogen_reserve + sqrt(conf[Game.SubsConf.NITRATES]) * delta, 100) #this add nitrogen reserve but slowed down at the end
 	if mode:
 		if mass > mode.split_mass and nitrogen_reserve > 20 and Game.cell_count < Game.maximum_cell_count and age > 0.5:
 			split()
 			age = 0
 	#check if cell should go bye bye
-	if mass < 0.90:
+	if mass < 0.72:
 		die()
 func _unhandled_input(event):
 	if !get_parent() is Plate:
@@ -190,16 +203,16 @@ func create_voronoi_effect() -> void:
 		var midpoint = get_midpoint_intersection(cell.global_position, cell.radius)
 		if midpoint == Vector2.ZERO:
 			continue
-		var uv = (midpoint + $render_quad.mesh.size * 0.5) / $render_quad.mesh.size
+		var uv = (midpoint + $renders/render_quad.mesh.size * 0.5) / $renders/render_quad.mesh.size
 		uv.y = 1.0 - uv.y 
 		positions.append(uv)
 		var angle_to = get_angle_to(cell.global_position) 
 		rot_dirs.append(Vector2(cos(angle_to), -sin(angle_to)))
 		
-	$render_quad.material.set_shader_parameter("centers", positions)
-	$render_quad.material.set_shader_parameter("cell_count", colliding.size())
-	$render_quad.material.set_shader_parameter("rot_dirs", rot_dirs)
-	$render_quad.material.set_shader_parameter("screen_size", get_viewport_rect().size)
+	$renders/render_quad.material.set_shader_parameter("centers", positions)
+	$renders/render_quad.material.set_shader_parameter("cell_count", colliding.size())
+	$renders/render_quad.material.set_shader_parameter("rot_dirs", rot_dirs)
+	$renders/render_quad.material.set_shader_parameter("screen_size", get_viewport_rect().size)
 func colors_are_close(a: Color, b: Color, tolerance := 0.001) -> bool:
 	return abs(a.r - b.r) < tolerance \
 		and abs(a.g - b.g) < tolerance \
@@ -217,13 +230,13 @@ func correct_appearance(delta, modify_color_radius = true):
 			current_color = lerp(current_color, mode.color, 3.5 * delta)
 		else: #Snap it
 			current_color = mode.color
-	$render_quad.material.set_shader_parameter("u_color", current_color)
-	$render_quad.material.set_shader_parameter("u_size_mult", radius / 15.0)
+	$renders/render_quad.material.set_shader_parameter("u_color", current_color)
+	$renders/render_quad.material.set_shader_parameter("u_size_mult", radius / 15.0)
 func metabolism(delta, modifier := 1.0):
 	if mode.disable_metabolism:
 		return
-	var alpha = 0.021614
-	var beta = 0.161532
+	const alpha = 0.021614
+	const beta = 0.161532
 	var metabolic = -energy_loss_coefficient \
 		* (1.0778 - conf[Game.SubsConf.SALINITY]) \
 		* (alpha * sqrt(mass) + beta)
@@ -238,7 +251,7 @@ func die(create_food := true) -> void:
 	if create_food:
 		var new_food: Food = FOOD.instantiate()
 		new_food.global_position = global_position
-		new_food.nutrition = mass
+		new_food.nutrition = max(mass / 12, 0.5) #Max is to match cell lab behaviour a bit, but in reality I has no idea to the formula
 		get_parent().add_child(new_food)
 	Game.cell_count -= 1
 	queue_free()
@@ -261,10 +274,10 @@ func _cell_exited(area: Area2D) -> void:
 #Optimization method to perform less when not on screen
 func _screen_entered_notifier() -> void:
 	visible_on_screen = true
-	$render_quad.show()
+	$renders/render_quad.show()
 func _screen_exited_notifier() -> void:
 	visible_on_screen = false
-	$render_quad.hide()
+	$renders/render_quad.hide()
 	
 #This is for dragging purposes
 func _on_mouse_entered() -> void:
@@ -350,7 +363,7 @@ func update_voronoi_effect():
 	if not (is_colliding and visible_on_screen and Game.use_voronoi):
 		return
 	if colliding.is_empty():
-		$render_quad.material.set_shader_parameter("cell_count", 0)
+		$renders/render_quad.material.set_shader_parameter("cell_count", 0)
 		is_colliding = false
 	else:
 		create_voronoi_effect()
@@ -372,7 +385,11 @@ func diagnostics() -> StringName:
 	Age: %s
 	Mass: %s
 	Diameter: %s
-	Type: %s""" % [snappedf(age, 0.001), snappedf(mass, 0.001), snappedf(radius * 2, 0.001), get_script().get_global_name()]
+	Type: %s
+	S0: %s
+	S1: %s
+	S2: %s
+	S3: %s""" % [snappedf(age, 0.001), snappedf(mass, 0.001), snappedf(radius * 2, 0.001), get_script().get_global_name(), snappedf(signals[0], 0.0001), snappedf(signals[1], 0.0001), snappedf(signals[2], 0.0001), snappedf(signals[3], 0.0001)]
 #region Adhesion
 #compute and apply flows
 func compute_flows() -> void:
@@ -586,3 +603,34 @@ func update_protected() -> void:
 			return
 	protected_devorocyte = false
 	protected_devorocyte = false
+
+#region Signals
+func compute_signal_flows() -> void:
+	var index := 0
+	for neighbor in adhesion:
+		if !is_instance_valid(neighbor):
+			adhesion.remove_at(index)
+			continue
+		if neighbor.mode == null:
+			continue
+		if get_instance_id() < neighbor.get_instance_id():
+			for i in 4:
+				var flow = SIGNAL_FLOW_RATE * (neighbor.signals[i] - signals[i]) * FIXED_STEP
+				delta_signals[i] += flow
+				neighbor.delta_signals[i] -= flow
+		index += 1
+
+func apply_signal_flows() -> void:
+	for i in 4:
+		signals[i] += delta_signals[i]
+		signals[i] = clamp(signals[i], -SIGNAL_MAX, SIGNAL_MAX)
+		delta_signals[i] = 0.0
+
+func dissipate_signals() -> void:
+	for i in 4:
+		#move toward because Signal can be negative
+		signals[i] *= SIGNAL_DISSIPATION
+#endregion Signals
+
+func gprop(index: int): #mode.custprop[SomeEnum.SOMETHING].get_value(self) is really verbose to type (and kinda an eyesore to eye) so I create this :P
+	return mode.custprop[index].get_value(self)

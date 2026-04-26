@@ -1,0 +1,31 @@
+[gd_scene format=3 uid="uid://udehj2qq6oau"]
+
+[ext_resource type="PackedScene" uid="uid://dp52tlvcqclxw" path="res://Cells related/Tscn file/sense_cell.tscn" id="1_gi8q1"]
+[ext_resource type="Script" uid="uid://0eq3drmw8tby" path="res://Cells related/Cell script/monocyte.gd" id="2_5eujm"]
+[ext_resource type="Shader" uid="uid://cpdc7kxdfwc3n" path="res://Shaders/monocyte.gdshader" id="3_5eujm"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5eujm"]
+size = Vector2(320, 320)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_5eujm"]
+shader = ExtResource("3_5eujm")
+shader_parameter/cell_color = Color(0.47058824, 0.48235294, 0.49411765, 1)
+shader_parameter/cell_radius = 0.77000003331512
+
+[sub_resource type="QuadMesh" id="QuadMesh_71xb8"]
+size = Vector2(38, 38)
+
+[node name="Monocyte" unique_id=82719589 instance=ExtResource("1_gi8q1")]
+script = ExtResource("2_5eujm")
+
+[node name="detector" type="Area2D" parent="." index="0" unique_id=2059365667]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="detector" index="0" unique_id=663846060]
+shape = SubResource("RectangleShape2D_5eujm")
+
+[node name="mono" type="MeshInstance2D" parent="renders" parent_id_path=PackedInt32Array(183095452) index="1" unique_id=1758405628]
+material = SubResource("ShaderMaterial_5eujm")
+mesh = SubResource("QuadMesh_71xb8")
+
+[connection signal="area_entered" from="detector" to="." method="_on_detector_area_entered"]
+[connection signal="area_exited" from="detector" to="." method="_on_detector_area_exited"]

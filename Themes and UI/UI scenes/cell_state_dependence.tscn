@@ -1,0 +1,203 @@
+[gd_scene format=3 uid="uid://b0ispw50j2u21"]
+
+[ext_resource type="Theme" uid="uid://db16spcdxljun" path="res://Themes and UI/NewCLQ.tres" id="1_mgtjo"]
+[ext_resource type="StyleBox" uid="uid://bkrhc42x7sga1" path="res://Themes and UI/CellLab-green_hseperator.tres" id="2_08e6p"]
+[ext_resource type="Script" uid="uid://x37pd3ii1c42" path="res://Themes and UI/UI scripts/cell_state_dependence.gd" id="2_c33pm"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hwqhx"]
+bg_color = Color(0.12156863, 0.12156863, 0.12156863, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+shadow_size = 10
+
+[sub_resource type="DPITexture" id="DPITexture_c33pm"]
+_source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#fff\" fill-opacity=\".75\" d=\"m1 3 2-2 5 5 5-5 2 2-5 5 5 5-2 2-5-5-5 5-2-2 5-5z\"/></svg>
+"
+
+[sub_resource type="DPITexture" id="DPITexture_yx8ig"]
+_source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#fff\" d=\"m1 3 2-2 5 5 5-5 2 2-5 5 5 5-2 2-5-5-5 5-2-2 5-5z\"/></svg>
+"
+
+[node name="cell_state_dependence" type="PanelContainer" unique_id=965499745]
+anchors_preset = -1
+anchor_left = 0.4
+anchor_top = 0.5
+anchor_right = 0.6
+anchor_bottom = 0.5
+offset_left = -86.8
+offset_top = -149.0
+offset_right = 86.8
+offset_bottom = 149.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_force_pass_scroll_events = false
+theme = ExtResource("1_mgtjo")
+theme_override_styles/panel = SubResource("StyleBoxFlat_hwqhx")
+script = ExtResource("2_c33pm")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1553533709]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer" unique_id=288404908]
+layout_mode = 2
+theme_override_constants/margin_left = 7
+theme_override_constants/margin_top = 7
+theme_override_constants/margin_right = 7
+theme_override_constants/margin_bottom = 7
+
+[node name="heading" type="HBoxContainer" parent="VBoxContainer/MarginContainer" unique_id=1179430340]
+layout_mode = 2
+
+[node name="title" type="Label" parent="VBoxContainer/MarginContainer/heading" unique_id=84012085]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.9372549, 0.6666667, 0.08627451, 1)
+text = "Cell state dependence"
+
+[node name="TextureButton" type="TextureButton" parent="VBoxContainer/MarginContainer/heading" unique_id=1710618958]
+layout_mode = 2
+texture_normal = SubResource("DPITexture_c33pm")
+texture_pressed = SubResource("DPITexture_yx8ig")
+
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer" unique_id=21676869]
+layout_mode = 2
+theme_override_styles/separator = ExtResource("2_08e6p")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer" unique_id=1178051854]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/ScrollContainer" unique_id=115110109]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 5
+
+[node name="mode" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1929869114]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer/mode" unique_id=1002626053]
+layout_mode = 2
+text = "Mode:"
+
+[node name="OptionButton" type="OptionButton" parent="VBoxContainer/ScrollContainer/VBoxContainer/mode" unique_id=2073162604]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="warning" type="RichTextLabel" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=938917428]
+visible = false
+layout_mode = 2
+bbcode_enabled = true
+text = "[font_size=10] [color=GOLD]Warning: [/color]The genome parameter is forced to use fixed values. That means [b] editing [i]use cell state[/i]'s value won't work. [/b] This is intended if it's a boolean value (or other such unknown reason)"
+fit_content = true
+
+[node name="fixed_value" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1288231878]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer/fixed_value" unique_id=577042300]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8745098, 0.8745098, 0.8745098, 1)
+text = "Fixed value"
+
+[node name="SpinBox" type="SpinBox" parent="VBoxContainer/ScrollContainer/VBoxContainer/fixed_value" unique_id=897817585]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = -1000.0
+max_value = 1000.0
+step = 0.001
+value = 1.0
+
+[node name="info_bool" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=2099260307]
+visible = false
+custom_minimum_size = Vector2(1, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 10
+text = "This is a boolean value. 0 = false, 1 = true."
+autowrap_mode = 3
+
+[node name="Label" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1803575311]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "=== Use cell state ==="
+
+[node name="input" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1642478399]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer/input" unique_id=1828178571]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8784314, 0.8784314, 0.8784314, 1)
+text = "Input ="
+
+[node name="OptionButton" type="OptionButton" parent="VBoxContainer/ScrollContainer/VBoxContainer/input" unique_id=379132528]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="value" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=226671716]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer/value" unique_id=914636778]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8784314, 0.8784314, 0.8784314, 1)
+text = "Value ="
+
+[node name="OptionButton" type="OptionButton" parent="VBoxContainer/ScrollContainer/VBoxContainer/value" unique_id=108862121]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="a" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1809734221]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer/a" unique_id=615832033]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8745098, 0.8745098, 0.8745098, 1)
+text = "a ="
+
+[node name="SpinBox" type="SpinBox" parent="VBoxContainer/ScrollContainer/VBoxContainer/a" unique_id=1986405723]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = -1000.0
+max_value = 1000.0
+step = 0.001
+
+[node name="b" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=48685133]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer/b" unique_id=263518271]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8784314, 0.8784314, 0.8784314, 1)
+text = "b ="
+
+[node name="SpinBox" type="SpinBox" parent="VBoxContainer/ScrollContainer/VBoxContainer/b" unique_id=621644017]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = -1000.0
+max_value = 1000.0
+step = 0.001
+
+[node name="c" type="HBoxContainer" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1741400576]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer/c" unique_id=1793255440]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8784314, 0.8784314, 0.8784314, 1)
+text = "c ="
+
+[node name="SpinBox" type="SpinBox" parent="VBoxContainer/ScrollContainer/VBoxContainer/c" unique_id=1410302970]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = -1000.0
+max_value = 1000.0
+step = 0.001
+
+[node name="Control" type="Control" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=923736609]
+layout_mode = 2
+
+[connection signal="item_selected" from="VBoxContainer/ScrollContainer/VBoxContainer/mode/OptionButton" to="." method="_on_mode_selected"]
+[connection signal="value_changed" from="VBoxContainer/ScrollContainer/VBoxContainer/fixed_value/SpinBox" to="." method="_on_fixed_value_changed"]
+[connection signal="item_selected" from="VBoxContainer/ScrollContainer/VBoxContainer/input/OptionButton" to="." method="_on_input_selected"]
+[connection signal="item_selected" from="VBoxContainer/ScrollContainer/VBoxContainer/value/OptionButton" to="." method="_on_value_formula_selected"]
+[connection signal="value_changed" from="VBoxContainer/ScrollContainer/VBoxContainer/a/SpinBox" to="." method="_on_a_value_changed"]
+[connection signal="value_changed" from="VBoxContainer/ScrollContainer/VBoxContainer/b/SpinBox" to="." method="_on_b_value_changed"]
+[connection signal="value_changed" from="VBoxContainer/ScrollContainer/VBoxContainer/c/SpinBox" to="." method="_on_c_value_changed"]

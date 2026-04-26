@@ -25,9 +25,9 @@ size = Vector2(30, 30)
 script = ExtResource("2_ujayo")
 lipids = 13.68
 
-[node name="render_quad" parent="." index="3" unique_id=676684849]
+[node name="render_quad" parent="renders" parent_id_path=PackedInt32Array(183095452) index="0" unique_id=676684849]
 material = SubResource("ShaderMaterial_o2i0x")
 
-[node name="lipids" type="MeshInstance2D" parent="." index="4" unique_id=933800443]
+[node name="lipids" type="MeshInstance2D" parent="renders" parent_id_path=PackedInt32Array(183095452) index="1" unique_id=933800443]
 material = SubResource("ShaderMaterial_f2kuy")
 mesh = SubResource("QuadMesh_gur0w")

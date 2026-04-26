@@ -1,0 +1,36 @@
+[gd_scene format=3 uid="uid://dqfyij8crctsr"]
+
+[ext_resource type="Script" uid="uid://7iie8j5fkr84" path="res://Misc/unusued/simple_cell/simple_cell.gd" id="1_6o70r"]
+[ext_resource type="Shader" uid="uid://b51k8xj6xmmgr" path="res://Misc/unusued/simple_cell/render_quad_simple_cell.gdshader" id="2_abodr"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_mtqmr"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_u7iwx"]
+shader = ExtResource("2_abodr")
+shader_parameter/u_color = Vector3(1, 1, 1)
+shader_parameter/u_use_decoration = 0.0
+shader_parameter/cell_count = 0
+shader_parameter/centers = PackedVector2Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+shader_parameter/rot_dirs = PackedVector2Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+shader_parameter/u_size_mult = 1.0
+
+[sub_resource type="QuadMesh" id="QuadMesh_abodr"]
+size = Vector2(30, 30)
+
+[node name="Simple Cell" type="Area2D" unique_id=1233076316 groups=["cells"]]
+script = ExtResource("1_6o70r")
+
+[node name="collision" type="CollisionShape2D" parent="." unique_id=51427558]
+shape = SubResource("CircleShape2D_mtqmr")
+
+[node name="render_quad" type="MeshInstance2D" parent="." unique_id=1245906942]
+material = SubResource("ShaderMaterial_u7iwx")
+mesh = SubResource("QuadMesh_abodr")
+
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="." unique_id=784990221]
+rect = Rect2(-15, -15, 30, 30)
+
+[connection signal="area_entered" from="." to="." method="_cell_entered"]
+[connection signal="area_exited" from="." to="." method="_cell_exited"]
+[connection signal="screen_entered" from="VisibleOnScreenNotifier2D" to="." method="_screen_entered_notifier"]
+[connection signal="screen_exited" from="VisibleOnScreenNotifier2D" to="." method="_screen_exited_notifier"]

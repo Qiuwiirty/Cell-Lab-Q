@@ -19,7 +19,7 @@ script = ExtResource("2_tahyq")
 [node name="VisibleOnScreenNotifier2D" parent="." index="1" unique_id=1735079836]
 rect = Rect2(-23, -23, 46, 46)
 
-[node name="glue_render" type="MeshInstance2D" parent="." index="4" unique_id=1830805068]
+[node name="glue" type="MeshInstance2D" parent="renders" parent_id_path=PackedInt32Array(183095452) index="1" unique_id=1830805068]
 z_as_relative = false
 material = SubResource("ShaderMaterial_edv5c")
 mesh = SubResource("QuadMesh_11lqt")

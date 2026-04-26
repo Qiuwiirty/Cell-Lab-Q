@@ -1,0 +1,2 @@
+extends SimpleCell
+class_name Pintarosit

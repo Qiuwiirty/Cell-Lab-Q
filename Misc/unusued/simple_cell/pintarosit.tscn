@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://dru2c6clyplms"]
+
+[ext_resource type="PackedScene" uid="uid://dqfyij8crctsr" path="res://Misc/unusued/simple_cell/simple_cell.tscn" id="1_0qnj7"]
+[ext_resource type="Script" uid="uid://bssnhtui1mfom" path="res://Misc/unusued/simple_cell/pintarosit.gd" id="2_583ad"]
+
+[node name="Pintarosit" unique_id=1233076316 instance=ExtResource("1_0qnj7")]
+script = ExtResource("2_583ad")

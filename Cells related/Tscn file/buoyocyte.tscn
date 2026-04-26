@@ -35,10 +35,10 @@ size = Vector2(30, 30)
 [node name="buoyocyte" unique_id=82719589 instance=ExtResource("1_hp05g")]
 script = ExtResource("2_e3af3")
 
-[node name="render_quad" parent="." index="3" unique_id=676684849]
+[node name="render_quad" parent="renders" parent_id_path=PackedInt32Array(183095452) index="0" unique_id=676684849]
 material = SubResource("ShaderMaterial_6jnwi")
 
-[node name="buoy_quad" type="MeshInstance2D" parent="." index="4" unique_id=482155463]
+[node name="buoy" type="MeshInstance2D" parent="renders" parent_id_path=PackedInt32Array(183095452) index="1" unique_id=482155463]
 material = SubResource("ShaderMaterial_mdnhu")
 rotation = 1.5707964
 mesh = SubResource("QuadMesh_tjw30")
