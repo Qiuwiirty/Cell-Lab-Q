@@ -1,18 +1,18 @@
-[gd_scene format=3 uid="uid://cpdpub4j2wjp2"]
+[gd_scene format=3 uid="uid://bolfe4x3lnmsl"]
+
+[ext_resource type="Theme" uid="uid://fvn4uh6phepd" path="res://Themes and UI/Cell lab theme.tres" id="1_k3p3n"]
 
 [node name="HBoxContainer" type="HBoxContainer" unique_id=1888217275]
 offset_right = 40.0
 offset_bottom = 40.0
+theme = ExtResource("1_k3p3n")
 
 [node name="Label" type="Label" parent="." unique_id=379481245]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "ENTER_TEXT"
 
-[node name="SpinBox" type="SpinBox" parent="." unique_id=1399351807]
+[node name="Button" type="Button" parent="." unique_id=1864397139]
 layout_mode = 2
 size_flags_horizontal = 3
-min_value = -1000.0
-max_value = 1000.0
-step = 0.1
-value = 1.0
+text = "ENTER_TEXT"

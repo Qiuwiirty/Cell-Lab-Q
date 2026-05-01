@@ -35,29 +35,28 @@ void fragment() {
 	if (ds > NR * NR) {
 		if (minr < L2 * L2) {
 			float comp = max(L2 - L1 / r, 0.0);
-			// inside the `if (minr < comp * comp)` block, replace the whole thing:
-if (minr < comp * comp) {
-	float mpart = mod(part, 2.0);
-	float f;
-	vec3 signal_color;
-	bool inner = rho < 0.0;
-	if (mpart == 0.0) {
-		if (inner) {
-			f = aux.x;
-			signal_color = f > 0.0 ? vec3(0.83, 0.7, 0.0) : vec3(0.83, 0.0, 0.7);
+	if (minr < comp * comp) {
+		float mpart = mod(part, 2.0);
+		float f;
+		vec3 signal_color;
+		bool inner = rho < 0.0;
+		if (mpart == 0.0) {
+			if (inner) {
+				f = aux.x;
+				signal_color = f > 0.0 ? vec3(0.83, 0.7, 0.0) : vec3(0.83, 0.0, 0.7);
+			} else {
+				f = aux2.x;
+				signal_color = f > 0.0 ? vec3(1.0, 0.4, 0.1) : vec3(0.4, 0.1, 1.0);
+			}
 		} else {
-			f = aux2.x;
-			signal_color = f > 0.0 ? vec3(1.0, 0.4, 0.1) : vec3(0.4, 0.1, 1.0);
+			if (inner) {
+				f = aux.w;
+				signal_color = f > 0.0 ? vec3(0.42, 0.7, 1.0) : vec3(0.7, 1.0, 0.42);
+			} else {
+				f = aux2.w;
+				signal_color = f > 0.0 ? vec3(1.0, 0.2, 0.5) : vec3(0.2, 1.0, 0.5);
+			}
 		}
-	} else {
-		if (inner) {
-			f = aux.w;
-			signal_color = f > 0.0 ? vec3(0.42, 0.7, 1.0) : vec3(0.7, 1.0, 0.42);
-		} else {
-			f = aux2.w;
-			signal_color = f > 0.0 ? vec3(1.0, 0.2, 0.5) : vec3(0.2, 1.0, 0.5);
-		}
-	}
 	COLOR.rgb = mix(vec3(1.0), signal_color, abs(f));
 	COLOR.a = 1.0;
 	} else {

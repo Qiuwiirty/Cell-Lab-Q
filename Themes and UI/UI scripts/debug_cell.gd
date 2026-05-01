@@ -1,11 +1,13 @@
 extends PanelContainer
 const spinbox_container_UI = preload("uid://cpdpub4j2wjp2")
+const button_container_UI = preload("uid://bolfe4x3lnmsl")
 ###NOTE: THIS NODE AND SCRIPT IS INTENDED USING INSIDE 'ui'. MAY BREAK IF PLACED INCORRECTLY
 @onready var plate = get_parent().get_parent()
 ###Animation used is easing scale ( I think that's the name? :P )
 const ANIM_DURATION = 0.1
 @onready var custProps = $VBoxContainer/ScrollContainer/VBoxContainer/custprops
 @onready var signals = $VBoxContainer/ScrollContainer/VBoxContainer/signals
+@onready var signals_production = $VBoxContainer/ScrollContainer/VBoxContainer/signals_production
 var _dragging := false
 var _drag_offset := Vector2.ZERO
 
@@ -26,7 +28,7 @@ func open():
 	tween.tween_property(self, "scale", Vector2.ONE, ANIM_DURATION)
 
 	tween.tween_property(self, "modulate:a", 1.0, ANIM_DURATION)
-
+	move_to_front()
 func close():
 	var tween = create_tween().set_parallel(true)
 	tween.set_trans(Tween.TRANS_CUBIC)
@@ -66,6 +68,11 @@ func _process(delta: float) -> void:
 		for i in range(cell.signals.size()):
 			var realvalue = signals.get_child(i).get_node("realvalue")
 			realvalue.text = str(snappedf(cell.signals[i], 0.0001))
+	if cell is SignalProducerCell:
+		if signals_production.get_child_count() > 0:
+			for i in range(cell.signals_production.size()):
+				var label: Label = signals_production.get_child(i)
+				label.text = "S" + str(i) + ": " + str(snappedf(cell.signals_production[i], 0.0001))
 func _gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT:
@@ -172,16 +179,17 @@ func update_DNA_values():
 		$VBoxContainer/ScrollContainer/VBoxContainer/flow_rate/SpinBox.value = cell.mode.flow_rate
 		update_custprop()
 		update_signals()
-func update_custprop(): ###TODO: IMPLEMENT EDITING GENOME PARAM
+		update_signals_production()
+func update_custprop():
 	for child in custProps.get_children(): child.queue_free()
 	if mode.custprop.size() > 0:
 		var i = 0
 		for value in mode.custprop:
-			var new_spinbox_container_UI = spinbox_container_UI.instantiate()
-			new_spinbox_container_UI.get_node("Label").text = cell.Props.keys()[i]
-			new_spinbox_container_UI.get_node("SpinBox").value = value.fixed_value
-			new_spinbox_container_UI.get_node("SpinBox").value_changed.connect(custprop_spinbox_value_changed.bind(i))
-			custProps.add_child(new_spinbox_container_UI)
+			var new_genome_param_UI = button_container_UI.instantiate()
+			new_genome_param_UI.get_node("Label").text = cell.Props.keys()[i]
+			new_genome_param_UI.get_node("Button").text = "Edit.."
+			new_genome_param_UI.get_node("Button").button_up.connect(custprop_edit_button_up.bind(value))
+			custProps.add_child(new_genome_param_UI)
 			i += 1
 	else:
 		var new_label = Label.new()
@@ -207,15 +215,26 @@ func update_signals():
 		var new_label = Label.new()
 		new_label.text = "There's no signals to edit/view.."
 		custProps.add_child(new_label)
-func custprop_spinbox_value_changed(value: float, index: int) -> void:
-	mode.custprop[index].fixed_value = value
-
+func update_signals_production():
+	$VBoxContainer/ScrollContainer/VBoxContainer/label_signal_productions.show()
+	signals_production.show()
+	for child in signals_production.get_children(): child.queue_free()
+	if cell is SignalProducerCell:
+		if cell.signals_production.size() > 0:
+			for value: float in cell.signals:
+				var new_label := Label.new()
+				new_label.text = str(value)
+				signals_production.add_child(new_label)
+	else:
+		$VBoxContainer/ScrollContainer/VBoxContainer/label_signal_productions.hide()
+		signals_production.hide()
+func custprop_edit_button_up(genome_param: GenomeParam) -> void:
+	$"../cell_state_dependence".assign_genome_param(genome_param)
 func signal_spinbox_value_changed(value: float, signaltype: int) -> void:
 	cell.signals[signaltype] = value
 func _on_make_dna_unique_button_up() -> void:
 	cell.dna = cell.dna.duplicate()
 	mode = cell.dna.modes[cell.current_mode]
-
 func create_cell_type_items() -> void:
 	var i = 0
 	for cell_type in Game.CellType.keys():

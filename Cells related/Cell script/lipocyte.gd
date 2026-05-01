@@ -46,13 +46,19 @@ func metabolism(delta, modifier := 1.0):
 	lipids = minf(gprop(Props.MAX_LIPIDS), lipids)
 	mass = minf(3.60, mass)
 
-func die(create_food := true) -> void:
+func die(create_food := true, create_death_effect := true) -> void:
 	if create_food:
 		var new_food: Food = FOOD.instantiate()
 		new_food.global_position = global_position
 		new_food.nutrition = max(mass / 12, 0.5)
 		new_food.coating = 10. #Coat it
 		get_parent().add_child(new_food)
+	if create_death_effect:
+		var new_death_cell: DeathCell = DEATH_CELL.instantiate()
+		new_death_cell.radius = radius
+		new_death_cell.global_position = global_position
+		new_death_cell.color = current_color
+		get_parent().add_child(new_death_cell)
 	Game.cell_count -= 1
 	queue_free()
 
@@ -200,3 +206,6 @@ func split() -> void:
 	get_parent().add_child.call_deferred(child1)
 	get_parent().add_child.call_deferred(child2)
 	die(false) #do not create food upon death
+
+
+# Fatass cell.

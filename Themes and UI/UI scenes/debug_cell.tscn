@@ -80,7 +80,6 @@ layout_mode = 2
 theme_override_styles/separator = ExtResource("4_65vxs")
 
 [node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer" unique_id=1178051854]
-clip_contents = false
 layout_mode = 2
 size_flags_vertical = 3
 
@@ -202,6 +201,22 @@ color = Color(0, 0.6392157, 0, 1)
 [node name="real_current_color" type="ColorRect" parent="VBoxContainer/ScrollContainer/VBoxContainer/current_color" unique_id=486986085]
 layout_mode = 2
 size_flags_horizontal = 3
+
+[node name="labelsignal" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1310137789]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Signals"
+
+[node name="signals" type="VBoxContainer" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1359125792]
+layout_mode = 2
+
+[node name="label_signal_productions" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1511742036]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Signals production"
+
+[node name="signals_production" type="VBoxContainer" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1615535463]
+layout_mode = 2
 
 [node name="HSeparator2" type="HSeparator" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1935579344]
 layout_mode = 2
@@ -380,14 +395,6 @@ theme_override_font_sizes/font_size = 18
 text = "Custom properties"
 
 [node name="custprops" type="VBoxContainer" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1549590473]
-layout_mode = 2
-
-[node name="labelsignal" type="Label" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1310137789]
-layout_mode = 2
-theme_override_font_sizes/font_size = 18
-text = "Signals"
-
-[node name="signals" type="VBoxContainer" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1359125792]
 layout_mode = 2
 
 [node name="make_dna_unique" type="Button" parent="VBoxContainer/ScrollContainer/VBoxContainer" unique_id=918484639]

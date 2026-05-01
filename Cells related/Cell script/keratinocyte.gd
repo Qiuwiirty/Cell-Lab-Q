@@ -15,8 +15,8 @@ func simulate_step(delta: float) -> void:
 		cell.protected_devorocyte = true
 		cell.protected_injury = true
 
-func die(create_food := true) -> void:
-	super(create_food)
+func die(create_food := true, create_death_effect := true) -> void:
+	super(create_food, create_death_effect)
 	for cell in adhesion:
 		if cell is not Keratinocyte:
 			cell.update_protected()

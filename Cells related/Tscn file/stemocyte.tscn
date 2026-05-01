@@ -1,0 +1,23 @@
+[gd_scene format=3 uid="uid://dcayn20w5uccj"]
+
+[ext_resource type="PackedScene" uid="uid://cymj82ljpiu70" path="res://Cells related/Tscn file/base_cell.tscn" id="1_pg4s0"]
+[ext_resource type="Script" uid="uid://mt7tjvit26pn" path="res://Cells related/Cell script/stemocyte.gd" id="2_0tmv6"]
+[ext_resource type="Shader" uid="uid://gofv7873qu2w" path="res://stemocyte.gdshader" id="2_3tf8l"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_0tmv6"]
+shader = ExtResource("2_3tf8l")
+shader_parameter/u_tp = 0.0
+shader_parameter/red_substance = 0.750000035625
+shader_parameter/blue_substance = 0.750000035625
+shader_parameter/u_Phi = 0.0
+shader_parameter/width = 1.75000007986512
+
+[sub_resource type="QuadMesh" id="QuadMesh_xlx3f"]
+size = Vector2(30, 30)
+
+[node name="Stemocyte" unique_id=82719589 instance=ExtResource("1_pg4s0")]
+script = ExtResource("2_0tmv6")
+
+[node name="stemo" type="MeshInstance2D" parent="renders" parent_id_path=PackedInt32Array(183095452) index="1" unique_id=1157708962]
+material = SubResource("ShaderMaterial_0tmv6")
+mesh = SubResource("QuadMesh_xlx3f")

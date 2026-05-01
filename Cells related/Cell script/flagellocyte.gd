@@ -10,7 +10,8 @@ func _ready() -> void:
 	$renders/tail.material = $renders/tail.material.duplicate()
 
 func simulate_step(delta: float) -> void:
-	var speed = Vector2(cos(rotation), sin(rotation)) * gprop(Props.SWIM_FORCE) * delta
+	#Times 2500, because without it this will move extremely slow. At 0.01 swim force, need times 2500 to atleast match with the original cell lab
+	var speed = Vector2(cos(rotation), sin(rotation)) * gprop(Props.SWIM_FORCE) * 2500 * delta 
 	velocity += speed
 	tail_phase += delta * (speed.length() * 2)
 	if !mode.disable_metabolism:

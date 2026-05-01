@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://bsrj05hmj24lp"]
+
+[ext_resource type="Shader" uid="uid://di2heycokk6w0" path="res://Shaders/death_cell.gdshader" id="1_qmmvx"]
+[ext_resource type="Texture2D" uid="uid://c2nwwp38csdfh" path="res://Misc/gauss_bessel_integral.png" id="2_0co5g"]
+[ext_resource type="Script" uid="uid://b7duskljdg5tu" path="res://Cells related/death_cell.gd" id="3_0co5g"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_rv15s"]
+shader = ExtResource("1_qmmvx")
+shader_parameter/rho_lut = ExtResource("2_0co5g")
+shader_parameter/cell_color = Color(1, 1, 1, 1)
+shader_parameter/cell_radius = 0.4750000225625
+shader_parameter/death_progress = 35.0
+
+[sub_resource type="QuadMesh" id="QuadMesh_voren"]
+size = Vector2(63.118, 63.118)
+
+[node name="death_cell" type="MeshInstance2D" unique_id=853361024]
+material = SubResource("ShaderMaterial_rv15s")
+mesh = SubResource("QuadMesh_voren")
+script = ExtResource("3_0co5g")

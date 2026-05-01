@@ -5,10 +5,11 @@ const float NR    = 0.005 * SCALE;
 const float EW    = 0.002 * SCALE;
 const float EWH   = 0.001 * SCALE;
 
-uniform float u_tp  : hint_range(0.0, 50.0) = 0.0;
-uniform float u_r1  : hint_range(0.0, 5.0)  = 0.5;
-uniform float u_r2  : hint_range(0.0, 5.0)  = 1.0;
-uniform float u_Phi : hint_range(0.0, 6.28) = 0.0;
+uniform float u_tp           : hint_range(0.0, 50.0) = 0.0;
+uniform float red_substance  : hint_range(0.0, 5.0)  = 0.75;
+uniform float blue_substance : hint_range(0.0, 5.0)  = 0.75;
+uniform float u_Phi          : hint_range(0.0, 6.28) = 0.0;
+uniform float width          : hint_range(0.1, 5.0)  = 1.0;
 
 void fragment() {
 	vec4  col = COLOR;
@@ -16,8 +17,8 @@ void fragment() {
 	
 	vec2  p   = (UV * 2.0 - 1.0) * SCALE;
 	float tp  = u_tp;
-	float r1  = u_r1;
-	float r2  = u_r2;
+	float r1  = red_substance;
+	float r2  = blue_substance;
 	float Phi = u_Phi;
 	
 	float ds  = dot(p, p);
@@ -36,9 +37,11 @@ void fragment() {
 	if (theta >  PI) theta -= 2.0 * PI;
 	if (theta < -PI) theta += 2.0 * PI;
 	
-	vec2  p2 = vec2(rho - r2, theta);
+	vec2  p2 = vec2(rho - r2, theta / width);
 	float a  = theta > 0.0 ? theta - PI : theta + PI;
-	vec2  p1 = vec2(rho - r1, a);
+	vec2  p1 = vec2(rho - r1, a / width);
+	
+	if (ds < 64.0) { discard; }
 	
 	if (ds > NR * NR) {
 		if (srr < 1.0) {
@@ -47,12 +50,12 @@ void fragment() {
 			} else if (r2 > 0.0001 && dot(p2, p2) / (r2 * r2) < 1.0) {
 				COLOR = vec4(col.rgb * 0.75 + vec3(0.0, 0.0, 0.3), 1.0);
 			} else {
-				COLOR = vec4(col.rgb, 0.5);
+				discard;
 			}
 		} else {
-			COLOR = vec4(col.rgb * 0.5, 1.0);
+			discard;
 		}
 	} else {
-		COLOR = vec4(col.rgb * 0.5, 1.0);
+		discard;
 	}
 }

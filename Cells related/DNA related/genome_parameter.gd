@@ -1,7 +1,11 @@
 extends Resource
 class_name GenomeParam
-enum Mode { FIXED, USE_STATE }
+enum Mode { 
+	FIXED, 
+	USE_STATE 
+}
 enum Formula {
+	DISABLED,
 	LINEAR,
 	THRESHOLD
 }
@@ -16,7 +20,8 @@ enum CellInput {
 #^ This will force use only the fixed value only regardless of mode
 #This is important on int (enum), or on boolean fixed value
 @export var mode: Mode = Mode.FIXED
-@export var fixed_value = 0.0
+@export var fixed_value: Variant = 0.0
+@export var enum_info = null #If fixed value is an enum, don't forget assign its enum_info so game know if it's an enum
 @export var formula : Formula = Formula.LINEAR
 #USE_STATE params
 @export var input: CellInput = CellInput.INPUT_SIGNAL
@@ -25,9 +30,11 @@ enum CellInput {
 @export var b: float = 0.0
 @export var c: float = 0.0 
 
-func get_value(cell: BaseCell) -> float:
+func get_value(cell: BaseCell):
 	if mode == Mode.FIXED or force_fixed_value:
 		return fixed_value
+	if formula == Formula.DISABLED:
+		return 0.0
 	var s
 	match input:
 		CellInput.INPUT_SIGNAL:
@@ -41,7 +48,7 @@ func get_value(cell: BaseCell) -> float:
 		CellInput.ADHESION_CONNECTION_DIV20:
 			s = cell.adhesion.size() / 20.
 		_:
-			print("Unkown CellInput. use Input signal instead")
+			print("Unknown CellInput. use Input signal instead")
 			s = cell.signals[input_signal] if input_signal < cell.signals.size() else 0.0
 	match formula:
 		Formula.LINEAR:

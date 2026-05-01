@@ -21,6 +21,7 @@ func open():
 	tween.tween_property(self, "scale", Vector2.ONE, ANIM_DURATION)
 
 	tween.tween_property(self, "modulate:a", 1.0, ANIM_DURATION)
+	move_to_front()
 func close():
 	var tween = create_tween().set_parallel(true)
 	tween.set_trans(Tween.TRANS_CUBIC)

@@ -50,10 +50,11 @@ func sense_food(food: Food) -> float:
 	var r := global_position.distance_to(food.global_position)
 	var m : float = food.nutrition 
 	return gprop(Props.OUTPUT) * m * C * bessel_k0(r / R0)
+
 func sense_phase() -> void:
 	var channel = gprop(Props.OUTPUT_CHANNEL)
 	signals_production[channel] = 0.0
-	match gprop(Props.SENSE_TYPE):
+	match int(gprop(Props.SENSE_TYPE)):
 		SenseType.CELL:
 			for cell in cells_in_area:
 				if cell == self: continue
@@ -61,10 +62,13 @@ func sense_phase() -> void:
 		SenseType.FOOD:
 			for food in foods_in_area:
 				signals_production[channel] += sense_food(food)
-func add_signals() -> void:
-	for i in range(signals.size()):
-		signals[i] += signals_production[i] / 10
-		signals[i] = clamp(signals[i], -1.0, 1.0)
+	signals_production[channel] = clampf(signals_production[channel], -20.0, 20.0)
+
+func dissipate_signals() -> void:
+	for i in signals.size():
+		signals[i] += (signals_production[i] - 5.0 * signals[i]) * FIXED_STEP
+		signals[i] = clamp(signals[i], -SIGNAL_MAX, SIGNAL_MAX)
+
 func simulate_step(delta: float) -> void:
-	super(delta)
 	sense_phase()
+	super(delta)

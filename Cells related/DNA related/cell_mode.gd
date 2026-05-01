@@ -14,7 +14,6 @@ extends Resource
 @export var child1_angle := 0 #degrees, again
 @export var child2_angle := 0
 
-
 @export var make_adhesion := false
 @export var adhesion_stiffness := 5.0
 @export var id: int #which mode it is, like 0, 1, ...
@@ -26,76 +25,134 @@ extends Resource
 #you could make flow_rate different for each cell, but it is best to make same for all cells rn
 @export var flow_rate = 0.01
 func _init() -> void:
-	if !id:
-		child1 = id
-		child2 = id
+	child1 = id
+	child2 = id
 	color = Color(randf(), randf(), randf())
+
 func set_up_custom_properties():
 	match cell_type:
 		Game.CellType.LUMINOCYTE:
 			custprop.resize(2)
-			if not custprop[Luminocyte.Props.LUM_SCALE] is GenomeParam:
+			if not custprop[Luminocyte.Props.LUM_SCALE] is GenomeParam \
+			or not custprop[Luminocyte.Props.LUM_SCALE].fixed_value is float:
 				var gp := GenomeParam.new()
 				gp.fixed_value = 1.0
 				custprop[Luminocyte.Props.LUM_SCALE] = gp
-			if not custprop[Luminocyte.Props.LUM_INTENSITY] is GenomeParam:
+			if not custprop[Luminocyte.Props.LUM_INTENSITY] is GenomeParam \
+			or not custprop[Luminocyte.Props.LUM_INTENSITY].fixed_value is float:
 				var gp := GenomeParam.new()
 				gp.fixed_value = 1.0
 				custprop[Luminocyte.Props.LUM_INTENSITY] = gp
+
 		Game.CellType.FLAGELLOCYTE:
 			custprop.resize(1)
-			if not custprop[Flagellocyte.Props.SWIM_FORCE] is GenomeParam:
+			if not custprop[Flagellocyte.Props.SWIM_FORCE] is GenomeParam \
+			or not custprop[Flagellocyte.Props.SWIM_FORCE].fixed_value is float:
 				var gp := GenomeParam.new()
-				gp.fixed_value = 50.0
+				gp.fixed_value = 0.17
 				custprop[Flagellocyte.Props.SWIM_FORCE] = gp
+
 		Game.CellType.DEVOROCYTE:
 			custprop.resize(1)
-			if not custprop[Devorocyte.Props.MASS_ABSORPTION_RATE] is GenomeParam:
+			if not custprop[Devorocyte.Props.MASS_ABSORPTION_RATE] is GenomeParam \
+			or not custprop[Devorocyte.Props.MASS_ABSORPTION_RATE].fixed_value is float:
 				var gp := GenomeParam.new()
 				gp.fixed_value = 7.3
 				custprop[Devorocyte.Props.MASS_ABSORPTION_RATE] = gp
+
 		Game.CellType.LIPOCYTE:
 			custprop.resize(1)
-			if not custprop[Lipocyte.Props.MAX_LIPIDS] is GenomeParam:
+			if not custprop[Lipocyte.Props.MAX_LIPIDS] is GenomeParam \
+			or not custprop[Lipocyte.Props.MAX_LIPIDS].fixed_value is float:
 				var gp := GenomeParam.new()
 				gp.fixed_value = 18.0
 				custprop[Lipocyte.Props.MAX_LIPIDS] = gp
+
 		Game.CellType.BUOYOCYTE:
 			custprop.resize(1)
-			if not custprop[Buoyocyte.Props.DENSITY] is GenomeParam:
+			if not custprop[Buoyocyte.Props.DENSITY] is GenomeParam \
+			or not custprop[Buoyocyte.Props.DENSITY].fixed_value is float:
 				var gp := GenomeParam.new()
 				gp.fixed_value = 300.0
 				custprop[Buoyocyte.Props.DENSITY] = gp
+
 		Game.CellType.SENSE_CELL, Game.CellType.MONOCYTE, Game.CellType.STEREOCYTE:
 			custprop.resize(7)
-			if not custprop[SenseCell.Props.SENSE_TYPE] is GenomeParam:
+			if not custprop[SenseCell.Props.SENSE_TYPE] is GenomeParam \
+			or not custprop[SenseCell.Props.SENSE_TYPE].fixed_value is int:
 				var gp := GenomeParam.new()
 				gp.fixed_value = SenseCell.SenseType.CELL
+				gp.enum_info = SenseCell.SenseType
 				gp.force_fixed_value = true
 				custprop[SenseCell.Props.SENSE_TYPE] = gp
-			if not custprop[SenseCell.Props.OUTPUT_CHANNEL] is GenomeParam:
+			if not custprop[SenseCell.Props.OUTPUT_CHANNEL] is GenomeParam \
+			or not custprop[SenseCell.Props.OUTPUT_CHANNEL].fixed_value is int:
 				var gp := GenomeParam.new()
 				gp.fixed_value = 0
 				custprop[SenseCell.Props.OUTPUT_CHANNEL] = gp
-			if not custprop[SenseCell.Props.OUTPUT] is GenomeParam:
+			if not custprop[SenseCell.Props.OUTPUT] is GenomeParam \
+			or not custprop[SenseCell.Props.OUTPUT].fixed_value is float:
 				var gp := GenomeParam.new()
 				gp.fixed_value = 60.0
 				custprop[SenseCell.Props.OUTPUT] = gp
-			if not custprop[SenseCell.Props.SENSE_RED] is GenomeParam:
+			if not custprop[SenseCell.Props.SENSE_RED] is GenomeParam \
+			or not custprop[SenseCell.Props.SENSE_RED].fixed_value is float:
 				var gp := GenomeParam.new()
 				gp.fixed_value = 1.0
 				custprop[SenseCell.Props.SENSE_RED] = gp
-			if not custprop[SenseCell.Props.SENSE_GREEN] is GenomeParam:
+			if not custprop[SenseCell.Props.SENSE_GREEN] is GenomeParam \
+			or not custprop[SenseCell.Props.SENSE_GREEN].fixed_value is float:
 				var gp := GenomeParam.new()
 				gp.fixed_value = 0.0
 				custprop[SenseCell.Props.SENSE_GREEN] = gp
-			if not custprop[SenseCell.Props.SENSE_BLUE] is GenomeParam:
+			if not custprop[SenseCell.Props.SENSE_BLUE] is GenomeParam \
+			or not custprop[SenseCell.Props.SENSE_BLUE].fixed_value is float:
 				var gp := GenomeParam.new()
 				gp.fixed_value = 0.0
 				custprop[SenseCell.Props.SENSE_BLUE] = gp
-			if not custprop[SenseCell.Props.COLOR_THRESHOLD] is GenomeParam:
+			if not custprop[SenseCell.Props.COLOR_THRESHOLD] is GenomeParam \
+			or not custprop[SenseCell.Props.COLOR_THRESHOLD].fixed_value is float:
 				var gp := GenomeParam.new()
 				gp.fixed_value = 0.1
 				custprop[SenseCell.Props.COLOR_THRESHOLD] = gp
+
+		Game.CellType.NEUROCYTE:
+			custprop.resize(2)
+			if not custprop[Neurocyte.Props.OUTPUT_CHANNELS] is GenomeParam \
+			or not custprop[Neurocyte.Props.OUTPUT_CHANNELS].fixed_value is Array:
+				var gp := GenomeParam.new()
+				gp.fixed_value = [0, 0, 0, 0]
+				gp.force_fixed_value = true
+				custprop[Neurocyte.Props.OUTPUT_CHANNELS] = gp
+			if not custprop[Neurocyte.Props.PATHWAYS] is GenomeParam \
+			or not custprop[Neurocyte.Props.PATHWAYS].fixed_value is Array:
+				var gp := GenomeParam.new()
+				gp.fixed_value = [GenomeParam.new(), GenomeParam.new(), GenomeParam.new(), GenomeParam.new()]
+				gp.force_fixed_value = true
+				custprop[Neurocyte.Props.PATHWAYS] = gp
+		Game.CellType.STEMOCYTE:
+			custprop.resize(4)
+			if not custprop[Stemocyte.Props.DIFF_PATH_1_MODE] is GenomeParam \
+			or not custprop[Stemocyte.Props.DIFF_PATH_1_MODE].fixed_value is int:
+				var gp := GenomeParam.new()
+				gp.fixed_value = 0
+				gp.force_fixed_value = true
+				custprop[Stemocyte.Props.DIFF_PATH_1_MODE] = gp
+			if not custprop[Stemocyte.Props.DIFF_PATH_2_MODE] is GenomeParam \
+			or not custprop[Stemocyte.Props.DIFF_PATH_2_MODE].fixed_value is int:
+				var gp := GenomeParam.new()
+				gp.fixed_value = 0
+				gp.force_fixed_value = true
+				custprop[Stemocyte.Props.DIFF_PATH_2_MODE] = gp
+			if not custprop[Stemocyte.Props.PATH_1_SIGNAL] is GenomeParam \
+			or not custprop[Stemocyte.Props.PATH_1_SIGNAL].fixed_value is int:
+				var gp := GenomeParam.new()
+				gp.fixed_value = 0.0
+				custprop[Stemocyte.Props.PATH_1_SIGNAL] = gp
+			if not custprop[Stemocyte.Props.PATH_2_SIGNAL] is GenomeParam \
+			or not custprop[Stemocyte.Props.PATH_2_SIGNAL].fixed_value is int:
+				var gp := GenomeParam.new()
+				gp.fixed_value = 1.0
+				custprop[Stemocyte.Props.PATH_2_SIGNAL] = gp
 		_:
 			custprop.clear()

@@ -36,7 +36,9 @@ enum CellType
 	SIGNAL_PRODUCER_CELL,
 	SENSE_CELL, #Based on Signal Producer Cell
 	MONOCYTE, #or senseocyte. Based on Sense Cell
-	STEREOCYTE #Based on Sense Cell
+	STEREOCYTE, #Based on Sense Cell
+	NEUROCYTE,
+	STEMOCYTE
 }
 signal UI_ready
 const max_modes_count := 40
@@ -68,7 +70,7 @@ var plate_thickness := 20.
 var food_spawn_shape := Food.SpawnShape.CIRCLE
 var rect_spawn_size := Vector2(1000, 1000)
 var radii_spawn_size := 500.0
-var nutrient_rate := 5. #0.0 - 1.2
+var nutrient_rate := 0. #0.0 - 1.2
 var nutrient_chunk_size := 1.2 #0.0 - 1.2
 var show_food_spawn_marker := true
 
@@ -117,6 +119,12 @@ func get_script_for_type(type: CellType) -> GDScript:
 		CellType.KERATINOCYTE: return Keratinocyte
 		CellType.NITROCYTE: return Nitrocyte
 		CellType.BUOYOCYTE: return Buoyocyte
+		CellType.SIGNAL_PRODUCER_CELL: return SignalProducerCell
+		CellType.SENSE_CELL: return SenseCell
+		CellType.STEREOCYTE: return Stereocyte
+		CellType.MONOCYTE: return Monocyte
+		CellType.NEUROCYTE: return Neurocyte
+		CellType.STEMOCYTE: return Stemocyte
 		_: return BaseCell
 func get_cell_type(cell: BaseCell) -> CellType:
 	if cell is Photocyte:
@@ -139,8 +147,14 @@ func get_cell_type(cell: BaseCell) -> CellType:
 		return CellType.NITROCYTE
 	elif cell is Buoyocyte:
 		return CellType.BUOYOCYTE
+	elif cell is Monocyte:
+		return CellType.MONOCYTE
 	elif cell is Stereocyte:
 		return CellType.STEREOCYTE
+	elif cell is Neurocyte:
+		return CellType.NEUROCYTE
+	elif cell is Stemocyte:
+		return CellType.STEMOCYTE
 	elif cell is SenseCell:
 		return CellType.SENSE_CELL
 	elif cell is SignalProducerCell:
@@ -196,6 +210,10 @@ func get_instance_cell(cell_type: CellType):
 			return load("uid://udehj2qq6oau")
 		CellType.STEREOCYTE:
 			return load("uid://tadwqrypfa1l")
+		CellType.NEUROCYTE:
+			return load("uid://dqkqfdk0x7frk")
+		CellType.STEMOCYTE:
+			return load("uid://dcayn20w5uccj")
 		_:
 			print("Unknown cell type")
 			return load("uid://cymj82ljpiu70") #Load Base cell

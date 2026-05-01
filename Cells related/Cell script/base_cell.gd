@@ -3,6 +3,7 @@ class_name BaseCell
 #TODO: IMPROVE THE ADHESION
 const SPLIT_AUDIO = preload("uid://c2ncgpkfynhkk")
 const FOOD = preload("uid://bcp4xdxc828fp")
+const DEATH_CELL = preload("uid://bsrj05hmj24lp")
 @onready var mode: CellMode = get_mode(dna) #mode like M0, M1, M2... It store essential thingies like color and etc..
 var colliding: Array[Node2D]
 
@@ -43,13 +44,12 @@ var protected_devorocyte = false
 var protected_injury = false
 #This a setting contain configuration
 var conf := []
-
 #SIGNAL
 #Signal production can range from -20.0 to 20.0, but the actual signal can any cell carry is -1.0 to 1.0
 #I observe that when signal production is >10 (or <-10), then the signal = 1.0, but when like it's <10 (or >-10) it won't always be 1.0
 #That could be correlation between signal_dissipation and the production of signal but I am not sure
-const SIGNAL_DISSIPATION := 0.96 #Shouldn't be more than one or signal can explode into infinity (normal range would be 0.0-1.0)
-const SIGNAL_FLOW_RATE := 2.0
+const SIGNAL_DECAY_RATE := 5.0       # replaces SIGNAL_DISSIPATION
+const SIGNAL_FLOW_RATE := 5.0        # same rate as decay in Cell Lab
 const SIGNAL_MAX := 1.0
 @export var signals = [0.0, 0.0, 0.0, 0.0] #REMEMBER: S0, S1, S2, and S3. It does NOT start from S1!
 var delta_signals := [0.0, 0.0, 0.0, 0.0]
@@ -62,6 +62,10 @@ func _ready() -> void:
 		dna = DNA.new()
 		mode = get_mode(dna)
 		mode.cell_type = Game.get_cell_type(self)
+	if mode.cell_type != Game.get_cell_type(self):
+		print("Warning! Cell type doesn't match with DNA! Quickly turn into the correct cell type")
+		turn_into_another_cell_type(mode.cell_type)
+		return
 	mode.set_up_custom_properties() #If there aren't any custom properties when there supposed to be, then set up
 	if is_debugged: 
 		Game.UI.get_node("debug_cell").assign_cell(self)
@@ -75,6 +79,7 @@ func _ready() -> void:
 	make_adhesion_mutual() #Fix adhesion that isn't symmterical 
 	correct_appearance(1 / 60.) #Without this, you can see the default state of cell flash for a second when it's spawn. This func solve it
 	dna.fix_dna()
+	signals = [0.1, 0.1, 0.1, 0.1]
 func _process(delta: float) -> void:
 	handle_drag()
 	if Game.temperature == Game.SubstrateTemperature.FREEZE:
@@ -108,6 +113,9 @@ func simulate_step(delta: float) -> void:
 	#check if cell should go bye bye
 	if mass < 0.72:
 		die()
+	#for i in signals.size():
+		#signals[i] = clamp(signals[i], -1.0, 1.0)
+
 func _unhandled_input(event):
 	if !get_parent() is Plate:
 		return
@@ -130,7 +138,7 @@ func _unhandled_input(event):
 		Game.ToolSelector.CELL_REMOVAL:
 			if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and mouse_over and event.is_pressed():
 				play_split_sound()
-				die() #Do not create food when injected cell removal
+				die(false) #Do not create food when injected cell removal
 				get_viewport().set_input_as_handled()
 		Game.ToolSelector.CELL_DIAGNOSTICS:
 			if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and mouse_over and event.is_pressed():
@@ -247,12 +255,18 @@ func metabolism(delta, modifier := 1.0):
 	#clamp so the mass cell won't go over 3.6
 	mass = minf(3.60, mass)
 
-func die(create_food := true) -> void:
+func die(create_food := true, create_death_effect := true) -> void:
 	if create_food:
 		var new_food: Food = FOOD.instantiate()
 		new_food.global_position = global_position
 		new_food.nutrition = max(mass / 12, 0.5) #Max is to match cell lab behaviour a bit, but in reality I has no idea to the formula
 		get_parent().add_child(new_food)
+	if create_death_effect:
+		var new_death_cell: DeathCell = DEATH_CELL.instantiate()
+		new_death_cell.radius = radius
+		new_death_cell.global_position = global_position
+		new_death_cell.color = current_color
+		get_parent().add_child(new_death_cell)
 	Game.cell_count -= 1
 	queue_free()
 
@@ -502,7 +516,7 @@ func inject_DNA(new_dna) -> void:
 		new_cell.child2 = cell_mode.child2
 		new_cell.adhesion_stiffness = cell_mode.adhesion_stiffness
 		get_parent().add_child.call_deferred(new_cell)
-		die()
+		die(false, false)
 		return
 	
 	#Same type, just update properties
@@ -528,7 +542,7 @@ func turn_into_another_cell_type(type: Game.CellType) -> void:
 		new_cell.get_node("selected_circle").color = Color.CHARTREUSE
 		new_cell.get_node("selected_circle").show()
 	get_parent().add_child.call_deferred(new_cell)
-	die()
+	die(false, false)
 
 func split() -> void:
 	if !mode:
@@ -584,7 +598,7 @@ func split() -> void:
 				cell.adhesion.append(child2)
 	get_parent().add_child.call_deferred(child1)
 	get_parent().add_child.call_deferred(child2)
-	die(false)
+	die(false, false)
 	#for cell in adhesion:
 		#if not is_instance_valid(cell):
 			#continue
@@ -621,16 +635,32 @@ func compute_signal_flows() -> void:
 		index += 1
 
 func apply_signal_flows() -> void:
-	for i in 4:
+	for i in signals.size():
 		signals[i] += delta_signals[i]
 		signals[i] = clamp(signals[i], -SIGNAL_MAX, SIGNAL_MAX)
 		delta_signals[i] = 0.0
 
 func dissipate_signals() -> void:
-	for i in 4:
-		#move toward because Signal can be negative
-		signals[i] *= SIGNAL_DISSIPATION
+	for i in signals.size():
+		signals[i] += (-SIGNAL_DECAY_RATE * signals[i]) * FIXED_STEP
+		signals[i] = clamp(signals[i], -SIGNAL_MAX, SIGNAL_MAX)
 #endregion Signals
 
 func gprop(index: int): #mode.custprop[SomeEnum.SOMETHING].get_value(self) is really verbose to type (and kinda an eyesore to eye) so I create this :P
 	return mode.custprop[index].get_value(self)
+
+func turn_into_mode(new_mode_index: int) -> void:
+	if !dna or new_mode_index >= dna.modes.size():
+		print("Invalid mode index: ", new_mode_index)
+		return
+	
+	var new_mode = dna.modes[new_mode_index]
+	
+	if new_mode.cell_type != mode.cell_type:
+		current_mode = new_mode_index
+		turn_into_another_cell_type(new_mode.cell_type)
+		return
+		
+	current_mode = new_mode_index
+	mode = new_mode
+	mode.set_up_custom_properties()

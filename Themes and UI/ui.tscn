@@ -27,6 +27,7 @@
 [ext_resource type="PackedScene" uid="uid://bbjqycigpx7a1" path="res://Themes and UI/UI scenes/zone_editor.tscn" id="23_i6rmi"]
 [ext_resource type="StyleBox" uid="uid://cpjtijgqv7bdp" path="res://Themes and UI/Foldable-container-title.tres" id="25_8lusc"]
 [ext_resource type="StyleBox" uid="uid://d3jecfewsr71j" path="res://Themes and UI/Foldable-container-panel.tres" id="26_3s3c3"]
+[ext_resource type="PackedScene" uid="uid://b0ispw50j2u21" path="res://Themes and UI/UI scenes/cell_state_dependence.tscn" id="28_3s3c3"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ux5x0"]
 bg_color = Color(0, 0, 0, 0.4862745)
@@ -907,6 +908,11 @@ bbcode_enabled = true
 text = "[i] Press enter to bind adhesion"
 fit_content = true
 autowrap_mode = 0
+
+[node name="cell_state_dependence" parent="." unique_id=661436103 instance=ExtResource("28_3s3c3")]
+visible = false
+grow_horizontal = 1
+grow_vertical = 1
 
 [connection signal="button_up" from="TopPanel/Margin/Hbox/Plate" to="configuration_panel" method="_on_plate_button_up"]
 [connection signal="button_up" from="TopPanel/Margin/Hbox/SterilizeButton" to="TopPanel" method="_on_sterilize_button_up"]
